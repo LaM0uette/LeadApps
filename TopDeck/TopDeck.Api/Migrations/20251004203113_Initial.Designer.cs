@@ -12,7 +12,7 @@ using TopDeck.Api.Data;
 namespace TopDeck.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251004202748_Initial")]
+    [Migration("20251004203113_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,6 +20,7 @@ namespace TopDeck.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("data")
                 .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -76,7 +77,7 @@ namespace TopDeck.Api.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Decks");
+                    b.ToTable("Decks", "data");
                 });
 
             modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestion", b =>
@@ -130,7 +131,7 @@ namespace TopDeck.Api.Migrations
 
                     b.HasIndex("SuggestorId");
 
-                    b.ToTable("DeckSuggestions");
+                    b.ToTable("DeckSuggestions", "data");
                 });
 
             modelBuilder.Entity("TopDeck.Api.Entities.User", b =>
@@ -171,7 +172,7 @@ namespace TopDeck.Api.Migrations
                     b.HasIndex("OAuthProvider", "OAuthId")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", "data");
                 });
 
             modelBuilder.Entity("TopDeck.Api.Entities.Deck", b =>

@@ -20,6 +20,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.HasDefaultSchema("data");
+
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(u => u.Id);

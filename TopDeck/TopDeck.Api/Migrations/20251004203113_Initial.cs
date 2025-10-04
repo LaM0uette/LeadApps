@@ -12,8 +12,12 @@ namespace TopDeck.Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "data");
+
             migrationBuilder.CreateTable(
                 name: "Users",
+                schema: "data",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -31,6 +35,7 @@ namespace TopDeck.Api.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Decks",
+                schema: "data",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -50,6 +55,7 @@ namespace TopDeck.Api.Migrations
                     table.ForeignKey(
                         name: "FK_Decks_Users_CreatorId",
                         column: x => x.CreatorId,
+                        principalSchema: "data",
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -57,6 +63,7 @@ namespace TopDeck.Api.Migrations
 
             migrationBuilder.CreateTable(
                 name: "DeckSuggestions",
+                schema: "data",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -77,12 +84,14 @@ namespace TopDeck.Api.Migrations
                     table.ForeignKey(
                         name: "FK_DeckSuggestions_Decks_DeckId",
                         column: x => x.DeckId,
+                        principalSchema: "data",
                         principalTable: "Decks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_DeckSuggestions_Users_SuggestorId",
                         column: x => x.SuggestorId,
+                        principalSchema: "data",
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -90,27 +99,32 @@ namespace TopDeck.Api.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Decks_Code",
+                schema: "data",
                 table: "Decks",
                 column: "Code",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Decks_CreatorId",
+                schema: "data",
                 table: "Decks",
                 column: "CreatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeckSuggestions_DeckId",
+                schema: "data",
                 table: "DeckSuggestions",
                 column: "DeckId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeckSuggestions_SuggestorId",
+                schema: "data",
                 table: "DeckSuggestions",
                 column: "SuggestorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_OAuthProvider_OAuthId",
+                schema: "data",
                 table: "Users",
                 columns: new[] { "OAuthProvider", "OAuthId" },
                 unique: true);
@@ -120,13 +134,16 @@ namespace TopDeck.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DeckSuggestions");
+                name: "DeckSuggestions",
+                schema: "data");
 
             migrationBuilder.DropTable(
-                name: "Decks");
+                name: "Decks",
+                schema: "data");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Users",
+                schema: "data");
         }
     }
 }
