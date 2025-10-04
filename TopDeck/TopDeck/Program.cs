@@ -1,9 +1,13 @@
 using TopDeck.Components;
+using TopDeck.Shared.UIStore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
+
+// Services
+builder.Services.AddSingleton<UIStore>();
 
 WebApplication app = builder.Build();
 

@@ -12,4 +12,8 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.8"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\TopDeck.Shared\TopDeck.Shared.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -11,4 +11,20 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.8"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\Font\JetBrainsMono\" />
+      <Folder Include="wwwroot\img\icons\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-blue.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-copper.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-female.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-gold.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-green.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-male.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-red.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-silver.png" />
+    </ItemGroup>
+
 </Project>
