@@ -14,6 +14,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\TopDeck.Shared\TopDeck.Shared.csproj" />
+      <ProjectReference Include="..\TopDeck.Shared\TopDeck.Shared.csproj" />
     </ItemGroup>
 
 </Project>

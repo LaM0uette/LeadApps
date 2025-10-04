@@ -4,7 +4,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopDeck", "TopDeck\TopDeck\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopDeck.Client", "TopDeck\TopDeck.Client\TopDeck.Client.csproj", "{F5EBC786-8D4B-47FE-AF21-0AD5668F32AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopDeck.Shared", "TopDeck.Shared\TopDeck.Shared.csproj", "{633A2829-A5A1-42CF-B55E-BDC0C3763369}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopDeck.Shared", "TopDeck\TopDeck.Shared\TopDeck.Shared.csproj", "{633A2829-A5A1-42CF-B55E-BDC0C3763369}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TopDeck", "TopDeck", "{281E88F7-0C48-4CFE-B482-E91BA67FE7D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +26,10 @@ Global
 		{633A2829-A5A1-42CF-B55E-BDC0C3763369}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{633A2829-A5A1-42CF-B55E-BDC0C3763369}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{633A2829-A5A1-42CF-B55E-BDC0C3763369}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2BDB484C-69EE-4E2B-B180-C6246174BCBF} = {281E88F7-0C48-4CFE-B482-E91BA67FE7D4}
+		{F5EBC786-8D4B-47FE-AF21-0AD5668F32AE} = {281E88F7-0C48-4CFE-B482-E91BA67FE7D4}
+		{633A2829-A5A1-42CF-B55E-BDC0C3763369} = {281E88F7-0C48-4CFE-B482-E91BA67FE7D4}
 	EndGlobalSection
 EndGlobal
