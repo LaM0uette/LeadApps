@@ -1,4 +1,6 @@
-﻿namespace TopDeck.Api.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TopDeck.Api.Entities;
 
 public class Deck
 {
@@ -7,8 +9,11 @@ public class Deck
     public int CreatorId { get; set; }
     public required User Creator { get; set; }
     
+    [MaxLength(100)]
     public required string Name { get; set; }
-    public required string Code { get; set; } // doit être unique
+    
+    [MaxLength(10)]
+    public required string Code { get; set; }
     
     public ICollection<int> CardIds { get; set; } = [];
     public ICollection<int> EnergyIds { get; set; } = [];
