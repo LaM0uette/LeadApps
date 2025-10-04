@@ -19,11 +19,11 @@
     
     
     /* Colors */
-    --color-primary: #d54138;
+    --color-primary: #9c3524;
     --color-on-primary: #ffffff;
 
-    --color-secondary: #ea9c92;
-    --color-on-secondary: #292626;
+    --color-secondary: #1e2e36;
+    --color-on-secondary: #fdfdfd;
 
     --color-bg: #faf8f7;
     --color-border: #d6d0cf;
@@ -47,10 +47,10 @@
 
 :root[data-theme="dark"] {
     /* Colors */
-    --color-primary: #d54138;
+    --color-primary: #9c3524;
     --color-on-primary: #ffffff;
 
-    --color-secondary: #e88f83;
+    --color-secondary: #1e2e36;
     --color-on-secondary: #fdfdfd;
 
     --color-bg: #1a1716;
