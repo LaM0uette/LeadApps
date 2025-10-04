@@ -4,13 +4,28 @@ using TopDeck.Api.Entities;
 
 namespace TopDeck.Api.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+public class ApplicationDbContext : DbContext
 {
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    {
+    }
+
     #region DbSets
 
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Deck> Decks => Set<Deck>();
-    public DbSet<DeckSuggestion> DeckSuggestions => Set<DeckSuggestion>();
+    public DbSet<User> Users
+    {
+        get { return Set<User>(); }
+    }
+
+    public DbSet<Deck> Decks
+    {
+        get { return Set<Deck>(); }
+    }
+
+    public DbSet<DeckSuggestion> DeckSuggestions
+    {
+        get { return Set<DeckSuggestion>(); }
+    }
 
     #endregion
 
