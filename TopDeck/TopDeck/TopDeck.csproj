@@ -8,12 +8,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\TopDeck.Client\TopDeck.Client.csproj"/>
+        <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.5.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.8"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="wwwroot\Font\JetBrainsMono\" />
-      <Folder Include="wwwroot\img\icons\" />
+        <ProjectReference Include="..\TopDeck.Contracts\TopDeck.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -25,6 +22,15 @@
       <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-male.png" />
       <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-red.png" />
       <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-silver.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="wwwroot\localization\en.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Update="wwwroot\localization\fr.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

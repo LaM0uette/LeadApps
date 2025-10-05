@@ -1,0 +1,8 @@
+﻿{
+  "authPanel.header.subtitle": "Connecter vous à",
+  "authPanel.providerButton.text.google": "Connecter vous avec Google",
+  "authPanel.providerButton.text.microsoft": "Connecter vous avec Microsoft",
+  "authPanel.providerButton.text.apple": "Connecter vous avec Apple",
+  "authPanel.providerButton.text.twitch": "Connecter vous avec Twitch",
+  "authPanel.providerButton.text.twitter": "Connecter vous avec Twitter"
+}

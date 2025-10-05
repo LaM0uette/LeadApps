@@ -35,6 +35,11 @@ public class UserService : IUserService
 
     public async Task<UserOutputDTO> CreateAsync(UserInputDTO dto, CancellationToken ct = default)
     {
+        User? existing = await _repo.GetByOAuthAsync(dto.OAuthProvider, dto.OAuthId, ct);
+        
+        if (existing != null)
+            return existing.ToOutput();
+
         User entity = dto.ToEntity();
         User created = await _repo.AddAsync(entity, ct);
         return created.ToOutput();

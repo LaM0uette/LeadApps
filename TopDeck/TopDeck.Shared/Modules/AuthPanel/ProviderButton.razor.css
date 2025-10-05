@@ -1,0 +1,33 @@
+﻿.provider-button {
+    background: transparent;
+    color: var(--color-secondary);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-s);
+    
+    box-shadow: var(--shadow-box);
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 6px;
+
+
+    & > .icon {
+        width: 24px;
+        height: 24px;
+
+
+        & > img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+    }
+    
+    & > .text {
+        font-family: var(--font-bold), sans-serif;
+        font-size: 0.8em;
+    }
+}

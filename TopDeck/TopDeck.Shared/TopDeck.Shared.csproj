@@ -13,11 +13,12 @@
 
     <ItemGroup>
         <PackageReference Include="lam0uette.lib" Version="1.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.8"/>
+        <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="9.0.9" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Modules\Components\" />
       <Folder Include="wwwroot\" />
     </ItemGroup>
 
