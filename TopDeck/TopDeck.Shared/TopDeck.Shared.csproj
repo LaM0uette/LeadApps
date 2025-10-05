@@ -19,7 +19,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Modules\Components\" />
       <Folder Include="wwwroot\" />
     </ItemGroup>
 

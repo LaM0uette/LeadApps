@@ -1,10 +1,10 @@
-﻿using Localizer;
+﻿using LocalizedComponent;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace AuthPanel;
 
-public class AuthPanelBase : ComponentBase
+public class AuthPanelBase : LocalizedComponentBase
 {
     #region Statements
     
@@ -13,8 +13,6 @@ public class AuthPanelBase : ComponentBase
 
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
-    
-    [Inject] protected ILocalizer Localizer { get; set; } = null!;
 
     protected string Username = "";
 
@@ -24,15 +22,6 @@ public class AuthPanelBase : ComponentBase
         {
             AuthenticationState state = await authenticationState;
             Username = state.User.Identity?.Name ?? string.Empty;
-        }
-    }
-    
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await Localizer.InitializeAsync(); // détecte navigator.language
-            StateHasChanged();          // re-render avec la bonne culture
         }
     }
 
