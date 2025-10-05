@@ -11,6 +11,7 @@ public class ProviderButtonBase : LocalizedComponentBase
     [Parameter] public string Height { get; set; } = "40px";
     [Parameter] public string IconPath { get; set; } = string.Empty;
     [Parameter] public string TextKey { get; set; } = string.Empty;
+    [Parameter] public Provider Provider { get; set; }
     [Parameter] public string RedirectUrl { get; set; } = string.Empty;
 
     #endregion
