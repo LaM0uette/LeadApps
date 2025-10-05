@@ -1,5 +1,5 @@
 ﻿@page "/"
-@attribute [Authorize]
+@attribute [AllowAnonymous]
 
 <PageTitle>Home</PageTitle>
 
@@ -7,33 +7,4 @@
 
 Welcome to your new app.
 
-
-<AuthorizeView>
-    <Authorized>        
-        <a href="Account/Logout">Log out</a>
-        
-        <p>Hello @Username</p>
-        
-    </Authorized>
-    <NotAuthorized>
-        <a href="Account/Login">Log in</a>
-    </NotAuthorized>
-</AuthorizeView>
-
-
-@code {
-    
-    [CascadingParameter]
-    private Task<AuthenticationState>? authenticationState { get; set; }
-
-    private string Username = "";
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (authenticationState is not null)
-        {
-            AuthenticationState? state = await authenticationState;
-            Username = state.User.Identity?.Name ?? string.Empty;
-        }
-    }
-}
+<AuthPanel/>
