@@ -6,5 +6,6 @@
   "authPanel.providerButton.text.twitch": "Connecter vous avec Twitch",
   "authPanel.providerButton.text.twitter": "Connecter vous avec Twitter",
   "component.button.login.text": "Se connecter",
-  "component.button.logout.text": "Se déconnecter"
+  "component.button.logout.text": "Se déconnecter",
+  "component.button.back.text": "Retour"
 }

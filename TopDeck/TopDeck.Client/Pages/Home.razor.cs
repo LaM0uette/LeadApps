@@ -12,10 +12,7 @@ public class HomeBase : LocalizedComponentBase
 
     #region Methods
 
-    protected void OnLoginClicked()
-    {
-        
-    }
+    //
 
     #endregion
 }

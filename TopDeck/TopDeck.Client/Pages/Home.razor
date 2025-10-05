@@ -1,5 +1,4 @@
 ﻿@page "/"
-@using TopDeck.Shared.Components
 @inherits HomeBase
 @attribute [AllowAnonymous]
 
@@ -7,7 +6,7 @@
 <PageTitle>TOPDECK</PageTitle>
 
 
-<div class="home">
+<div class="home-page">
     
     <div class="header">
         
@@ -17,31 +16,23 @@
         
         <h1 class="title">TOPDECK</h1>
         
-        <LmButton style="margin-left: auto; margin-right: 20px;" 
-                  Clicked="OnLoginClicked">@Localizer.Localize("component.button.login.text", "Log in")</LmButton>
+        <AuthorizeView>
+            <Authorized>    
+                
+                <LmButton style="margin-left: auto; margin-right: 20px;" Href="/Account/Logout" ForceLoad>
+                    @Localizer.Localize("component.button.logout.text", "Log out")
+                </LmButton>
+                
+            </Authorized>
+            <NotAuthorized>
+                
+                <LmButton style="margin-left: auto; margin-right: 20px;" Href="/Login">
+                    @Localizer.Localize("component.button.login.text", "Log in")
+                </LmButton>
+                
+            </NotAuthorized>
+        </AuthorizeView>
 
     </div>
     
 </div>
-
-
-
-
-
-
-
-
-
-
-@*<AuthorizeView>
-    <Authorized>        
-        <a href="Account/Logout">Log out</a>
-    </Authorized>
-    <NotAuthorized>
-        
-        <div class="auth-panel-container">
-            <AuthPanel/>
-        </div>
-        
-    </NotAuthorized>
-</AuthorizeView>*@

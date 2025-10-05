@@ -6,5 +6,6 @@
   "authPanel.providerButton.text.twitch": "Sign up with Twitch",
   "authPanel.providerButton.text.twitter": "Sign up with Twitter",
   "component.button.login.text": "Log in",
-  "component.button.logout.text": "Log out"
+  "component.button.logout.text": "Log out",
+  "component.button.back.text": "Back"
 }
