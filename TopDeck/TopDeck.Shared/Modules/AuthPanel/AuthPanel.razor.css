@@ -15,8 +15,9 @@
 
 
         & > .logo {
-            width: 65%;
-            object-fit: cover;
+            max-width: 65%;
+            max-height: 65%;
+            object-fit: contain;
         }
         
         & > .subtitle {

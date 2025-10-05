@@ -1,0 +1,20 @@
+﻿.lm-button {
+    background: var(--color-secondary);
+    color: var(--color-on-secondary);
+    
+    border: none;
+    border-radius: var(--radius-s);
+    
+    padding: 6px 24px;
+    box-sizing: border-box;
+    
+    font-family: var(--font-medium), sans-serif;
+    font-size: 1rem;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    cursor: var(--cursor-pointer);
+    user-select: none;
+}

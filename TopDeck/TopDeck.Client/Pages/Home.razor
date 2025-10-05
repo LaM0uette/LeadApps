@@ -1,14 +1,39 @@
 ﻿@page "/"
+@using TopDeck.Shared.Components
 @inherits HomeBase
 @attribute [AllowAnonymous]
 
-<PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<PageTitle>TOPDECK</PageTitle>
 
-Welcome to your new app.
 
-<AuthorizeView>
+<div class="home">
+    
+    <div class="header">
+        
+        <div class="logo-container">
+            <img src="img/logo.svg" alt="topdeck logo"> 
+        </div>
+        
+        <h1 class="title">TOPDECK</h1>
+        
+        <LmButton style="margin-left: auto; margin-right: 20px;" 
+                  Clicked="OnLoginClicked">@Localizer.Localize("component.button.login.text", "Log in")</LmButton>
+
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+
+@*<AuthorizeView>
     <Authorized>        
         <a href="Account/Logout">Log out</a>
     </Authorized>
@@ -19,4 +44,4 @@ Welcome to your new app.
         </div>
         
     </NotAuthorized>
-</AuthorizeView>
+</AuthorizeView>*@
