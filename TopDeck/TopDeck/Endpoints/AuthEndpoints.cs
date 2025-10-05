@@ -10,18 +10,22 @@ public static class AuthEndpoints
     {
         RouteGroupBuilder group = app.MapGroup("/Account");
 
-        group.MapGet("/Login", LoginAuthenticationPropertiesBuilder);
+        group.MapGet("/Login", Login);
         group.MapGet("/Logout", Logout);
 
         return app;
     }
 
-    private static async Task LoginAuthenticationPropertiesBuilder(HttpContext httpContext, string returnUrl = "/")
+    private static async Task Login(HttpContext httpContext, string returnUrl = "/", string? provider = null)
     {
-        AuthenticationProperties authenticationProperties = new LoginAuthenticationPropertiesBuilder()
-            .WithRedirectUri(returnUrl)
-            .Build();
+        LoginAuthenticationPropertiesBuilder builder = new LoginAuthenticationPropertiesBuilder().WithRedirectUri(returnUrl);
 
+        if (!string.IsNullOrEmpty(provider))
+        {
+            builder.WithParameter("connection", provider);
+        }
+
+        AuthenticationProperties authenticationProperties = builder.Build();
         await httpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
     }
 

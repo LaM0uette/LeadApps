@@ -3,7 +3,9 @@
 @inherits ProviderButtonBase
 
 
-<div class="provider-button" style="width: @Width; height: @Height">
+<button class="provider-button" 
+        style="width: @Width; height: @Height"
+        @onclick="Login">
 
     <HorizontalSpacer Value="5"/>
     <div class="icon">
@@ -12,4 +14,4 @@
     <span class="text">@Localizer.Localize(TextKey, $"Sign up with {Provider}")</span>
     <HorizontalSpacer Value="5"/>
     
-</div>
+</button>

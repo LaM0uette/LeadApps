@@ -12,13 +12,32 @@ public class ProviderButtonBase : LocalizedComponentBase
     [Parameter] public string IconPath { get; set; } = string.Empty;
     [Parameter] public string TextKey { get; set; } = string.Empty;
     [Parameter] public Provider Provider { get; set; }
-    [Parameter] public string RedirectUrl { get; set; } = string.Empty;
+    
+    [Inject] private NavigationManager _navigationManager { get; set; } = null!;
 
     #endregion
 
     #region Methods
     
-    // 
+    protected void Login()
+    {
+        string providerName = GetProviderName();
+        _navigationManager.NavigateTo($"/Account/Login?provider={providerName}", forceLoad: true);
+    }
+    
+    
+    private string GetProviderName()
+    {
+        return Provider switch
+        {
+            Provider.Google => "google-oauth2",
+            Provider.Microsoft => "windowslive",
+            Provider.Apple => "apple",
+            Provider.Twitch => "twitch",
+            Provider.Twitter => "twitter",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
 
     #endregion
 }
