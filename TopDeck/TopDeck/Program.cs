@@ -2,6 +2,7 @@ using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using TopDeck.Components;
+using TopDeck.Endpoints;
 using TopDeck.Shared.UIStore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -41,26 +42,7 @@ app.UseAuthorization();
 
 app.UseAntiforgery();
 
-
-app.MapGet("/Account/Login", async Task (HttpContext httpContext, string returnUrl = "/") =>
-{
-    AuthenticationProperties authenticationProperties = new LoginAuthenticationPropertiesBuilder()
-        .WithRedirectUri(returnUrl)
-        .Build();
-
-    await httpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
-});
-
-app.MapGet("/Account/Logout", async httpContext =>
-{
-    AuthenticationProperties authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
-        .WithRedirectUri("/")
-        .Build();
-
-    await httpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
-    await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-});
-
+app.MapAuthEndpoints();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
