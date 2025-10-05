@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inherits HomeBase
 @attribute [AllowAnonymous]
 
 <PageTitle>Home</PageTitle>
@@ -7,4 +8,15 @@
 
 Welcome to your new app.
 
-<AuthPanel/>
+<AuthorizeView>
+    <Authorized>        
+        <a href="Account/Logout">Log out</a>
+    </Authorized>
+    <NotAuthorized>
+        
+        <div class="auth-panel-container">
+            <AuthPanel/>
+        </div>
+        
+    </NotAuthorized>
+</AuthorizeView>

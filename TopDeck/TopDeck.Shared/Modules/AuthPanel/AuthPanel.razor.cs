@@ -6,6 +6,9 @@ namespace AuthPanel;
 public class AuthPanelBase : ComponentBase
 {
     #region Statements
+    
+    [Parameter] public string Width { get; set; } = "330px";
+    [Parameter] public string Height { get; set; } = "500px";
 
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
