@@ -8,31 +8,21 @@
 
 <div class="home-page">
     
-    <div class="header">
-        
-        <div class="logo-container">
-            <img src="img/logo.svg" alt="topdeck logo"> 
-        </div>
-        
-        <h1 class="title">TOPDECK</h1>
-        
-        <AuthorizeView>
-            <Authorized>    
+    <AuthorizeView>
+        <Authorized>    
                 
-                <LmButton style="margin-left: auto; margin-right: 20px;" Href="/Account/Logout" ForceLoad>
-                    @Localizer.Localize("component.button.logout.text", "Log out")
-                </LmButton>
+            <LmButton style="position: absolute; top: 20px; right: 20px;" Href="/Account/Logout" ForceLoad>
+                @Localizer.Localize("component.button.logout.text", "Log out")
+            </LmButton>
                 
-            </Authorized>
-            <NotAuthorized>
+        </Authorized>
+        <NotAuthorized>
                 
-                <LmButton style="margin-left: auto; margin-right: 20px;" Href="/Login">
-                    @Localizer.Localize("component.button.login.text", "Log in")
-                </LmButton>
+            <LmButton style="position: absolute; top: 20px; right: 20px;" Href="/Login">
+                @Localizer.Localize("component.button.login.text", "Log in")
+            </LmButton>
                 
-            </NotAuthorized>
-        </AuthorizeView>
-
-    </div>
+        </NotAuthorized>
+    </AuthorizeView>
     
 </div>
