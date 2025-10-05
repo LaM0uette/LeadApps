@@ -9,12 +9,18 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.8"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.9" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\TopDeck.Shared\TopDeck.Shared.csproj" />
       <ProjectReference Include="..\TopDeck.Shared\TopDeck.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Layout\MainLayout.razor" />
     </ItemGroup>
 
 </Project>
