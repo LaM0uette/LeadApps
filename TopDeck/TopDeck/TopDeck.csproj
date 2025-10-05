@@ -10,6 +10,7 @@
         <ProjectReference Include="..\TopDeck.Client\TopDeck.Client.csproj"/>
         <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.5.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.8"/>
+        <ProjectReference Include="..\TopDeck.Contracts\TopDeck.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>
