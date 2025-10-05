@@ -8,8 +8,8 @@ public class AuthPanelBase : LocalizedComponentBase
 {
     #region Statements
     
-    [Parameter] public string Width { get; set; } = "330px";
-    [Parameter] public string Height { get; set; } = "500px";
+    [Parameter] public string Width { get; set; } = "340px";
+    [Parameter] public string Height { get; set; } = "600px";
 
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }

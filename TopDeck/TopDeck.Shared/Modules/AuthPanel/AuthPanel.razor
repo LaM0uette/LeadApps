@@ -1,16 +1,22 @@
 ﻿@namespace AuthPanel
+@using TopDeck.Shared.Components
 @inherits AuthPanelBase
 
 
 <div class="auth-panel" style="width: @Width; height: @Height">
     
     <div class="header">
+        
+        <VerticalSpacer Value="25"/>
 
-        <img src="img/logo.svg" alt="topdeck logo">
+        <img class="logo" src="img/logo.svg" alt="topdeck logo">
+
+        <VerticalSpacer Value="20"/>
         
         <p class="subtitle">@Localizer.Localize("authPanel.header.subtitle", "Sign up to")</p>
-        <h2 class="title">TopDeck</h2>
-        
+        <VerticalSpacer Value="5"/>
+        <h2 class="title">TOPDECK</h2>
+
     </div>
     
     <div class="footer">

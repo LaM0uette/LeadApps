@@ -4,4 +4,26 @@
     
     border: 1px solid var(--color-border);
     border-radius: var(--radius-l);
+
+
+    & > .header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+
+        & > .logo {
+            width: 70%;
+            object-fit: cover;
+        }
+        
+        & > .subtitle {
+            font-size: 1.3em;
+        }
+
+        & > .title {
+            font-family: var(--font-extra-bold), sans-serif;
+            font-size: 2em;
+        }
+    }
 }
