@@ -1,0 +1,15 @@
+﻿@namespace AuthPanel
+@using TopDeck.Shared.Components
+@inherits ProviderButtonBase
+
+
+<div class="provider-button" style="width: @Width; height: @Height">
+
+    <HorizontalSpacer Value="5"/>
+    <div class="icon">
+        <img src="@IconPath" alt="provider button">
+    </div>
+    <span class="text">@Localizer.Localize(TextKey)</span>
+    <HorizontalSpacer Value="5"/>
+    
+</div>

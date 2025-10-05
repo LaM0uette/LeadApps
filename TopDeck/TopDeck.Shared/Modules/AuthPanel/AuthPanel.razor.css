@@ -1,4 +1,6 @@
 ﻿.auth-panel {
+    position: relative;
+    
     background: var(--color-bg);
     color: var(--color-text);
     
@@ -13,7 +15,7 @@
 
 
         & > .logo {
-            width: 70%;
+            width: 65%;
             object-fit: cover;
         }
         
@@ -25,5 +27,20 @@
             font-family: var(--font-extra-bold), sans-serif;
             font-size: 2em;
         }
+    }
+
+    & > .footer {
+        position: absolute;
+        bottom: 15px;
+
+        width: 100%;
+        box-sizing: border-box;
+        
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+
+        padding: 0 15px;
     }
 }

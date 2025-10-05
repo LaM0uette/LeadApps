@@ -14,10 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\img\icons\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-blue.png" />
       <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-copper.png" />
       <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-female.png" />

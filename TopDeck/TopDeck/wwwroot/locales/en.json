@@ -1,3 +1,8 @@
 ﻿{
-  "authPanel.header.subtitle": "Sign up to"
+  "authPanel.header.subtitle": "Sign up to",
+  "authPanel.providerButton.text.google": "Sign up with Google",
+  "authPanel.providerButton.text.microsoft": "Sign up with Microsoft",
+  "authPanel.providerButton.text.apple": "Sign up with Apple",
+  "authPanel.providerButton.text.twitch": "Sign up with Twitch",
+  "authPanel.providerButton.text.twitter": "Sign up with Twitter"
 }
