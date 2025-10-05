@@ -1,5 +1,7 @@
+using System.Globalization;
 using System.Security.Claims;
 using Auth0.AspNetCore.Authentication;
+using Localizer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using TopDeck.Components;
 using TopDeck.Contracts.DTO;
@@ -62,6 +64,16 @@ builder.Services.AddRazorComponents()
 
 // Services
 builder.Services.AddSingleton<UIStore>();
+builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
+
+string[] supportedCultures = ["en", "fr"];
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    List<CultureInfo> cultures = supportedCultures.Select(c => new CultureInfo(c)).ToList();
+    options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en");
+    options.SupportedCultures = cultures;
+    options.SupportedUICultures = cultures;
+});
 
 WebApplication app = builder.Build();
 
@@ -81,6 +93,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseAntiforgery();
+app.UseRequestLocalization();
 
 app.MapAuthEndpoints();
 

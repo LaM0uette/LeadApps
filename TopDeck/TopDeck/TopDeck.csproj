@@ -28,4 +28,13 @@
       <_ContentIncludedByDefault Remove="wwwroot\img\products\variants\circle-silver.png" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="wwwroot\localization\en.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Update="wwwroot\localization\fr.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
