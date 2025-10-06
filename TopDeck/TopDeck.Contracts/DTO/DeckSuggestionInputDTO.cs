@@ -6,6 +6,5 @@ public record DeckSuggestionInputDTO(
     ICollection<int> AddedCardIds,
     ICollection<int> RemovedCardIds,
     ICollection<int> AddedEnergyIds,
-    ICollection<int> RemovedEnergyIds,
-    int Likes
+    ICollection<int> RemovedEnergyIds
 );

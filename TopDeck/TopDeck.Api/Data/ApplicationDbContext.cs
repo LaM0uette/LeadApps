@@ -27,6 +27,16 @@ public class ApplicationDbContext : DbContext
         get { return Set<DeckSuggestion>(); }
     }
 
+    public DbSet<DeckLike> DeckLikes
+    {
+        get { return Set<DeckLike>(); }
+    }
+
+    public DbSet<DeckSuggestionLike> DeckSuggestionLikes
+    {
+        get { return Set<DeckSuggestionLike>(); }
+    }
+
     #endregion
 
     #region DbContext
@@ -63,7 +73,11 @@ public class ApplicationDbContext : DbContext
             entity.Property(d => d.CardIds).HasColumnType("integer[]");
             entity.Property(d => d.EnergyIds).HasColumnType("integer[]");
 
-            entity.Property(d => d.Likes).HasDefaultValue(0);
+            // Likes handled via DeckLike join entity
+            entity.HasMany(d => d.Likes)
+                .WithOne(l => l.Deck)
+                .HasForeignKey(l => l.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(d => d.Creator)
                 .WithMany()
@@ -85,7 +99,11 @@ public class ApplicationDbContext : DbContext
             entity.Property(s => s.AddedEnergyIds).HasColumnType("integer[]");
             entity.Property(s => s.RemovedEnergyIds).HasColumnType("integer[]");
 
-            entity.Property(s => s.Likes).HasDefaultValue(0);
+            // Likes handled via DeckSuggestionLike join entity
+            entity.HasMany(s => s.Likes)
+                .WithOne(l => l.Suggestion)
+                .HasForeignKey(l => l.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(s => s.Suggestor)
                 .WithMany()
@@ -100,6 +118,38 @@ public class ApplicationDbContext : DbContext
             entity.Property(s => s.CreatedAt)
                 .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
             entity.Property(s => s.UpdatedAt)
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+        });
+
+        // DeckLike
+        modelBuilder.Entity<DeckLike>(entity =>
+        {
+            entity.HasKey(l => new { l.DeckId, l.UserId });
+            entity.HasOne(l => l.Deck)
+                .WithMany(d => d.Likes)
+                .HasForeignKey(l => l.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(l => l.CreatedAt)
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+        });
+
+        // DeckSuggestionLike
+        modelBuilder.Entity<DeckSuggestionLike>(entity =>
+        {
+            entity.HasKey(l => new { l.DeckSuggestionId, l.UserId });
+            entity.HasOne(l => l.Suggestion)
+                .WithMany(s => s.Likes)
+                .HasForeignKey(l => l.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(l => l.CreatedAt)
                 .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
         });
     }

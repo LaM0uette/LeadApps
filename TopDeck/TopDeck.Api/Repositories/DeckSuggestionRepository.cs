@@ -60,7 +60,12 @@ public class DeckSuggestionRepository : IDeckSuggestionRepository
     private IQueryable<DeckSuggestion> Query(bool include)
     {
         return include
-            ? _db.DeckSuggestions.Include(s => s.Suggestor).Include(s => s.Deck)
+            ? _db.DeckSuggestions
+                .Include(s => s.Suggestor)
+                .Include(s => s.Deck)
+                    .ThenInclude(d => d.Creator)
+                .Include(s => s.Likes)
+                    .ThenInclude(l => l.User)
             : _db.DeckSuggestions.AsQueryable();
     }
 

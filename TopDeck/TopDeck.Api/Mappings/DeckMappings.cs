@@ -27,25 +27,40 @@ public static class DeckMappings
         entity.EnergyIds = dto.EnergyIds?.ToList() ?? [];
     }
 
-    public static DeckOutputDTO ToOutput(this Deck entity)
+    // Shallow output to avoid circular references: empty Likes and Suggestions
+    public static DeckOutputDTO ToShallowOutput(this Deck entity)
     {
         return new DeckOutputDTO(
             entity.Id,
-            entity.Creator is null ? new UserInputDTO("", "", "", "") : new UserInputDTO(entity.Creator.OAuthProvider, entity.Creator.OAuthId, entity.Creator.UserName, entity.Creator.Email),
+            entity.Creator is null ? new UserOutputDTO(0, "", "", "", "", DateTime.MinValue) : entity.Creator.ToOutput(),
             entity.Name,
             entity.Code,
             entity.CardIds.ToList(),
             entity.EnergyIds.ToList(),
-            entity.Likes,
-            entity.Suggestions.Select(s => new DeckSuggestionInputDTO(
-                s.SuggestorId,
-                s.DeckId,
-                s.AddedCardIds.ToList(),
-                s.RemovedCardIds.ToList(),
-                s.AddedEnergyIds.ToList(),
-                s.RemovedEnergyIds.ToList(),
-                s.Likes
+            new List<DeckLikeOutputDTO>(),
+            new List<DeckSuggestionOutputDTO>(),
+            entity.CreatedAt,
+            entity.UpdatedAt
+        );
+    }
+
+    public static DeckOutputDTO ToOutput(this Deck entity)
+    {
+        // Build a shallow deck instance for nested references within likes to prevent recursion
+        DeckOutputDTO shallowDeck = entity.ToShallowOutput();
+
+        return new DeckOutputDTO(
+            entity.Id,
+            entity.Creator is null ? new UserOutputDTO(0, "", "", "", "", DateTime.MinValue) : entity.Creator.ToOutput(),
+            entity.Name,
+            entity.Code,
+            entity.CardIds.ToList(),
+            entity.EnergyIds.ToList(),
+            entity.Likes.Select(l => new DeckLikeOutputDTO(
+                shallowDeck,
+                l.User is null ? new UserOutputDTO(0, "", "", "", "", DateTime.MinValue) : l.User.ToOutput()
             )).ToList(),
+            entity.Suggestions.Select(s => s.ToOutput()).ToList(),
             entity.CreatedAt,
             entity.UpdatedAt
         );

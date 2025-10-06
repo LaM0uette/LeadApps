@@ -52,11 +52,6 @@ namespace TopDeck.Api.Migrations
                         .IsRequired()
                         .HasColumnType("integer[]");
 
-                    b.Property<int>("Likes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -75,6 +70,26 @@ namespace TopDeck.Api.Migrations
                     b.HasIndex("CreatorId");
 
                     b.ToTable("Decks", "data");
+                });
+
+            modelBuilder.Entity("TopDeck.Api.Entities.DeckLike", b =>
+                {
+                    b.Property<int>("DeckId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
+                    b.HasKey("DeckId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DeckLikes", "data");
                 });
 
             modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestion", b =>
@@ -101,11 +116,6 @@ namespace TopDeck.Api.Migrations
                     b.Property<int>("DeckId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Likes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
-
                     b.PrimitiveCollection<int[]>("RemovedCardIds")
                         .IsRequired()
                         .HasColumnType("integer[]");
@@ -129,6 +139,26 @@ namespace TopDeck.Api.Migrations
                     b.HasIndex("SuggestorId");
 
                     b.ToTable("DeckSuggestions", "data");
+                });
+
+            modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestionLike", b =>
+                {
+                    b.Property<int>("DeckSuggestionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
+                    b.HasKey("DeckSuggestionId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DeckSuggestionLikes", "data");
                 });
 
             modelBuilder.Entity("TopDeck.Api.Entities.User", b =>
@@ -183,6 +213,25 @@ namespace TopDeck.Api.Migrations
                     b.Navigation("Creator");
                 });
 
+            modelBuilder.Entity("TopDeck.Api.Entities.DeckLike", b =>
+                {
+                    b.HasOne("TopDeck.Api.Entities.Deck", "Deck")
+                        .WithMany("Likes")
+                        .HasForeignKey("DeckId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TopDeck.Api.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Deck");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestion", b =>
                 {
                     b.HasOne("TopDeck.Api.Entities.Deck", "Deck")
@@ -202,9 +251,35 @@ namespace TopDeck.Api.Migrations
                     b.Navigation("Suggestor");
                 });
 
+            modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestionLike", b =>
+                {
+                    b.HasOne("TopDeck.Api.Entities.DeckSuggestion", "Suggestion")
+                        .WithMany("Likes")
+                        .HasForeignKey("DeckSuggestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TopDeck.Api.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Suggestion");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TopDeck.Api.Entities.Deck", b =>
                 {
+                    b.Navigation("Likes");
+
                     b.Navigation("Suggestions");
+                });
+
+            modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestion", b =>
+                {
+                    b.Navigation("Likes");
                 });
 #pragma warning restore 612, 618
         }

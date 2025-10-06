@@ -16,7 +16,7 @@ public class DeckSuggestion
     public ICollection<int> AddedEnergyIds { get; set; } = [];
     public ICollection<int> RemovedEnergyIds { get; set; } = [];
     
-    public int Likes { get; set; } = 0;
+    public ICollection<DeckSuggestionLike> Likes { get; set; } = [];
     
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
