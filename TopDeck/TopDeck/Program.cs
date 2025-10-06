@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using TopDeck.Components;
 using TopDeck.Contracts.DTO;
 using TopDeck.Endpoints;
+using TopDeck.FakeServices;
+using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -65,6 +67,8 @@ builder.Services.AddRazorComponents()
 // Services
 builder.Services.AddSingleton<UIStore>();
 builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
+
+builder.Services.AddSingleton<IDeckService, FakeDeckService>();
 
 string[] supportedCultures = ["en", "fr"];
 builder.Services.Configure<RequestLocalizationOptions>(options =>

@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using TopDeck.Contracts.DTO
 @inherits HomeBase
 @attribute [AllowAnonymous]
 
@@ -24,5 +25,14 @@
                 
         </NotAuthorized>
     </AuthorizeView>
+    
+    <div class="home-page-content">
+        
+        @foreach(DeckOutputDTO deck in Decks)
+        {
+            <p>@deck.Name</p>
+        }
+        
+    </div>
     
 </div>
