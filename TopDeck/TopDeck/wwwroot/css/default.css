@@ -40,8 +40,12 @@
     
     --color-ok: #7bcca0;
     --color-cancel: #ed8072;
+
+    --shadow-s: 0 1px 2px rgba(30, 25, 25, 0.05);
+    --shadow-m: 0 1px 1px rgba(30, 25, 25, 0.06), 0 2px 4px rgba(30, 25, 25, 0.04);
+    --shadow-l: 0 10px 15px rgba(30, 25, 25, 0.1), 0 4px 6px rgba(30, 25, 25, 0.05);
+    --shadow-xl: 0 20px 25px rgba(30, 25, 25, 0.15), 0 10px 10px rgba(30, 25, 25, 0.05);
     
-    --shadow-box: 0 1px 1px rgba(30, 25, 25, 0.06), 0 2px 4px rgba(30, 25, 25, 0.04);
     --radius-s: 3px;
     --radius-m: 7px;
     --radius-l: 12px;
@@ -71,7 +75,11 @@
     --color-ok: #6db492;
     --color-cancel: #e07466;
 
-    --shadow-box: 0 1px 1px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-s: 0 1px 2px rgba(255, 255, 255, 0.05);
+    --shadow-m: 0 1px 2px rgba(255, 255, 255, 0.06), 0 2px 4px rgba(255, 255, 255, 0.04);
+    --shadow-l: 0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(255, 255, 255, 0.05);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.5), 0 10px 10px rgba(255, 255, 255, 0.06);
+    
     --radius-s: 3px;
     --radius-m: 7px;
     --radius-l: 12px;
