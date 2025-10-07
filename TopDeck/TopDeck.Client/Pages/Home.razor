@@ -28,11 +28,17 @@
     
     <div class="home-page-content">
         
-        @foreach(Deck deck in Decks)
-        {
-            <p>@deck.Name</p>
-        }
+        <VerticalSpacer Value="20"/>
         
+        <div class="deck-view-container">
+            
+            @foreach (Deck deck in Decks)
+            {
+                <DeckView Deck="deck"/>
+            }
+            
+        </div>
+
     </div>
     
 </div>

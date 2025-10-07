@@ -1,1 +1,11 @@
-﻿
+﻿.deck-view {
+    width: 190px;
+    height: 275px;
+    
+    box-shadow: var(--drop-shadow-s);
+    
+    border-radius: var(--radius-l);
+    
+    cursor: var(--cursor-pointer);
+    user-select: none;
+}
