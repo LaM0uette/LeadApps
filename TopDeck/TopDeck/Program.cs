@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Auth0.AspNetCore.Authentication;
 using Localizer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Requesters.AuthUser;
 using TopDeck.Components;
 using TopDeck.Contracts.DTO;
 using TopDeck.Endpoints;
@@ -70,6 +71,7 @@ builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 
 builder.Services.AddSingleton<IDeckService, FakeDeckService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthUserRequester, AuthUserRequester>();
 
 string[] supportedCultures = ["en", "fr"];
 builder.Services.Configure<RequestLocalizationOptions>(options =>

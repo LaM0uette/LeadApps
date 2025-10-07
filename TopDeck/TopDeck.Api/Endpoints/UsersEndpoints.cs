@@ -14,6 +14,7 @@ public static class UsersEndpoints
 
         group.MapGet("", GetAllAsync);
         group.MapGet("{id:int}", GetByIdAsync);
+        group.MapPost("oauth", GetByOAuthAsync);
         group.MapPost("", CreateAsync);
         group.MapPut("{id:int}", UpdateAsync);
         group.MapDelete("{id:int}", DeleteAsync);
@@ -34,6 +35,12 @@ public static class UsersEndpoints
     private static async Task<IResult> GetByIdAsync([FromServices] IUserService service, int id, CancellationToken ct)
     {
         UserOutputDTO? item = await service.GetByIdAsync(id, ct);
+        return item is null ? Results.NotFound() : Results.Ok(item);
+    }
+    
+    private static async Task<IResult> GetByOAuthAsync([FromServices] IUserService service, [FromBody] UserOAuthInputDTO dto, CancellationToken ct)
+    {
+        UserOutputDTO? item = await service.GetByOAuthAsync(dto, ct);
         return item is null ? Results.NotFound() : Results.Ok(item);
     }
 

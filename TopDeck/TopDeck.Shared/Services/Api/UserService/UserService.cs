@@ -26,6 +26,12 @@ public class UserService : ApiService, IUserService
         UserOutputDTO? dto = await GetJsonAsync<UserOutputDTO>($"{_route}/{id}", ct);
         return dto?.ToDomain();
     }
+    
+    public async Task<User?> GetByOAuthAsync(UserOAuthInputDTO dto, CancellationToken ct = default)
+    {
+        UserOutputDTO? response = await PostJsonAsync<UserOAuthInputDTO, UserOutputDTO>($"{_route}/oauth", dto, ct);
+        return response?.ToDomain();
+    }
 
     #endregion
 }

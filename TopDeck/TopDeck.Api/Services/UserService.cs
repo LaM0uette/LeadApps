@@ -21,16 +21,22 @@ public class UserService : IUserService
 
     #region IService
 
+    public async Task<IReadOnlyList<UserOutputDTO>> GetAllAsync(CancellationToken ct = default)
+    {
+        IReadOnlyList<User> users = await _repo.GetAllAsync(ct);
+        return users.Select(u => u.ToOutput()).ToList();
+    }
+    
     public async Task<UserOutputDTO?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         User? entity = await _repo.GetByIdAsync(id, ct);
         return entity?.ToOutput();
     }
-
-    public async Task<IReadOnlyList<UserOutputDTO>> GetAllAsync(CancellationToken ct = default)
+    
+    public async Task<UserOutputDTO?> GetByOAuthAsync(UserOAuthInputDTO dto, CancellationToken ct = default)
     {
-        IReadOnlyList<User> users = await _repo.GetAllAsync(ct);
-        return users.Select(u => u.ToOutput()).ToList();
+        User? entity = await _repo.GetByOAuthAsync(dto.Provider, dto.Id, ct);
+        return entity?.ToOutput();
     }
 
     public async Task<UserOutputDTO> CreateAsync(UserInputDTO dto, CancellationToken ct = default)

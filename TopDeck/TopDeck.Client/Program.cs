@@ -1,5 +1,6 @@
 using Localizer;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Requesters.AuthUser;
 using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore;
 
@@ -17,6 +18,7 @@ builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 
 builder.Services.AddScoped<IDeckService, DeckService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthUserRequester, AuthUserRequester>();
 
 WebAssemblyHost host = builder.Build();
 
