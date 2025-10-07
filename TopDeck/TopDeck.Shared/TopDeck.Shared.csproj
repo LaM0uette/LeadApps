@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TopDeck.Contracts\TopDeck.Contracts.csproj" />
+      <ProjectReference Include="..\TopDeck.Domain\TopDeck.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

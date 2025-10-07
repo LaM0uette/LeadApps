@@ -1,5 +1,5 @@
 ﻿@page "/"
-@using TopDeck.Contracts.DTO
+@using TopDeck.Domain.Models
 @inherits HomeBase
 @attribute [AllowAnonymous]
 
@@ -28,7 +28,7 @@
     
     <div class="home-page-content">
         
-        @foreach(DeckOutputDTO deck in Decks)
+        @foreach(Deck deck in Decks)
         {
             <p>@deck.Name</p>
         }

@@ -1,4 +1,6 @@
 ﻿using TopDeck.Contracts.DTO;
+using TopDeck.Domain.Models;
+using TopDeck.Shared.Mappings;
 
 namespace TopDeck.Shared.Services;
 
@@ -12,26 +14,30 @@ public class DeckService : ApiService, IDeckService
 
     #region ApiService
 
-    public async Task<IReadOnlyList<DeckOutputDTO>> GetAllAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<Deck>> GetAllAsync(CancellationToken ct = default)
     {
         IReadOnlyList<DeckOutputDTO>? result = await GetJsonAsync<IReadOnlyList<DeckOutputDTO>>(_route, ct);
-        return result ?? [];
+        var list = result?.Select(d => d.ToDomain()).ToList() ?? new List<Deck>();
+        return list;
     }
 
-    public Task<DeckOutputDTO?> GetByIdAsync(int id, CancellationToken ct = default)
+    public async Task<Deck?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        return GetJsonAsync<DeckOutputDTO>($"{_route}/{id}", ct);
+        DeckOutputDTO? dto = await GetJsonAsync<DeckOutputDTO>($"{_route}/{id}", ct);
+        return dto?.ToDomain();
     }
 
-    public async Task<DeckOutputDTO> CreateAsync(DeckInputDTO dto, CancellationToken ct = default)
+    public async Task<Deck> CreateAsync(DeckInputDTO dto, CancellationToken ct = default)
     {
         DeckOutputDTO? created = await PostJsonAsync<DeckInputDTO, DeckOutputDTO>(_route, dto, ct);
-        return created ?? throw new InvalidOperationException("Unexpected null response when creating deck.");
+        var deck = created?.ToDomain();
+        return deck ?? throw new InvalidOperationException("Unexpected null response when creating deck.");
     }
 
-    public Task<DeckOutputDTO?> UpdateAsync(int id, DeckInputDTO dto, CancellationToken ct = default)
+    public async Task<Deck?> UpdateAsync(int id, DeckInputDTO dto, CancellationToken ct = default)
     {
-        return PutJsonAsync<DeckInputDTO, DeckOutputDTO>($"{_route}/{id}", dto, ct);
+        DeckOutputDTO? updated = await PutJsonAsync<DeckInputDTO, DeckOutputDTO>($"{_route}/{id}", dto, ct);
+        return updated?.ToDomain();
     }
 
     public Task<bool> DeleteAsync(int id, CancellationToken ct = default)

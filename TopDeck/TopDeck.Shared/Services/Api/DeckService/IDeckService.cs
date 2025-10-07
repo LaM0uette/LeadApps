@@ -1,12 +1,13 @@
 ﻿using TopDeck.Contracts.DTO;
+using TopDeck.Domain.Models;
 
 namespace TopDeck.Shared.Services;
 
 public interface IDeckService
 {
-    Task<IReadOnlyList<DeckOutputDTO>> GetAllAsync(CancellationToken ct = default);
-    Task<DeckOutputDTO?> GetByIdAsync(int id, CancellationToken ct = default);
-    Task<DeckOutputDTO> CreateAsync(DeckInputDTO dto, CancellationToken ct = default);
-    Task<DeckOutputDTO?> UpdateAsync(int id, DeckInputDTO dto, CancellationToken ct = default);
+    Task<IReadOnlyList<Deck>> GetAllAsync(CancellationToken ct = default);
+    Task<Deck?> GetByIdAsync(int id, CancellationToken ct = default);
+    Task<Deck> CreateAsync(DeckInputDTO dto, CancellationToken ct = default);
+    Task<Deck?> UpdateAsync(int id, DeckInputDTO dto, CancellationToken ct = default);
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);
 }
