@@ -69,6 +69,7 @@ builder.Services.AddSingleton<UIStore>();
 builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 
 builder.Services.AddSingleton<IDeckService, FakeDeckService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 string[] supportedCultures = ["en", "fr"];
 builder.Services.Configure<RequestLocalizationOptions>(options =>

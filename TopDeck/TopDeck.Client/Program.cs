@@ -16,6 +16,7 @@ builder.Services.AddSingleton<UIStore>();
 builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 
 builder.Services.AddScoped<IDeckService, DeckService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 WebAssemblyHost host = builder.Build();
 
