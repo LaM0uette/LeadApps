@@ -32,6 +32,7 @@
     --color-text-strong: #090909;
     --color-text-muted: #6e6a69;
     --color-text-light: #a8a4a2;
+    --color-text-very-light: #e8efef;
 
     --color-info: #8ab8e3;
     --color-success: #7bcca0;
@@ -96,6 +97,7 @@
     --color-text-strong: #ffffff;
     --color-text-muted: #b4aeac;
     --color-text-light: #7a7471;
+    --color-text-very-light: #4c4847;
 
     --color-info: #7da9d6;
     --color-success: #6db492;

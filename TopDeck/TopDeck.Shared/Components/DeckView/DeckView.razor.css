@@ -25,6 +25,39 @@
         height: 120px;
         background:linear-gradient(280deg,var(--energy-grass-1) 0%,var(--energy-grass-mid) 50%,var(--energy-grass-2) 100%);
         clip-path: polygon(0 0, 100% 0, 100% 42%, 0 75%);
+
+        z-index: 0;
+    }
+
+    & > .header {
+        position: relative;
+        
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        
+        padding: 8px 8px 0 8px;
+        box-sizing: border-box;
+
+        z-index: 1;
+
+
+        & > .code {
+            align-self: self-start;
+            
+            font-family: var(--font-bold), sans-serif;
+            font-size: 1em;
+            
+            color: var(--color-text-very-light);
+            
+            cursor: var(--cursor-text);
+
+
+            &::selection {
+                background: transparent;
+            }
+        }
     }
 }
 

@@ -7,5 +7,6 @@
   "authPanel.providerButton.text.twitter": "Sign up with Twitter",
   "component.button.login.text": "Log in",
   "component.button.logout.text": "Log out",
-  "component.button.back.text": "Back"
+  "component.button.back.text": "Back",
+  "feedback.text.copied": "Copied"
 }
