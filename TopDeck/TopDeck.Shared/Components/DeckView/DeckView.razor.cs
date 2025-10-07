@@ -13,7 +13,11 @@ public class DeckViewBase : ComponentBase
 
     #region Methods
 
-    //
+    protected string GetEnergyClass(IEnumerable<int> energieIds)
+    {
+        int id = energieIds.FirstOrDefault();
+        return id <= 0 ? "energy-none" : $"energy-{id}";
+    }
 
     #endregion
 }
