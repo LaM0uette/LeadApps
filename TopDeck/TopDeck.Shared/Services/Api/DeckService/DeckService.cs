@@ -4,26 +4,40 @@ namespace TopDeck.Shared.Services;
 
 public class DeckService : ApiService, IDeckService
 {
-    private const string BasePath = "/api/decks";
+    #region Statements
+
+    private const string _route = "/decks";
+
+    #endregion
+
+    #region ApiService
 
     public async Task<IReadOnlyList<DeckOutputDTO>> GetAllAsync(CancellationToken ct = default)
     {
-        IReadOnlyList<DeckOutputDTO>? result = await GetJsonAsync<IReadOnlyList<DeckOutputDTO>>(BasePath, ct);
-        return result ?? Array.Empty<DeckOutputDTO>();
+        IReadOnlyList<DeckOutputDTO>? result = await GetJsonAsync<IReadOnlyList<DeckOutputDTO>>(_route, ct);
+        return result ?? [];
     }
 
     public Task<DeckOutputDTO?> GetByIdAsync(int id, CancellationToken ct = default)
-        => GetJsonAsync<DeckOutputDTO>($"{BasePath}/{id}", ct);
+    {
+        return GetJsonAsync<DeckOutputDTO>($"{_route}/{id}", ct);
+    }
 
     public async Task<DeckOutputDTO> CreateAsync(DeckInputDTO dto, CancellationToken ct = default)
     {
-        DeckOutputDTO? created = await PostJsonAsync<DeckInputDTO, DeckOutputDTO>(BasePath, dto, ct);
+        DeckOutputDTO? created = await PostJsonAsync<DeckInputDTO, DeckOutputDTO>(_route, dto, ct);
         return created ?? throw new InvalidOperationException("Unexpected null response when creating deck.");
     }
 
     public Task<DeckOutputDTO?> UpdateAsync(int id, DeckInputDTO dto, CancellationToken ct = default)
-        => PutJsonAsync<DeckInputDTO, DeckOutputDTO>($"{BasePath}/{id}", dto, ct);
+    {
+        return PutJsonAsync<DeckInputDTO, DeckOutputDTO>($"{_route}/{id}", dto, ct);
+    }
 
     public Task<bool> DeleteAsync(int id, CancellationToken ct = default)
-        => base.DeleteAsync($"{BasePath}/{id}", ct);
+    {
+        return base.DeleteAsync($"{_route}/{id}", ct);
+    }
+
+    #endregion
 }

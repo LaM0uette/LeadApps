@@ -5,6 +5,8 @@ namespace TopDeck.Shared.Services;
 
 public abstract class ApiService
 {
+    #region Statements
+
     private readonly HttpClient _http;
     private readonly JsonSerializerOptions _jsonOptions;
 
@@ -12,12 +14,16 @@ public abstract class ApiService
     {
         _http = new HttpClient
         {
-            BaseAddress = new Uri(baseUrl ?? "https://localhost:7095"),
+            BaseAddress = new Uri(baseUrl ?? "https://localhost:7095/api"),
             Timeout = TimeSpan.FromSeconds(30)
         };
 
         _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
+
+    #endregion
+
+    #region Methods
 
     protected async Task<T?> GetJsonAsync<T>(string requestUri, CancellationToken ct = default)
     {
@@ -43,4 +49,6 @@ public abstract class ApiService
         using HttpResponseMessage response = await _http.DeleteAsync(requestUri, ct);
         return response.IsSuccessStatusCode;
     }
+
+    #endregion
 }
