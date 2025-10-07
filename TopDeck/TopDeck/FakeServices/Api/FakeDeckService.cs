@@ -41,8 +41,8 @@ public class FakeDeckService : IDeckService
     {
         lock (_lock)
         {
-            var now = DateTime.UtcNow;
-            var created = new DeckOutputDTO(
+            DateTime now = DateTime.UtcNow;
+            DeckOutputDTO created = new DeckOutputDTO(
                 Id: _nextId++,
                 Creator: new UserOutputDTO(
                     Id: dto.CreatorId,
@@ -71,11 +71,11 @@ public class FakeDeckService : IDeckService
     {
         lock (_lock)
         {
-            var index = _decks.FindIndex(d => d.Id == id);
+            int index = _decks.FindIndex(d => d.Id == id);
             if (index < 0) return Task.FromResult<DeckOutputDTO?>(null);
 
-            var existing = _decks[index];
-            var updated = existing with
+            DeckOutputDTO existing = _decks[index];
+            DeckOutputDTO updated = existing with
             {
                 Name = dto.Name,
                 Code = dto.Code,
@@ -93,17 +93,17 @@ public class FakeDeckService : IDeckService
     {
         lock (_lock)
         {
-            var removed = _decks.RemoveAll(d => d.Id == id) > 0;
+            bool removed = _decks.RemoveAll(d => d.Id == id) > 0;
             return Task.FromResult(removed);
         }
     }
 
     private static void Seed()
     {
-        var now = DateTime.UtcNow;
-        var user = new UserOutputDTO(1, "local", "local|1", "Demo User", "demo@example.com", now);
+        DateTime now = DateTime.UtcNow;
+        UserOutputDTO user = new UserOutputDTO(1, "local", "local|1", "Demo User", "demo@example.com", now);
 
-        var deck1 = new DeckOutputDTO(
+        DeckOutputDTO deck1 = new DeckOutputDTO(
             Id: _nextId++,
             Creator: user,
             Name: "Starter Fire Deck",
@@ -116,7 +116,7 @@ public class FakeDeckService : IDeckService
             UpdatedAt: now
         );
 
-        var deck2 = new DeckOutputDTO(
+        DeckOutputDTO deck2 = new DeckOutputDTO(
             Id: _nextId++,
             Creator: user,
             Name: "Water Control",

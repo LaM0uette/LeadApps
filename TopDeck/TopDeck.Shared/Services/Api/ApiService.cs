@@ -26,21 +26,21 @@ public abstract class ApiService
 
     protected async Task<TResponse?> PostJsonAsync<TRequest, TResponse>(string requestUri, TRequest payload, CancellationToken ct = default)
     {
-        using var response = await _http.PostAsJsonAsync(requestUri, payload, ct);
+        using HttpResponseMessage response = await _http.PostAsJsonAsync(requestUri, payload, ct);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken: ct);
     }
 
     protected async Task<TResponse?> PutJsonAsync<TRequest, TResponse>(string requestUri, TRequest payload, CancellationToken ct = default)
     {
-        using var response = await _http.PutAsJsonAsync(requestUri, payload, ct);
+        using HttpResponseMessage response = await _http.PutAsJsonAsync(requestUri, payload, ct);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken: ct);
     }
 
     protected async Task<bool> DeleteAsync(string requestUri, CancellationToken ct = default)
     {
-        using var response = await _http.DeleteAsync(requestUri, ct);
+        using HttpResponseMessage response = await _http.DeleteAsync(requestUri, ct);
         return response.IsSuccessStatusCode;
     }
 }

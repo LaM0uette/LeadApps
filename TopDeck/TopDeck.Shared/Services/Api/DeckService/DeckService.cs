@@ -8,7 +8,7 @@ public class DeckService : ApiService, IDeckService
 
     public async Task<IReadOnlyList<DeckOutputDTO>> GetAllAsync(CancellationToken ct = default)
     {
-        var result = await GetJsonAsync<IReadOnlyList<DeckOutputDTO>>(BasePath, ct);
+        IReadOnlyList<DeckOutputDTO>? result = await GetJsonAsync<IReadOnlyList<DeckOutputDTO>>(BasePath, ct);
         return result ?? Array.Empty<DeckOutputDTO>();
     }
 
@@ -17,7 +17,7 @@ public class DeckService : ApiService, IDeckService
 
     public async Task<DeckOutputDTO> CreateAsync(DeckInputDTO dto, CancellationToken ct = default)
     {
-        var created = await PostJsonAsync<DeckInputDTO, DeckOutputDTO>(BasePath, dto, ct);
+        DeckOutputDTO? created = await PostJsonAsync<DeckInputDTO, DeckOutputDTO>(BasePath, dto, ct);
         return created ?? throw new InvalidOperationException("Unexpected null response when creating deck.");
     }
 

@@ -21,7 +21,7 @@ public record UpdateVariantSelectionAction : ImmutableAction<VariantSelectionSta
 
     public override VariantSelectionState Reduce(VariantSelectionState state)
     {
-        var productVariantOptions = new Dictionary<int, IReadOnlyDictionary<int, int>>(state.Values);
+        Dictionary<int, IReadOnlyDictionary<int, int>> productVariantOptions = new Dictionary<int, IReadOnlyDictionary<int, int>>(state.Values);
         
         if (_variantOptionsSelected.Count == 0)
         {
