@@ -1,9 +1,6 @@
-﻿using System.Security.Claims;
-using LocalizedComponent;
+﻿using LocalizedComponent;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
 using Requesters.AuthUser;
-using TopDeck.Contracts.DTO;
 using TopDeck.Domain.Models;
 using TopDeck.Shared.Services;
 

@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Helpers.Auth0;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using TopDeck.Contracts.DTO;
@@ -27,21 +28,18 @@ public class AuthUserRequester : IAuthUserRequester
     public async Task<User?> GetAuthenticatedUserAsync()
     {
         AuthenticationState state = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        ClaimsPrincipal userPrincipal = state.User;
-
-        if (!(userPrincipal.Identity?.IsAuthenticated ?? false)) 
-            return null;
+        ClaimsPrincipal principal = state.User;
         
-        string? authId = userPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        string? provider = authId?.Split('|').FirstOrDefault();
-
-        if (authId is null || provider is null) 
+        if (!(principal.Identity?.IsAuthenticated ?? false)) 
             return null;
-        
-        UserOAuthInputDTO dto = new(provider, authId);
-        User? user = await _userService.GetByOAuthAsync(dto);
 
-        return user ?? null;
+        string? sub = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
+        if (!Auth0SubHelper.TryParse(sub, out string provider, out string id)) 
+            return null;
+
+        UserOAuthInputDTO dto = new(provider, id);
+        return await _userService.GetByOAuthAsync(dto);
     }
 
     #endregion

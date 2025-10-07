@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Security.Claims;
 using Auth0.AspNetCore.Authentication;
+using Helpers.Auth0;
 using Localizer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Requesters.AuthUser;
@@ -27,33 +28,22 @@ builder.Services
             OnTokenValidated = async context =>
             {
                 ClaimsPrincipal? user = context.Principal;
-
-                string? authId = user?.FindFirstValue(ClaimTypes.NameIdentifier);
-                string provider = authId?.Split('|').FirstOrDefault() ?? "unknown";
+                string? sub = user?.FindFirstValue(ClaimTypes.NameIdentifier);
+                
+                if (!Auth0SubHelper.TryParse(sub, out string provider, out string authId)) 
+                    return;
 
                 string? fullName = user?.FindFirstValue(ClaimTypes.Name);
-                string? given    = user?.FindFirstValue(ClaimTypes.GivenName);
-                string? surname  = user?.FindFirstValue(ClaimTypes.Surname);
-                string email    = user?.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+                string? given = user?.FindFirstValue(ClaimTypes.GivenName);
+                string? surname = user?.FindFirstValue(ClaimTypes.Surname);
+                string email = user?.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+                string userName = !string.IsNullOrWhiteSpace(fullName) ? fullName : $"{given} {surname}".Trim();
 
-                string userName = !string.IsNullOrWhiteSpace(fullName)
-                    ? fullName
-                    : $"{given} {surname}".Trim();
+                IHttpClientFactory factory = context.HttpContext.RequestServices.GetRequiredService<IHttpClientFactory>();
+                HttpClient http = factory.CreateClient("Api");
 
-                if (!string.IsNullOrEmpty(authId))
-                {
-                    IHttpClientFactory factory = context.HttpContext.RequestServices.GetRequiredService<IHttpClientFactory>();
-                    HttpClient http = factory.CreateClient("Api");
-
-                    UserInputDTO dto = new(
-                        provider,
-                        authId,
-                        userName,
-                        email
-                    );
-
-                    await http.PostAsJsonAsync("api/users", dto, context.HttpContext.RequestAborted);
-                }
+                UserInputDTO dto = new(provider, authId, userName, email);
+                await http.PostAsJsonAsync("api/users", dto, context.HttpContext.RequestAborted);
             }
         };
     });
