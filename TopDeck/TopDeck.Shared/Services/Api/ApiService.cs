@@ -14,7 +14,7 @@ public abstract class ApiService
     {
         _http = new HttpClient
         {
-            BaseAddress = new Uri(baseUrl ?? "https://localhost:7095/api"),
+            BaseAddress = new Uri(baseUrl ?? "https://localhost:7095/"),
             Timeout = TimeSpan.FromSeconds(30)
         };
 

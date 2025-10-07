@@ -26,4 +26,18 @@
       <Folder Include="wwwroot\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Modules\Components\Actions\AutoRedirect.razor" />
+      <UpToDateCheckInput Remove="Modules\Components\Buttons\LmButton.razor" />
+      <UpToDateCheckInput Remove="Modules\Components\Spacers\HorizontalSpacer.razor" />
+      <UpToDateCheckInput Remove="Modules\Components\Spacers\VerticalSpacer.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Components\Actions\AutoRedirect.razor" />
+      <AdditionalFiles Include="Components\Buttons\LmButton.razor" />
+      <AdditionalFiles Include="Components\Spacers\HorizontalSpacer.razor" />
+      <AdditionalFiles Include="Components\Spacers\VerticalSpacer.razor" />
+    </ItemGroup>
+
 </Project>
