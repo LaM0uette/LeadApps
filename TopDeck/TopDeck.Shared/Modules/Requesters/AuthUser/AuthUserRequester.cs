@@ -27,18 +27,18 @@ public class AuthUserRequester : IAuthUserRequester
     public async Task<User?> GetAuthenticatedUserAsync()
     {
         AuthenticationState state = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        ClaimsPrincipal userClaims = state.User;
+        ClaimsPrincipal userPrincipal = state.User;
 
-        if (!(userClaims.Identity?.IsAuthenticated ?? false)) 
+        if (!(userPrincipal.Identity?.IsAuthenticated ?? false)) 
             return null;
         
-        string? oAuthId = userClaims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        string? userName = userClaims.Identity.Name;
+        string? authId = userPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        string? provider = authId?.Split('|').FirstOrDefault();
 
-        if (oAuthId is null || userName is null) 
+        if (authId is null || provider is null) 
             return null;
         
-        UserOAuthInputDTO dto = new("google-oauth2", oAuthId);
+        UserOAuthInputDTO dto = new(provider, authId);
         User? user = await _userService.GetByOAuthAsync(dto);
 
         return user ?? null;

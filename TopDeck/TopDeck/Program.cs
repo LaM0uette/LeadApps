@@ -70,8 +70,8 @@ builder.Services.AddSingleton<UIStore>();
 builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 
 builder.Services.AddSingleton<IDeckService, FakeDeckService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IAuthUserRequester, AuthUserRequester>();
+builder.Services.AddScoped<IUserService, FakeUserService>();
+builder.Services.AddScoped<IAuthUserRequester, FakeAuthUserRequester>();
 
 string[] supportedCultures = ["en", "fr"];
 builder.Services.Configure<RequestLocalizationOptions>(options =>
