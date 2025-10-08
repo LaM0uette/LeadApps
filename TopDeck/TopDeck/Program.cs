@@ -12,6 +12,7 @@ using TopDeck.Components;
 using TopDeck.Contracts.DTO;
 using TopDeck.Endpoints;
 using TopDeck.FakeServices;
+using TopDeck.Shared.Modules.Requesters.TCGPCard;
 using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore;
 
@@ -78,6 +79,7 @@ builder.Services.AddScoped<IAuthUserRequester, FakeAuthUserRequester>();
 
 builder.Services.AddScoped<IApiClient, ApiClient>();
 builder.Services.AddScoped<ICardService, CardService>(); // TODO: Replace with FakeCardService if needed
+builder.Services.AddScoped<TCGPCardRequester>();
 
 string[] supportedCultures = ["en", "fr"];
 builder.Services.Configure<RequestLocalizationOptions>(options =>

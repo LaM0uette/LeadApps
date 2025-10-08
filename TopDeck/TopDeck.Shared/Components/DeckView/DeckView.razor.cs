@@ -1,7 +1,9 @@
 ﻿using LocalizedComponent;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using TCGPocketDex.Domain.Models;
 using TopDeck.Domain.Models;
+using TopDeck.Shared.Modules.Requesters.TCGPCard;
 
 namespace TopDeck.Shared.Components;
 
@@ -10,6 +12,7 @@ public class DeckViewBase : LocalizedComponentBase
     #region Statements
 
     [Parameter, EditorRequired] public required Deck Deck { get; set; }
+    [Parameter, EditorRequired] public required IReadOnlyCollection<Card> Cards { get; set; }
 
     protected string DeckCode = string.Empty;
     
@@ -18,6 +21,11 @@ public class DeckViewBase : LocalizedComponentBase
     protected override void OnParametersSet()
     {
         DeckCode = Deck.Code;
+    }
+    
+    protected override void OnInitialized()
+    {
+        Console.WriteLine($"Loaded {Cards.Count} cards for deck {Deck.Name}");
     }
 
     #endregion

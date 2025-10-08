@@ -32,9 +32,17 @@
         
         <div class="deck-view-container">
             
-            @foreach (Deck deck in Decks)
+            @if (Decks.Count <= 0 || Cards.Count <= 0)
             {
-                <DeckView Deck="deck"/>
+                <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p>
+            }
+            else
+            {
+                foreach (Deck deck in Decks)
+                {
+                    Console.WriteLine("YO" + Cards.Count);
+                    <DeckView Deck="deck" Cards="Cards.Where(c => deck.CardIds.Contains(c.Id)).ToList()"/>
+                }
             }
             
         </div>

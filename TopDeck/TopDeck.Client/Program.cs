@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Requesters.AuthUser;
 using TCGPocketDex.SDK.Http;
 using TCGPocketDex.SDK.Services;
+using TopDeck.Shared.Modules.Requesters.TCGPCard;
 using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore;
 
@@ -27,6 +28,7 @@ builder.Services.AddScoped<IDeckReactionService, DeckReactionService>();
 
 builder.Services.AddScoped<IApiClient, ApiClient>();
 builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddScoped<TCGPCardRequester>();
 
 WebAssemblyHost host = builder.Build();
 
