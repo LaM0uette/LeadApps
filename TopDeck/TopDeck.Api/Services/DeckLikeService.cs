@@ -10,12 +10,14 @@ namespace TopDeck.Api.Services;
 public class DeckLikeService : IDeckLikeService
 {
     private readonly IDeckLikeRepository _likes;
+    private readonly IDeckDislikeRepository _dislikes;
     private readonly IDeckRepository _decks;
     private readonly IUserRepository _users;
 
-    public DeckLikeService(IDeckLikeRepository likes, IDeckRepository decks, IUserRepository users)
+    public DeckLikeService(IDeckLikeRepository likes, IDeckDislikeRepository dislikes, IDeckRepository decks, IUserRepository users)
     {
         _likes = likes;
+        _dislikes = dislikes;
         _decks = decks;
         _users = users;
     }
@@ -36,7 +38,10 @@ public class DeckLikeService : IDeckLikeService
             return output;
         }
 
-        DeckLike created = await _likes.AddAsync(new DeckLike
+        // Mutual exclusion: remove existing dislike, if any
+        await _dislikes.DeleteAsync(dto.DeckId, dto.UserId, ct);
+
+        await _likes.AddAsync(new DeckLike
         {
             DeckId = dto.DeckId,
             Deck = null!,

@@ -9,12 +9,14 @@ namespace TopDeck.Api.Services;
 public class DeckSuggestionDislikeService : IDeckSuggestionDislikeService
 {
     private readonly IDeckSuggestionDislikeRepository _dislikes;
+    private readonly IDeckSuggestionLikeRepository _likes;
     private readonly IDeckSuggestionRepository _suggestions;
     private readonly IUserRepository _users;
 
-    public DeckSuggestionDislikeService(IDeckSuggestionDislikeRepository dislikes, IDeckSuggestionRepository suggestions, IUserRepository users)
+    public DeckSuggestionDislikeService(IDeckSuggestionDislikeRepository dislikes, IDeckSuggestionLikeRepository likes, IDeckSuggestionRepository suggestions, IUserRepository users)
     {
         _dislikes = dislikes;
+        _likes = likes;
         _suggestions = suggestions;
         _users = users;
     }
@@ -31,6 +33,9 @@ public class DeckSuggestionDislikeService : IDeckSuggestionDislikeService
         {
             return new DeckSuggestionDislikeOutputDTO(suggestion.ToShallowOutput(), user.ToOutput());
         }
+
+        // Mutual exclusion: remove existing like, if any
+        await _likes.DeleteAsync(dto.DeckSuggestionId, dto.UserId, ct);
 
         await _dislikes.AddAsync(new DeckSuggestionDislike
         {
