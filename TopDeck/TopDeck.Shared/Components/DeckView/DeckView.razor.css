@@ -59,6 +59,12 @@
             }
         }
     }
+
+    & > .footer {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+    }
 }
 
 .energy-1::before{background:var(--gradient-grass)}

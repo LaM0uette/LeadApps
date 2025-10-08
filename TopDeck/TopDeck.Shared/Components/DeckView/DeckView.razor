@@ -6,9 +6,7 @@
     
     <div class="header">
         
-        <VotePanel DeckId="Deck.Id" 
-                   UserLikes="Deck.Likes.Select(l => l.User).ToList()"
-                   UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"/>
+        <DeckNamePanel Name="@Deck.Name"/>
         
         <span class="code" @onclick="CopyCode">@DeckCode</span>
         
@@ -19,6 +17,10 @@
     </div>
     
     <div class="footer">
+        
+        <VotePanel DeckId="Deck.Id" 
+                   UserLikes="Deck.Likes.Select(l => l.User).ToList()"
+                   UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"/>
         
     </div>
     
