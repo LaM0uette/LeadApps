@@ -72,6 +72,26 @@ namespace TopDeck.Api.Migrations
                     b.ToTable("Decks", "data");
                 });
 
+            modelBuilder.Entity("TopDeck.Api.Entities.DeckDislike", b =>
+                {
+                    b.Property<int>("DeckId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
+                    b.HasKey("DeckId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DeckDislikes", "data");
+                });
+
             modelBuilder.Entity("TopDeck.Api.Entities.DeckLike", b =>
                 {
                     b.Property<int>("DeckId")
@@ -141,6 +161,26 @@ namespace TopDeck.Api.Migrations
                     b.ToTable("DeckSuggestions", "data");
                 });
 
+            modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestionDislike", b =>
+                {
+                    b.Property<int>("DeckSuggestionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
+                    b.HasKey("DeckSuggestionId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DeckSuggestionDislikes", "data");
+                });
+
             modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestionLike", b =>
                 {
                     b.Property<int>("DeckSuggestionId")
@@ -208,6 +248,25 @@ namespace TopDeck.Api.Migrations
                     b.Navigation("Creator");
                 });
 
+            modelBuilder.Entity("TopDeck.Api.Entities.DeckDislike", b =>
+                {
+                    b.HasOne("TopDeck.Api.Entities.Deck", "Deck")
+                        .WithMany("Dislikes")
+                        .HasForeignKey("DeckId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TopDeck.Api.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Deck");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TopDeck.Api.Entities.DeckLike", b =>
                 {
                     b.HasOne("TopDeck.Api.Entities.Deck", "Deck")
@@ -246,6 +305,25 @@ namespace TopDeck.Api.Migrations
                     b.Navigation("Suggestor");
                 });
 
+            modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestionDislike", b =>
+                {
+                    b.HasOne("TopDeck.Api.Entities.DeckSuggestion", "Suggestion")
+                        .WithMany("Dislikes")
+                        .HasForeignKey("DeckSuggestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TopDeck.Api.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Suggestion");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestionLike", b =>
                 {
                     b.HasOne("TopDeck.Api.Entities.DeckSuggestion", "Suggestion")
@@ -267,6 +345,8 @@ namespace TopDeck.Api.Migrations
 
             modelBuilder.Entity("TopDeck.Api.Entities.Deck", b =>
                 {
+                    b.Navigation("Dislikes");
+
                     b.Navigation("Likes");
 
                     b.Navigation("Suggestions");
@@ -274,6 +354,8 @@ namespace TopDeck.Api.Migrations
 
             modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestion", b =>
                 {
+                    b.Navigation("Dislikes");
+
                     b.Navigation("Likes");
                 });
 #pragma warning restore 612, 618

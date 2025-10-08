@@ -38,6 +38,7 @@ public static class DeckMappings
             entity.CardIds.ToList(),
             entity.EnergyIds.ToList(),
             new List<DeckLikeOutputDTO>(),
+            new List<DeckDislikeOutputDTO>(),
             new List<DeckSuggestionOutputDTO>(),
             entity.CreatedAt,
             entity.UpdatedAt
@@ -57,6 +58,10 @@ public static class DeckMappings
             entity.CardIds.ToList(),
             entity.EnergyIds.ToList(),
             entity.Likes.Select(l => new DeckLikeOutputDTO(
+                shallowDeck,
+                l.User is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : l.User.ToOutput()
+            )).ToList(),
+            entity.Dislikes.Select(l => new DeckDislikeOutputDTO(
                 shallowDeck,
                 l.User is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : l.User.ToOutput()
             )).ToList(),

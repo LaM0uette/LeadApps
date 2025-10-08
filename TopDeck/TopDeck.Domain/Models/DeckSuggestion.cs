@@ -9,6 +9,7 @@ public record DeckSuggestion(
     ICollection<int> AddedEnergyIds,
     ICollection<int> RemovedEnergyIds,
     ICollection<DeckSuggestionLike> Likes,
+    ICollection<DeckSuggestionDislike> Dislikes,
     DateTime CreatedAt,
     DateTime UpdatedAt
 );

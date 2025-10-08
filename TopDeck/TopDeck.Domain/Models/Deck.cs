@@ -8,6 +8,7 @@ public record Deck(
     ICollection<int> CardIds,
     ICollection<int> EnergyIds,
     ICollection<DeckLike> Likes,
+    ICollection<DeckDislike> Dislikes,
     ICollection<DeckSuggestion> Suggestions,
     DateTime CreatedAt,
     DateTime UpdatedAt

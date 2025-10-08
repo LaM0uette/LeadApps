@@ -36,6 +36,7 @@ public static class DtoToDomainMappings
             dto.CardIds?.ToList() ?? new List<int>(),
             dto.EnergyIds?.ToList() ?? new List<int>(),
             new List<DeckLike>(),
+            new List<DeckDislike>(),
             new List<DeckSuggestion>(),
             dto.CreatedAt,
             dto.UpdatedAt
@@ -45,12 +46,16 @@ public static class DtoToDomainMappings
         var likes = (dto.Likes ?? Array.Empty<DeckLikeOutputDTO>())
             .Select(l => l.ToDomain(baseDeck))
             .ToList();
+        
+        var dislikes = (dto.Dislikes ?? Array.Empty<DeckDislikeOutputDTO>())
+            .Select(d => d.ToDomain(baseDeck))
+            .ToList();
 
         var suggestions = (dto.Suggestions ?? Array.Empty<DeckSuggestionOutputDTO>())
             .Select(s => s.ToDomain(baseDeck))
             .ToList();
 
-        return baseDeck with { Likes = likes, Suggestions = suggestions };
+        return baseDeck with { Likes = likes, Dislikes = dislikes, Suggestions = suggestions };
     }
 
     // DECK LIKE
@@ -78,6 +83,17 @@ public static class DtoToDomainMappings
             dto.User.ToDomain()
         );
     }
+    
+    // DECK DISLIKE
+    public static DeckDislike ToDomain(this DeckDislikeOutputDTO dto, Deck deckContext)
+    {
+        if (dto is null) throw new ArgumentNullException(nameof(dto));
+        if (deckContext is null) throw new ArgumentNullException(nameof(deckContext));
+        return new DeckDislike(
+            deckContext,
+            dto.User.ToDomain()
+        );
+    }
 
     // DECK SUGGESTION
     /// <summary>
@@ -96,6 +112,7 @@ public static class DtoToDomainMappings
             dto.AddedEnergyIds?.ToList() ?? new List<int>(),
             dto.RemovedEnergyIds?.ToList() ?? new List<int>(),
             new List<DeckSuggestionLike>(),
+            new List<DeckSuggestionDislike>(),
             dto.CreatedAt,
             dto.UpdatedAt
         );
@@ -103,8 +120,12 @@ public static class DtoToDomainMappings
         var likes = (dto.Likes ?? Array.Empty<DeckSuggestionLikeOutputDTO>())
             .Select(l => l.ToDomain(suggestion))
             .ToList();
+        
+        var dislikes = (dto.Dislikes ?? Array.Empty<DeckSuggestionDislikeOutputDTO>())
+            .Select(d => d.ToDomain(suggestion))
+            .ToList();
 
-        return suggestion with { Likes = likes };
+        return suggestion with { Likes = likes, Dislikes = dislikes };
     }
 
     /// <summary>
@@ -123,6 +144,7 @@ public static class DtoToDomainMappings
             dto.AddedEnergyIds?.ToList() ?? new List<int>(),
             dto.RemovedEnergyIds?.ToList() ?? new List<int>(),
             new List<DeckSuggestionLike>(),
+            new List<DeckSuggestionDislike>(),
             dto.CreatedAt,
             dto.UpdatedAt
         );
@@ -130,8 +152,12 @@ public static class DtoToDomainMappings
         var likes = (dto.Likes ?? Array.Empty<DeckSuggestionLikeOutputDTO>())
             .Select(l => l.ToDomain(suggestion))
             .ToList();
+        
+        var dislikes = (dto.Dislikes ?? Array.Empty<DeckSuggestionDislikeOutputDTO>())
+            .Select(d => d.ToDomain(suggestion))
+            .ToList();
 
-        return suggestion with { Likes = likes };
+        return suggestion with { Likes = likes, Dislikes = dislikes };
     }
 
     // DECK SUGGESTION LIKE
@@ -155,6 +181,16 @@ public static class DtoToDomainMappings
         if (dto is null) throw new ArgumentNullException(nameof(dto));
         if (suggestionContext is null) throw new ArgumentNullException(nameof(suggestionContext));
         return new DeckSuggestionLike(
+            suggestionContext,
+            dto.User.ToDomain()
+        );
+    }
+    
+    public static DeckSuggestionDislike ToDomain(this DeckSuggestionDislikeOutputDTO dto, DeckSuggestion suggestionContext)
+    {
+        if (dto is null) throw new ArgumentNullException(nameof(dto));
+        if (suggestionContext is null) throw new ArgumentNullException(nameof(suggestionContext));
+        return new DeckSuggestionDislike(
             suggestionContext,
             dto.User.ToDomain()
         );

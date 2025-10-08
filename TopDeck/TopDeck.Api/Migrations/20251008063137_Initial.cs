@@ -25,7 +25,6 @@ namespace TopDeck.Api.Migrations
                     OAuthProvider = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     OAuthId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     UserName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'")
                 },
                 constraints: table =>
@@ -58,6 +57,34 @@ namespace TopDeck.Api.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DeckDislikes",
+                schema: "data",
+                columns: table => new
+                {
+                    DeckId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeckDislikes", x => new { x.DeckId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_DeckDislikes_Decks_DeckId",
+                        column: x => x.DeckId,
+                        principalSchema: "data",
+                        principalTable: "Decks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DeckDislikes_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "data",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -124,6 +151,34 @@ namespace TopDeck.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DeckSuggestionDislikes",
+                schema: "data",
+                columns: table => new
+                {
+                    DeckSuggestionId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeckSuggestionDislikes", x => new { x.DeckSuggestionId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_DeckSuggestionDislikes_DeckSuggestions_DeckSuggestionId",
+                        column: x => x.DeckSuggestionId,
+                        principalSchema: "data",
+                        principalTable: "DeckSuggestions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DeckSuggestionDislikes_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "data",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DeckSuggestionLikes",
                 schema: "data",
                 columns: table => new
@@ -152,6 +207,12 @@ namespace TopDeck.Api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_DeckDislikes_UserId",
+                schema: "data",
+                table: "DeckDislikes",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DeckLikes_UserId",
                 schema: "data",
                 table: "DeckLikes",
@@ -169,6 +230,12 @@ namespace TopDeck.Api.Migrations
                 schema: "data",
                 table: "Decks",
                 column: "CreatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeckSuggestionDislikes_UserId",
+                schema: "data",
+                table: "DeckSuggestionDislikes",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeckSuggestionLikes_UserId",
@@ -200,7 +267,15 @@ namespace TopDeck.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "DeckDislikes",
+                schema: "data");
+
+            migrationBuilder.DropTable(
                 name: "DeckLikes",
+                schema: "data");
+
+            migrationBuilder.DropTable(
+                name: "DeckSuggestionDislikes",
                 schema: "data");
 
             migrationBuilder.DropTable(

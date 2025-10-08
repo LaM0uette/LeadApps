@@ -37,6 +37,16 @@ public class ApplicationDbContext : DbContext
         get { return Set<DeckSuggestionLike>(); }
     }
 
+    public DbSet<DeckDislike> DeckDislikes
+    {
+        get { return Set<DeckDislike>(); }
+    }
+
+    public DbSet<DeckSuggestionDislike> DeckSuggestionDislikes
+    {
+        get { return Set<DeckSuggestionDislike>(); }
+    }
+
     #endregion
 
     #region DbContext
@@ -74,6 +84,12 @@ public class ApplicationDbContext : DbContext
 
             // Likes handled via DeckLike join entity
             entity.HasMany(d => d.Likes)
+                .WithOne(l => l.Deck)
+                .HasForeignKey(l => l.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Dislikes handled via DeckDislike join entity
+            entity.HasMany(d => d.Dislikes)
                 .WithOne(l => l.Deck)
                 .HasForeignKey(l => l.DeckId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -142,6 +158,38 @@ public class ApplicationDbContext : DbContext
             entity.HasKey(l => new { l.DeckSuggestionId, l.UserId });
             entity.HasOne(l => l.Suggestion)
                 .WithMany(s => s.Likes)
+                .HasForeignKey(l => l.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(l => l.CreatedAt)
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+        });
+
+        // DeckDislike
+        modelBuilder.Entity<DeckDislike>(entity =>
+        {
+            entity.HasKey(l => new { l.DeckId, l.UserId });
+            entity.HasOne(l => l.Deck)
+                .WithMany(d => d.Dislikes)
+                .HasForeignKey(l => l.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(l => l.CreatedAt)
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+        });
+
+        // DeckSuggestionDislike
+        modelBuilder.Entity<DeckSuggestionDislike>(entity =>
+        {
+            entity.HasKey(l => new { l.DeckSuggestionId, l.UserId });
+            entity.HasOne(l => l.Suggestion)
+                .WithMany(s => s.Dislikes)
                 .HasForeignKey(l => l.DeckSuggestionId)
                 .OnDelete(DeleteBehavior.Cascade);
             entity.HasOne(l => l.User)

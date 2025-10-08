@@ -19,6 +19,7 @@ public class Deck
     public ICollection<int> EnergyIds { get; set; } = [];
     
     public ICollection<DeckLike> Likes { get; set; } = [];
+    public ICollection<DeckDislike> Dislikes { get; set; } = [];
     
     public ICollection<DeckSuggestion> Suggestions { get; set; } = [];
     
