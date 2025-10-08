@@ -6,6 +6,10 @@
     
     <img class="like-icon" src="img/@(IsLiked ? "like-icon.svg" : "like-empty-icon.svg")" alt="like"/>
     
-    <span class="like-count">@Likes.ToString("N0")</span>
+    <span class="like-count">@LikeCountFormatted</span>
+    
+    <div  class="separator"></div>
+    
+    <img class="dislike-icon" src="img/@(IsDisliked ? "like-icon.svg" : "like-empty-icon.svg")" alt="dislike"/>
     
 </div>

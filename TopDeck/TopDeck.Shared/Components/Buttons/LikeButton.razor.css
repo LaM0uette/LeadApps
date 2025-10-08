@@ -1,5 +1,5 @@
 ﻿.like-button {
-    width: 100px;
+    width: 110px;
     height: 33px;
     
     background: var(--color-bg);
@@ -8,41 +8,64 @@
     border: none;
     border-radius: var(--radius-m);
     
-    padding: 4px 8px;
+    padding: 4px 6px;
     box-sizing: border-box;
     
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     
     cursor: var(--cursor-pointer);
     user-select: none;
     
-
-    &:hover {
-        opacity: 0.8;
-        box-shadow: none;
-    }
-
-    &:active {
-        opacity: 0.6;
-    }
     
     & > .like-icon {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
+
+        
+        &:hover {
+            opacity: 0.8;
+            scale: 1.1;
+        }
+
+        &:active {
+            opacity: 0.6;
+        }
     }
     
     & > .like-count {
-        font-family: var(--font-bold), sans-serif;
-        font-size: 1em;
-        
-        color: var(--color-text);
+        font-family: var(--font-extra-bold), sans-serif;
+        font-size: 0.9em;
 
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space : nowrap;
+        flex-grow: 1;
+        text-align: center;
+        
+        color: var(--color-secondary);
+    }
+
+    & > .separator {
+        border-left: 2px solid var(--color-secondary);
+        height: 75%;
+        margin: 0 4px 0 2px;
+    }
+
+    & > .dislike-icon {
+        width: 22px;
+        height: 22px;
+
+        transform: rotate(180deg);
+
+
+        &:hover {
+            opacity: 0.8;
+            scale: 1.1;
+        }
+
+        &:active {
+            opacity: 0.6;
+        }
     }
 }
