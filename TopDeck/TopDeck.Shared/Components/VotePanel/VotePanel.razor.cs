@@ -4,7 +4,7 @@ using TopDeck.Shared.UIStore.States.AuthenticatedUser;
 
 namespace TopDeck.Shared.Components;
 
-public class LikeButtonBase : ComponentBase
+public class VotePanelBase : ComponentBase
 {
     #region Statements
 
@@ -18,24 +18,34 @@ public class LikeButtonBase : ComponentBase
     
     [Inject] private UIStore.UIStore _uiStore { get; set; } = null!;
 
+    protected override void OnAfterRender(bool firstRender)
+        {
+            if (!firstRender) 
+                return;
+            
+            AuthenticatedUserState currentUserState = _uiStore.GetState<AuthenticatedUserState>();
+            
+            IsLiked = UserLikes.Any(u => u.OAuthId == currentUserState.OAuthId);
+            IsDisliked = UserDislikes.Any(u => u.OAuthId == currentUserState.OAuthId);
+            
+            if (IsLiked && IsDisliked)
+                throw new InvalidOperationException("A user cannot both like and dislike at the same time."); // TODO: Log this instead of throwing
+                
+            StateHasChanged();
+        }
+    
     #endregion
 
     #region Methods
-    
-    protected override void OnAfterRender(bool firstRender)
+
+    protected void OnLikeClicked()
     {
-        if (!firstRender) 
-            return;
         
-        AuthenticatedUserState currentUserState = _uiStore.GetState<AuthenticatedUserState>();
+    }
+    
+    protected void OnDislikeClicked()
+    {
         
-        IsLiked = UserLikes.Any(u => u.OAuthId == currentUserState.OAuthId);
-        IsDisliked = UserDislikes.Any(u => u.OAuthId == currentUserState.OAuthId);
-        
-        if (IsLiked && IsDisliked)
-            throw new InvalidOperationException("A user cannot both like and dislike at the same time."); // TODO: Log this instead of throwing
-            
-        StateHasChanged();
     }
     
     

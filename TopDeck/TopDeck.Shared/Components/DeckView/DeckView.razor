@@ -6,7 +6,7 @@
     
     <div class="header">
         
-        <LikeButton UserLikes="Deck.Likes.Select(l => l.User).ToList()"
+        <VotePanel UserLikes="Deck.Likes.Select(l => l.User).ToList()"
                     UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"/>
         
         <span class="code" @onclick="CopyCode">@DeckCode</span>

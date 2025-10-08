@@ -1,4 +1,4 @@
-﻿.like-button {
+﻿.vote-panel {
     width: 110px;
     height: 33px;
     
@@ -16,15 +16,24 @@
     justify-content: space-between;
     align-items: center;
     gap: 4px;
-    
-    cursor: var(--cursor-pointer);
+
+    cursor: var(--cursor-default);
     user-select: none;
     
     
-    & > .like-icon {
+    & > button {
         width: 22px;
         height: 22px;
-
+        
+        border: none;
+        background: transparent;
+        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        cursor: var(--cursor-pointer);
+        
         
         &:hover {
             opacity: 0.8;
@@ -34,6 +43,15 @@
         &:active {
             opacity: 0.6;
         }
+
+        & > img {
+            width: 22px;
+            height: 22px;
+        }
+    }
+
+    & > .dislike-button {
+        transform: rotate(180deg);
     }
     
     & > .like-count {
@@ -50,22 +68,5 @@
         border-left: 2px solid var(--color-secondary);
         height: 75%;
         margin: 0 4px 0 2px;
-    }
-
-    & > .dislike-icon {
-        width: 22px;
-        height: 22px;
-
-        transform: rotate(180deg);
-
-
-        &:hover {
-            opacity: 0.8;
-            scale: 1.1;
-        }
-
-        &:active {
-            opacity: 0.6;
-        }
     }
 }
