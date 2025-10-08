@@ -9,4 +9,6 @@ public interface IDeckRepository
     Task<Deck> AddAsync(Deck deck, CancellationToken ct = default);
     Task<Deck> UpdateAsync(Deck deck, CancellationToken ct = default);
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);
+    
+    Task<bool> ExistsByCodeAsync(string code, CancellationToken ct = default);
 }

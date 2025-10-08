@@ -52,6 +52,12 @@ public class DeckRepository : IDeckRepository
         await _db.SaveChangesAsync(ct);
         return true;
     }
+    
+    
+    public async Task<bool> ExistsByCodeAsync(string code, CancellationToken ct = default)
+    {
+        return await _db.Decks.AnyAsync(d => d.Code == code, ct);
+    }
 
     #endregion
 

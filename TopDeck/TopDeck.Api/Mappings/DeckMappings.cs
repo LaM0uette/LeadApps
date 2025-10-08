@@ -12,7 +12,7 @@ public static class DeckMappings
             CreatorId = dto.CreatorId,
             Creator = null!, // set by EF from CreatorId
             Name = dto.Name,
-            Code = dto.Code,
+            Code = string.Empty, // TODO: change this
             CardIds = dto.CardIds?.ToList() ?? [],
             EnergyIds = dto.EnergyIds?.ToList() ?? []
         };
@@ -22,7 +22,7 @@ public static class DeckMappings
     {
         entity.CreatorId = dto.CreatorId;
         entity.Name = dto.Name;
-        entity.Code = dto.Code;
+        entity.Code = string.Empty; // TODO: change this
         entity.CardIds = dto.CardIds?.ToList() ?? [];
         entity.EnergyIds = dto.EnergyIds?.ToList() ?? [];
     }

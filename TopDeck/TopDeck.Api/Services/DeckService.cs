@@ -1,3 +1,4 @@
+using Helpers.Generators;
 using TopDeck.Api.Entities;
 using TopDeck.Api.Mappings;
 using TopDeck.Api.Repositories.Interfaces;
@@ -42,6 +43,11 @@ public class DeckService : IDeckService
         if (creator is null) throw new InvalidOperationException($"Creator with id {dto.CreatorId} not found");
 
         Deck entity = dto.ToEntity();
+        entity.Code = await GenerateUniqueCodeAsync(ct);
+        
+        if (string.IsNullOrEmpty(entity.Code))
+            throw new InvalidOperationException("Failed to generate unique deck code");
+        
         Deck created = await _decks.AddAsync(entity, ct);
 
         // Reload with relations for output
@@ -70,6 +76,22 @@ public class DeckService : IDeckService
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
     {
         return await _decks.DeleteAsync(id, ct);
+    }
+
+    #endregion
+
+    #region Methods
+
+    private async Task<string> GenerateUniqueCodeAsync(CancellationToken ct = default)
+    {
+        string code;
+        do
+        {
+            code = RandomStringGeneratorHelper.Generate(6);
+        }
+        while (await _decks.ExistsByCodeAsync(code, ct));
+
+        return code;
     }
 
     #endregion
