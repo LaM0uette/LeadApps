@@ -6,91 +6,95 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Security.Claims;
-using AuthenticationStateSyncer;
+using TopDeck.Contracts.AuthenticationStateSyncer;
 
 public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingServerAuthenticationStateProvider
 {
-  private readonly IServiceScopeFactory _scopeFactory;
-  private readonly PersistentComponentState _state;
-  private readonly IdentityOptions _options;
+    #region Statements
+    
+    protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(30);
 
-  private readonly PersistingComponentStateSubscription _subscription;
+    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly PersistentComponentState _state;
+    private readonly IdentityOptions _options;
 
-  private Task<AuthenticationState>? _authenticationStateTask;
+    private readonly PersistingComponentStateSubscription _subscription;
 
-  public PersistingRevalidatingAuthenticationStateProvider(
-      ILoggerFactory loggerFactory,
-      IServiceScopeFactory scopeFactory,
-      PersistentComponentState state,
-      IOptions<IdentityOptions> options)
-      : base(loggerFactory)
-  {
-    _scopeFactory = scopeFactory;
-    _state = state;
-    _options = options.Value;
+    private Task<AuthenticationState>? _authenticationStateTask;
 
-    AuthenticationStateChanged += OnAuthenticationStateChanged;
-    _subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
-  }
-
-  protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(30);
-
-  protected override async Task<bool> ValidateAuthenticationStateAsync(
-      AuthenticationState authenticationState, CancellationToken cancellationToken)
-  {
-    // Get the user manager from a new scope to ensure it fetches fresh data
-    await using var scope = _scopeFactory.CreateAsyncScope();
-    return ValidateSecurityStampAsync(authenticationState.User);
-  }
-
-  private bool ValidateSecurityStampAsync(ClaimsPrincipal principal)
-  {
-    if (principal.Identity?.IsAuthenticated is false)
+    public PersistingRevalidatingAuthenticationStateProvider(
+        ILoggerFactory loggerFactory,
+        IServiceScopeFactory scopeFactory,
+        PersistentComponentState state,
+        IOptions<IdentityOptions> options) : base(loggerFactory)
     {
-      return false;
+        _scopeFactory = scopeFactory;
+        _state = state;
+        _options = options.Value;
+
+        AuthenticationStateChanged += OnAuthenticationStateChanged;
+        _subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
     }
 
-    return true;
-  }
+    #endregion
 
-  private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask)
-  {
-    _authenticationStateTask = authenticationStateTask;
-  }
+    #region RevalidatingServerAuthenticationStateProvider
 
-  private async Task OnPersistingAsync()
-  {
-    if (_authenticationStateTask is null)
+    protected override async Task<bool> ValidateAuthenticationStateAsync(AuthenticationState authenticationState, CancellationToken cancellationToken)
     {
-      throw new UnreachableException($"Authentication state not set in {nameof(RevalidatingServerAuthenticationStateProvider)}.{nameof(OnPersistingAsync)}().");
+        // Get the user manager from a new scope to ensure it fetches fresh data
+        await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+        return ValidateSecurityStampAsync(authenticationState.User);
     }
 
-    var authenticationState = await _authenticationStateTask;
-    var principal = authenticationState.User;
+    #endregion
 
-    if (principal.Identity?.IsAuthenticated == true)
+    #region Methods
+    
+    private bool ValidateSecurityStampAsync(ClaimsPrincipal principal)
     {
-      var userId = principal.FindFirst(_options.ClaimsIdentity.UserIdClaimType)?.Value;
-      var name = principal.FindFirst("name")?.Value;
-      var email = principal.FindFirst("email")?.Value;
+        return principal.Identity?.IsAuthenticated is not false;
+    }
 
-      if (userId != null && name != null)
-      {
-        _state.PersistAsJson(nameof(UserInfo), new UserInfo
+    private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask)
+    {
+        _authenticationStateTask = authenticationStateTask;
+    }
+
+    private async Task OnPersistingAsync()
+    {
+        if (_authenticationStateTask is null)
         {
-          UserId = userId,
-          Name = name,
-          Email = email
-        });
-      }
+            throw new UnreachableException($"Authentication state not set in {nameof(RevalidatingServerAuthenticationStateProvider)}.{nameof(OnPersistingAsync)}().");
+        }
+
+        AuthenticationState authenticationState = await _authenticationStateTask;
+        ClaimsPrincipal principal = authenticationState.User;
+
+        if (principal.Identity?.IsAuthenticated == true)
+        {
+            string? sub = principal.FindFirst(_options.ClaimsIdentity.UserIdClaimType)?.Value;
+            string? name = principal.FindFirst("name")?.Value;
+            string email = principal.FindFirst("email")?.Value ?? string.Empty;
+
+            if (sub != null && name != null)
+            {
+                _state.PersistAsJson(nameof(OAuthUserInfo), new OAuthUserInfo(sub, name, email));
+            }
+        }
     }
-  }
 
-  protected override void Dispose(bool disposing)
-  {
-    _subscription.Dispose();
-    AuthenticationStateChanged -= OnAuthenticationStateChanged;
-    base.Dispose(disposing);
-  }
+    #endregion
+
+    #region IDisposable
+
+    protected override void Dispose(bool disposing)
+    {
+        _subscription.Dispose();
+        AuthenticationStateChanged -= OnAuthenticationStateChanged;
+        
+        base.Dispose(disposing);
+    }
+
+    #endregion
 }
-

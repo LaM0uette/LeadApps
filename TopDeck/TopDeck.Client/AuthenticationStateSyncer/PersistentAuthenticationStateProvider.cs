@@ -1,26 +1,32 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
+using TopDeck.Contracts.AuthenticationStateSyncer;
 
 public class PersistentAuthenticationStateProvider(PersistentComponentState persistentState) : AuthenticationStateProvider
 {
-  private static readonly Task<AuthenticationState> _unauthenticatedTask =
-      Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
+    #region Statements
 
-  public override Task<AuthenticationState> GetAuthenticationStateAsync()
-  {
-    if (!persistentState.TryTakeFromJson<UserInfo>(nameof(UserInfo), out var userInfo) || userInfo is null)
+    private static readonly Task<AuthenticationState> _unauthenticatedTask = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
+
+    #endregion
+
+    #region AuthenticationStateProvider
+
+    public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-      return _unauthenticatedTask;
+        if (!persistentState.TryTakeFromJson(nameof(OAuthUserInfo), out OAuthUserInfo? userInfo) || userInfo is null)
+            return _unauthenticatedTask;
+
+        Claim[] claims =
+        [
+            new(ClaimTypes.NameIdentifier, userInfo.Id),
+            new(ClaimTypes.Name, userInfo.Name),
+            new(ClaimTypes.Email, userInfo.Email)
+        ];
+
+        return Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationType: nameof(PersistentAuthenticationStateProvider)))));
     }
 
-    Claim[] claims = [
-        new Claim(ClaimTypes.NameIdentifier, userInfo.UserId),
-        new Claim(ClaimTypes.Name, userInfo.Name ?? string.Empty),
-        new Claim(ClaimTypes.Email, userInfo.Email ?? string.Empty)];
-
-    return Task.FromResult(
-        new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims,
-            authenticationType: nameof(PersistentAuthenticationStateProvider)))));
-  }
+    #endregion
 }
