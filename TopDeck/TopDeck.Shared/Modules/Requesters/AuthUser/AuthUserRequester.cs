@@ -25,14 +25,8 @@ public class AuthUserRequester : IAuthUserRequester
 
     #region Methods
     
-    public async Task<User?> GetAuthenticatedUserAsync()
+    public async Task<User?> GetAuthenticatedUserAsync(ClaimsPrincipal principal)
     {
-        AuthenticationState state = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        ClaimsPrincipal principal = state.User;
-        
-        if (!(principal.Identity?.IsAuthenticated ?? false)) 
-            return null;
-
         string? sub = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
         if (!Auth0SubHelper.TryParse(sub, out string provider, out string id)) 

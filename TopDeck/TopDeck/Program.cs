@@ -4,6 +4,7 @@ using Auth0.AspNetCore.Authentication;
 using Helpers.Auth0;
 using Localizer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Components.Authorization;
 using Requesters.AuthUser;
 using TopDeck.Components;
 using TopDeck.Contracts.DTO;
@@ -50,6 +51,7 @@ builder.Services
 
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents()
