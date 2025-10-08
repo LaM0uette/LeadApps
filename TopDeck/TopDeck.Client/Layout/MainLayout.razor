@@ -16,7 +16,14 @@
     <hr class="header-separator">
     
     <main>
-        @Body
+        @if (!IsReady)
+        {
+            <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p>
+        }
+        else
+        {
+            @Body
+        }
     </main>
 
     @*<footer>

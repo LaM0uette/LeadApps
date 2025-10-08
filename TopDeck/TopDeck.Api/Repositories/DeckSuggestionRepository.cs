@@ -66,6 +66,8 @@ public class DeckSuggestionRepository : IDeckSuggestionRepository
                     .ThenInclude(d => d.Creator)
                 .Include(s => s.Likes)
                     .ThenInclude(l => l.User)
+                .Include(s => s.Dislikes)
+                    .ThenInclude(d => d.User)
             : _db.DeckSuggestions.AsQueryable();
     }
 

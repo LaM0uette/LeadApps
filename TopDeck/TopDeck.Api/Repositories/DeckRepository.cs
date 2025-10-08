@@ -71,8 +71,13 @@ public class DeckRepository : IDeckRepository
                 .Include(d => d.Suggestions)
                     .ThenInclude(s => s.Likes)
                         .ThenInclude(l => l.User)
+                .Include(d => d.Suggestions)
+                    .ThenInclude(s => s.Dislikes)
+                        .ThenInclude(dl => dl.User)
                 .Include(d => d.Likes)
                     .ThenInclude(l => l.User)
+                .Include(d => d.Dislikes)
+                    .ThenInclude(dl => dl.User)
                 .AsQueryable()
             : _db.Decks.AsQueryable();
     }

@@ -8,5 +8,6 @@
   "component.button.login.text": "Se connecter",
   "component.button.logout.text": "Se déconnecter",
   "component.button.back.text": "Retour",
-  "feedback.text.copied": "Copié"
+  "feedback.text.copied": "Copié",
+  "feedback.text.loading": "Chargement..."
 }

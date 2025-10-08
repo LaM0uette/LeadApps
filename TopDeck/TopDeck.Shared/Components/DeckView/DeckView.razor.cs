@@ -18,6 +18,8 @@ public class DeckViewBase : LocalizedComponentBase
     protected override void OnParametersSet()
     {
         DeckCode = Deck.Code;
+        Console.WriteLine(Deck.Likes.Count);
+        Console.WriteLine(Deck.Dislikes.Count);
     }
 
     #endregion
