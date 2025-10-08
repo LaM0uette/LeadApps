@@ -28,7 +28,6 @@ public class HomeBase : LocalizedComponentBase
             return;
 
         Cards = await _cardService.GetAllAsync();
-        Console.WriteLine(Cards.Count);
     }
 
     #endregion
