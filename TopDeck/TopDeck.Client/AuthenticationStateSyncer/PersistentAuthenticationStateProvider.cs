@@ -21,8 +21,7 @@ public class PersistentAuthenticationStateProvider(PersistentComponentState pers
         Claim[] claims =
         [
             new(ClaimTypes.NameIdentifier, userInfo.Id),
-            new(ClaimTypes.Name, userInfo.Name),
-            new(ClaimTypes.Email, userInfo.Email)
+            new(ClaimTypes.Name, userInfo.Name)
         ];
 
         return Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationType: nameof(PersistentAuthenticationStateProvider)))));

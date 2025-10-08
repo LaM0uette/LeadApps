@@ -34,16 +34,25 @@ builder.Services
                 if (!Auth0SubHelper.TryParse(sub, out string provider, out string authId)) 
                     return;
 
-                string? fullName = user?.FindFirstValue(ClaimTypes.Name);
-                string? given = user?.FindFirstValue(ClaimTypes.GivenName);
-                string? surname = user?.FindFirstValue(ClaimTypes.Surname);
-                string email = user?.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
-                string userName = !string.IsNullOrWhiteSpace(fullName) ? fullName : $"{given} {surname}".Trim();
+                string? email =
+                    user?.FindFirstValue(ClaimTypes.Email) ??
+                    user?.Claims.FirstOrDefault(c => c.Type == "email")?.Value ??
+                    (user?.FindFirstValue(ClaimTypes.Name)?.Contains('@') == true ? user.FindFirstValue(ClaimTypes.Name) : null);
+
+                string fullName =
+                    user?.FindFirstValue(ClaimTypes.Name) ??
+                    $"{user?.FindFirstValue(ClaimTypes.GivenName)} {user?.FindFirstValue(ClaimTypes.Surname)}".Trim();
+
+                string? nickname = user?.Claims.FirstOrDefault(c => c.Type == "nickname")?.Value;
+
+                string userName = !string.IsNullOrWhiteSpace(nickname)
+                    ? nickname
+                    : !string.IsNullOrWhiteSpace(fullName) ? fullName : email ?? "unknown";
 
                 IHttpClientFactory factory = context.HttpContext.RequestServices.GetRequiredService<IHttpClientFactory>();
                 HttpClient http = factory.CreateClient("Api");
 
-                UserInputDTO dto = new(provider, authId, userName, email);
+                UserInputDTO dto = new(provider, authId, userName);
                 await http.PostAsJsonAsync("api/users", dto, context.HttpContext.RequestAborted);
             }
         };

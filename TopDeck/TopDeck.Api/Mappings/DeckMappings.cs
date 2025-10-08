@@ -32,7 +32,7 @@ public static class DeckMappings
     {
         return new DeckOutputDTO(
             entity.Id,
-            entity.Creator is null ? new UserOutputDTO(0, "", "", "", "", DateTime.MinValue) : entity.Creator.ToOutput(),
+            entity.Creator is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : entity.Creator.ToOutput(),
             entity.Name,
             entity.Code,
             entity.CardIds.ToList(),
@@ -51,14 +51,14 @@ public static class DeckMappings
 
         return new DeckOutputDTO(
             entity.Id,
-            entity.Creator is null ? new UserOutputDTO(0, "", "", "", "", DateTime.MinValue) : entity.Creator.ToOutput(),
+            entity.Creator is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : entity.Creator.ToOutput(),
             entity.Name,
             entity.Code,
             entity.CardIds.ToList(),
             entity.EnergyIds.ToList(),
             entity.Likes.Select(l => new DeckLikeOutputDTO(
                 shallowDeck,
-                l.User is null ? new UserOutputDTO(0, "", "", "", "", DateTime.MinValue) : l.User.ToOutput()
+                l.User is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : l.User.ToOutput()
             )).ToList(),
             entity.Suggestions.Select(s => s.ToOutput()).ToList(),
             entity.CreatedAt,

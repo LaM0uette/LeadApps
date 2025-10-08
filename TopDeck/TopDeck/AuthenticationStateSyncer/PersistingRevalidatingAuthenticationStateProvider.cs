@@ -75,11 +75,10 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         {
             string? sub = principal.FindFirst(_options.ClaimsIdentity.UserIdClaimType)?.Value;
             string? name = principal.FindFirst("name")?.Value;
-            string email = principal.FindFirst("email")?.Value ?? string.Empty;
 
             if (sub != null && name != null)
             {
-                _state.PersistAsJson(nameof(OAuthUserInfo), new OAuthUserInfo(sub, name, email));
+                _state.PersistAsJson(nameof(OAuthUserInfo), new OAuthUserInfo(sub, name));
             }
         }
     }

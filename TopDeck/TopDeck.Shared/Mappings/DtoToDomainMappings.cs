@@ -18,7 +18,6 @@ public static class DtoToDomainMappings
             dto.OAuthProvider,
             dto.OAuthId,
             dto.UserName,
-            dto.Email,
             dto.CreatedAt
         );
     }

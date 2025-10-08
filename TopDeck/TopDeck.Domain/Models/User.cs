@@ -5,6 +5,5 @@ public record User(
     string OAuthProvider,
     string OAuthId,
     string UserName,
-    string Email,
     DateTime CreatedAt
 );

@@ -15,8 +15,5 @@ public class User
     [MaxLength(100)]
     public required string UserName { get; set; }
     
-    [MaxLength(200)]
-    public required string Email { get; set; }
-    
     public DateTime CreatedAt { get; set; }
 }

@@ -53,7 +53,6 @@ public class ApplicationDbContext : DbContext
             entity.Property(u => u.OAuthProvider).IsRequired();
             entity.Property(u => u.OAuthId).IsRequired();
             entity.Property(u => u.UserName).IsRequired();
-            entity.Property(u => u.Email).IsRequired();
 
             entity.HasIndex(u => new { u.OAuthProvider, u.OAuthId }).IsUnique();
 
