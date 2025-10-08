@@ -2,6 +2,7 @@
 
 namespace TopDeck.Shared.Services;
 
+// TODO: Need to cleen/refactor this service and the related components
 public class DeckReactionService : ApiService, IDeckReactionService
 {
     private const string LikesRoute = "/api/deck-likes";
