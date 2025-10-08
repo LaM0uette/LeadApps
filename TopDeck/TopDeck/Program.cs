@@ -6,6 +6,8 @@ using Localizer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
 using Requesters.AuthUser;
+using TCGPocketDex.SDK.Http;
+using TCGPocketDex.SDK.Services;
 using TopDeck.Components;
 using TopDeck.Contracts.DTO;
 using TopDeck.Endpoints;
@@ -73,6 +75,9 @@ builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 builder.Services.AddSingleton<IDeckService, FakeDeckService>();
 builder.Services.AddScoped<IUserService, FakeUserService>();
 builder.Services.AddScoped<IAuthUserRequester, FakeAuthUserRequester>();
+
+builder.Services.AddScoped<IApiClient, ApiClient>();
+builder.Services.AddScoped<ICardService, CardService>(); // TODO: Replace with FakeCardService if needed
 
 string[] supportedCultures = ["en", "fr"];
 builder.Services.Configure<RequestLocalizationOptions>(options =>

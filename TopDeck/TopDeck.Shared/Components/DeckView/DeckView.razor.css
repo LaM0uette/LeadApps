@@ -60,6 +60,33 @@
         }
     }
 
+    & > .content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        
+        padding: 8px;
+        box-sizing: border-box;
+        
+        user-select: none;
+
+
+        & > .cards {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+
+
+            & > img:nth-child(2) {
+                scale: 0.8;
+            }
+        }
+    }
+
     & > .footer {
         position: absolute;
         bottom: 8px;

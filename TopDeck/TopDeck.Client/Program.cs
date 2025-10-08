@@ -2,6 +2,8 @@ using Localizer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Requesters.AuthUser;
+using TCGPocketDex.SDK.Http;
+using TCGPocketDex.SDK.Services;
 using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore;
 
@@ -22,6 +24,9 @@ builder.Services.AddScoped<IDeckService, DeckService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthUserRequester, AuthUserRequester>();
 builder.Services.AddScoped<IDeckReactionService, DeckReactionService>();
+
+builder.Services.AddScoped<IApiClient, ApiClient>();
+builder.Services.AddScoped<ICardService, CardService>();
 
 WebAssemblyHost host = builder.Build();
 
