@@ -2,4 +2,4 @@
 
 namespace TopDeck.Shared.UIStore.States.AuthenticatedUser;
 
-public record AuthenticatedUserState(string? OAuthId) : ImmutableState;
+public record AuthenticatedUserState(int Id, string? OAuthId) : ImmutableState;

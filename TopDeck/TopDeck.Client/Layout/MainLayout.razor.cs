@@ -37,8 +37,7 @@ public class MainLayoutBase : LayoutComponentBase
 
                 if (user is not null)
                 {
-                    Console.WriteLine("Dispatching SetCurrentAuthenticatedUserAction, ID: " + user.OAuthId);
-                    _uiStore.Dispatch(new SetCurrentAuthenticatedUserAction(user.OAuthId));
+                    _uiStore.Dispatch(new SetCurrentAuthenticatedUserAction(user.Id, user.OAuthId));
                     
                     IsReady = true;
                     StateHasChanged();

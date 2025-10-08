@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TopDeck.Domain.Models;
+using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore.States.AuthenticatedUser;
 
 namespace TopDeck.Shared.Components;
@@ -8,6 +9,7 @@ public class VotePanelBase : ComponentBase
 {
     #region Statements
 
+    [Parameter, EditorRequired] public required int DeckId { get; set; }
     [Parameter] public IReadOnlyCollection<User> UserLikes { get; set; } = [];
     [Parameter] public IReadOnlyCollection<User> UserDislikes { get; set; } = [];
     
@@ -17,6 +19,7 @@ public class VotePanelBase : ComponentBase
     protected bool IsDisliked;
     
     [Inject] private UIStore.UIStore _uiStore { get; set; } = null!;
+    [Inject] private IDeckReactionService _deckReactionService { get; set; } = null!;
 
     protected override void OnAfterRender(bool firstRender)
         {
@@ -38,14 +41,57 @@ public class VotePanelBase : ComponentBase
 
     #region Methods
 
-    protected void OnLikeClicked()
+    protected async Task OnLikeClicked()
     {
+        string? userOAuthId = _uiStore.GetState<AuthenticatedUserState>().OAuthId;
         
+        if (userOAuthId == null)
+            return;
+        
+        IsLiked = !IsLiked;
+        IsDisliked = false;
+
+        int userId = _uiStore.GetState<AuthenticatedUserState>().Id;
+        
+        await _deckReactionService.LikeAsync(DeckId, userId, IsLiked);
+        
+        if (IsLiked)
+        {
+            UserLikes = UserLikes.Append(new User(userId, "fakeUser", userOAuthId, "fakeUser", DateTime.Now)).ToList();
+            UserDislikes = UserDislikes.Where(u => u.Id != userId).ToList();
+        }
+        else
+        {
+            UserLikes = UserLikes.Where(u => u.Id != userId).ToList();
+        }
+        
+        StateHasChanged();
     }
     
-    protected void OnDislikeClicked()
+    protected async Task OnDislikeClicked()
     {
+        string? userOAuthId = _uiStore.GetState<AuthenticatedUserState>().OAuthId;
         
+        if (userOAuthId == null)
+            return;
+        
+        IsDisliked = !IsDisliked;
+        IsLiked = false;
+        
+        int userId = _uiStore.GetState<AuthenticatedUserState>().Id;
+        await _deckReactionService.DislikeAsync(DeckId, userId, IsDisliked);
+        
+        if (IsDisliked)
+        {
+            UserDislikes = UserDislikes.Append(new User(userId, "fakeUser", userOAuthId, "fakeUser", DateTime.Now)).ToList();
+            UserLikes = UserLikes.Where(u => u.Id != userId).ToList();
+        }
+        else
+        {
+            UserDislikes = UserDislikes.Where(u => u.Id != userId).ToList();
+        }
+        
+        StateHasChanged();
     }
     
     

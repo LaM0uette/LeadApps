@@ -7,6 +7,6 @@ public class UIStore : Store
 {
     public UIStore()
     {
-        States.Add(new AuthenticatedUserState(null));
+        States.Add(new AuthenticatedUserState(-1, null));
     }
 }

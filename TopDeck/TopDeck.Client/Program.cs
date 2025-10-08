@@ -21,6 +21,7 @@ builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 builder.Services.AddScoped<IDeckService, DeckService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthUserRequester, AuthUserRequester>();
+builder.Services.AddScoped<IDeckReactionService, DeckReactionService>();
 
 WebAssemblyHost host = builder.Build();
 
