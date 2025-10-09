@@ -13,7 +13,7 @@ public class HomeBase : LocalizedComponentBase, IAsyncDisposable
     protected List<Deck> Decks { get; set; } = new();
 
     private int _skip = 0;
-    private const int _take = 20;
+    private const int _take = 40;
     private bool _isLoading = false;
     private bool _hasMore = true;
     private bool _jsReady = false;
@@ -33,7 +33,7 @@ public class HomeBase : LocalizedComponentBase, IAsyncDisposable
         if (firstRender && _js is IJSInProcessRuntime && !_jsReady)
         {
             _objRef = DotNetObjectReference.Create(this);
-            await _js.InvokeVoidAsync("TopDeck.registerInfiniteScroll", _objRef, 300);
+            await _js.InvokeVoidAsync("TopDeck.registerInfiniteScroll", _objRef, 3000);
             _jsReady = true;
             await EnsureInitialScrollAsync();
         }
