@@ -3,6 +3,6 @@
 public record DeckInputDTO(
     int CreatorId,
     string Name,
-    ICollection<CardRefDTO> Cards,
+    ICollection<DeckCardInputDTO> Cards,
     ICollection<int> EnergyIds
 );

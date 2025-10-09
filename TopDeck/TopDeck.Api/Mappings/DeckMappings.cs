@@ -7,15 +7,17 @@ public static class DeckMappings
 {
     public static Deck ToEntity(this DeckInputDTO dto)
     {
+        var allCards = (dto.Cards ?? Array.Empty<DeckCardInputDTO>())
+            .Select(c => new DeckCard { Deck = null!, DeckId = 0, CollectionCode = c.CollectionCode, CollectionNumber = c.CollectionNumber, IsHighlighted = c.IsHighlighted })
+            .ToList();
+
         return new Deck
         {
             CreatorId = dto.CreatorId,
             Creator = null!, // set by EF from CreatorId
             Name = dto.Name,
             Code = string.Empty, // TODO: change this
-            Cards = (dto.Cards ?? Array.Empty<CardRefDTO>())
-                .Select(c => new DeckCard { Deck = null!, DeckId = 0, CollectionCode = c.CollectionCode, CollectionNumber = c.CollectionNumber })
-                .ToList(),
+            Cards = allCards,
             EnergyIds = dto.EnergyIds?.ToList() ?? []
         };
     }
@@ -25,9 +27,12 @@ public static class DeckMappings
         entity.CreatorId = dto.CreatorId;
         entity.Name = dto.Name;
         entity.Code = string.Empty; // TODO: change this
-        entity.Cards = (dto.Cards ?? Array.Empty<CardRefDTO>())
-            .Select(c => new DeckCard { Deck = entity, DeckId = entity.Id, CollectionCode = c.CollectionCode, CollectionNumber = c.CollectionNumber })
+
+        var allCards = (dto.Cards ?? Array.Empty<DeckCardInputDTO>())
+            .Select(c => new DeckCard { Deck = entity, DeckId = entity.Id, CollectionCode = c.CollectionCode, CollectionNumber = c.CollectionNumber, IsHighlighted = c.IsHighlighted })
             .ToList();
+        entity.Cards = allCards;
+
         entity.EnergyIds = dto.EnergyIds?.ToList() ?? [];
     }
 
@@ -39,7 +44,7 @@ public static class DeckMappings
             entity.Creator is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : entity.Creator.ToOutput(),
             entity.Name,
             entity.Code,
-            entity.Cards.Select(c => new CardRefDTO(c.CollectionCode, c.CollectionNumber)).ToList(),
+            entity.Cards.Select(c => new DeckCardOutputDTO(c.CollectionCode, c.CollectionNumber, c.IsHighlighted)).ToList(),
             entity.EnergyIds.ToList(),
             new List<DeckLikeOutputDTO>(),
             new List<DeckDislikeOutputDTO>(),
@@ -59,7 +64,7 @@ public static class DeckMappings
             entity.Creator is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : entity.Creator.ToOutput(),
             entity.Name,
             entity.Code,
-            entity.Cards.Select(c => new CardRefDTO(c.CollectionCode, c.CollectionNumber)).ToList(),
+            entity.Cards.Select(c => new DeckCardOutputDTO(c.CollectionCode, c.CollectionNumber, c.IsHighlighted)).ToList(),
             entity.EnergyIds.ToList(),
             entity.Likes.Select(l => new DeckLikeOutputDTO(
                 shallowDeck,

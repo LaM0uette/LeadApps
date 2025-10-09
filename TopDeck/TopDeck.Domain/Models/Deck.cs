@@ -6,6 +6,7 @@ public record Deck(
     string Name,
     string Code,
     ICollection<CardRef> Cards,
+    ICollection<CardRef> HighlightedCards,
     ICollection<int> EnergyIds,
     ICollection<DeckLike> Likes,
     ICollection<DeckDislike> Dislikes,

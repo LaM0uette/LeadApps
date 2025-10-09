@@ -42,6 +42,8 @@ public class DeckService : IDeckService
         User? creator = await _users.GetByIdAsync(dto.CreatorId, ct);
         if (creator is null) throw new InvalidOperationException($"Creator with id {dto.CreatorId} not found");
 
+        ValidateDeckLimits(dto);
+
         Deck entity = dto.ToEntity();
         entity.Code = await GenerateUniqueCodeAsync(ct);
         
@@ -66,6 +68,8 @@ public class DeckService : IDeckService
             User? creator = await _users.GetByIdAsync(dto.CreatorId, ct);
             if (creator is null) throw new InvalidOperationException($"Creator with id {dto.CreatorId} not found");
         }
+
+        ValidateDeckLimits(dto);
 
         existing.UpdateEntity(dto);
         Deck updated = await _decks.UpdateAsync(existing, ct);
@@ -92,6 +96,17 @@ public class DeckService : IDeckService
         while (await _decks.ExistsByCodeAsync(code, ct));
 
         return code;
+    }
+
+    private static void ValidateDeckLimits(DeckInputDTO dto)
+    {
+        int cardCount = dto.Cards?.Count ?? 0;
+        int highlightedCount = dto.Cards?.Count(c => c.IsHighlighted) ?? 0;
+
+        if (cardCount > 20)
+            throw new InvalidOperationException("Un deck ne peut pas contenir plus de 20 cartes.");
+        if (highlightedCount > 3)
+            throw new InvalidOperationException("Les cartes mises en avant sont limitées à 3.");
     }
 
     #endregion

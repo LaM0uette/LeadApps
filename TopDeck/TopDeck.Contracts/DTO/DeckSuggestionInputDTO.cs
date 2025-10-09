@@ -3,8 +3,8 @@
 public record DeckSuggestionInputDTO(
     int SuggestorId,
     int DeckId,
-    ICollection<CardRefDTO> AddedCards,
-    ICollection<CardRefDTO> RemovedCards,
+    ICollection<DeckCardInputDTO> AddedCards,
+    ICollection<DeckCardInputDTO> RemovedCards,
     ICollection<int> AddedEnergyIds,
     ICollection<int> RemovedEnergyIds
 );

@@ -12,55 +12,16 @@ public class ApplicationDbContext : DbContext
 
     #region DbSets
 
-    public DbSet<User> Users
-    {
-        get { return Set<User>(); }
-    }
-
-    public DbSet<Deck> Decks
-    {
-        get { return Set<Deck>(); }
-    }
-
-    public DbSet<DeckCard> DeckCards
-    {
-        get { return Set<DeckCard>(); }
-    }
-
-    public DbSet<DeckSuggestion> DeckSuggestions
-    {
-        get { return Set<DeckSuggestion>(); }
-    }
-
-    public DbSet<DeckSuggestionAddedCard> DeckSuggestionAddedCards
-    {
-        get { return Set<DeckSuggestionAddedCard>(); }
-    }
-
-    public DbSet<DeckSuggestionRemovedCard> DeckSuggestionRemovedCards
-    {
-        get { return Set<DeckSuggestionRemovedCard>(); }
-    }
-
-    public DbSet<DeckLike> DeckLikes
-    {
-        get { return Set<DeckLike>(); }
-    }
-
-    public DbSet<DeckSuggestionLike> DeckSuggestionLikes
-    {
-        get { return Set<DeckSuggestionLike>(); }
-    }
-
-    public DbSet<DeckDislike> DeckDislikes
-    {
-        get { return Set<DeckDislike>(); }
-    }
-
-    public DbSet<DeckSuggestionDislike> DeckSuggestionDislikes
-    {
-        get { return Set<DeckSuggestionDislike>(); }
-    }
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Deck> Decks => Set<Deck>();
+    public DbSet<DeckCard> DeckCards => Set<DeckCard>();
+    public DbSet<DeckSuggestion> DeckSuggestions => Set<DeckSuggestion>();
+    public DbSet<DeckSuggestionAddedCard> DeckSuggestionAddedCards => Set<DeckSuggestionAddedCard>();
+    public DbSet<DeckSuggestionRemovedCard> DeckSuggestionRemovedCards => Set<DeckSuggestionRemovedCard>();
+    public DbSet<DeckLike> DeckLikes => Set<DeckLike>();
+    public DbSet<DeckSuggestionLike> DeckSuggestionLikes => Set<DeckSuggestionLike>();
+    public DbSet<DeckDislike> DeckDislikes => Set<DeckDislike>();
+    public DbSet<DeckSuggestionDislike> DeckSuggestionDislikes => Set<DeckSuggestionDislike>();
 
     #endregion
 
