@@ -1,4 +1,5 @@
 ﻿@namespace TopDeck.Shared.Components
+@using TCGPocketDex.Domain.Models
 @inherits DeckViewBase
 
 
@@ -14,18 +15,31 @@
     
     <div class="content">
         
+        <VerticalSpacer Value="20"/>
+
         <div class="cards">
-            
-            <img src="" alt="img deck 1"/>
-            
-            <img src="" alt="img deck 2"/>
-            
+
+            @{
+                Card? card1 = Cards.FirstOrDefault();
+                Card? card2 = Cards.LastOrDefault();
+            }
+
+            @if (card1 is not null)
+            {
+                <img src="@card1.ImageUrl" alt="img deck 1"/>
+            }
+
+            @if (card2 is not null)
+            {
+                <img src="@card2.ImageUrl" alt="img deck 2"/>
+            }
+
         </div>
-        
+
         <div class="energies">
-            
+
         </div>
-        
+
     </div>
     
     <div class="footer">

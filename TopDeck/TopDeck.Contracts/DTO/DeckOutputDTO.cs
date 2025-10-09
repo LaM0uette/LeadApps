@@ -7,7 +7,7 @@ public record DeckOutputDTO(
     [property: JsonPropertyName("creator")] UserOutputDTO Creator,
     [property: JsonPropertyName("name")] string Name,
     [property: JsonPropertyName("code")] string Code,
-    [property: JsonPropertyName("cardIds")] ICollection<int> CardIds,
+    [property: JsonPropertyName("cards")] ICollection<CardRefDTO> Cards,
     [property: JsonPropertyName("energyIds")] ICollection<int> EnergyIds,
     [property: JsonPropertyName("likes")] ICollection<DeckLikeOutputDTO> Likes,
     [property: JsonPropertyName("dislikes")] ICollection<DeckDislikeOutputDTO> Dislikes,

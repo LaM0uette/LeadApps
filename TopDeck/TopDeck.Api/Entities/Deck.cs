@@ -15,7 +15,7 @@ public class Deck
     [MaxLength(10)]
     public required string Code { get; set; }
     
-    public ICollection<int> CardIds { get; set; } = [];
+    public ICollection<DeckCard> Cards { get; set; } = [];
     public ICollection<int> EnergyIds { get; set; } = [];
     
     public ICollection<DeckLike> Likes { get; set; } = [];

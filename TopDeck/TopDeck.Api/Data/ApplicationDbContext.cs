@@ -22,9 +22,24 @@ public class ApplicationDbContext : DbContext
         get { return Set<Deck>(); }
     }
 
+    public DbSet<DeckCard> DeckCards
+    {
+        get { return Set<DeckCard>(); }
+    }
+
     public DbSet<DeckSuggestion> DeckSuggestions
     {
         get { return Set<DeckSuggestion>(); }
+    }
+
+    public DbSet<DeckSuggestionAddedCard> DeckSuggestionAddedCards
+    {
+        get { return Set<DeckSuggestionAddedCard>(); }
+    }
+
+    public DbSet<DeckSuggestionRemovedCard> DeckSuggestionRemovedCards
+    {
+        get { return Set<DeckSuggestionRemovedCard>(); }
     }
 
     public DbSet<DeckLike> DeckLikes
@@ -78,8 +93,13 @@ public class ApplicationDbContext : DbContext
             entity.Property(d => d.Code).IsRequired();
             entity.HasIndex(d => d.Code).IsUnique();
 
-            // Npgsql mappe List<int> vers integer[] automatiquement
-            entity.Property(d => d.CardIds).HasColumnType("integer[]");
+            // Cards relation
+            entity.HasMany(d => d.Cards)
+                .WithOne(c => c.Deck)
+                .HasForeignKey(c => c.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Npgsql maps List<int> to integer[] automatically for energies
             entity.Property(d => d.EnergyIds).HasColumnType("integer[]");
 
             // Likes handled via DeckLike join entity
@@ -109,10 +129,20 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasKey(s => s.Id);
 
-            entity.Property(s => s.AddedCardIds).HasColumnType("integer[]");
-            entity.Property(s => s.RemovedCardIds).HasColumnType("integer[]");
+            // Energies as arrays
             entity.Property(s => s.AddedEnergyIds).HasColumnType("integer[]");
             entity.Property(s => s.RemovedEnergyIds).HasColumnType("integer[]");
+
+            // Cards relations
+            entity.HasMany(s => s.AddedCards)
+                .WithOne(c => c.Suggestion)
+                .HasForeignKey(c => c.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(s => s.RemovedCards)
+                .WithOne(c => c.Suggestion)
+                .HasForeignKey(c => c.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Likes handled via DeckSuggestionLike join entity
             entity.HasMany(s => s.Likes)
@@ -150,6 +180,42 @@ public class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
             entity.Property(l => l.CreatedAt)
                 .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+        });
+
+        // DeckCard
+        modelBuilder.Entity<DeckCard>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.CollectionCode).IsRequired();
+            entity.HasIndex(c => new { c.DeckId, c.CollectionCode, c.CollectionNumber }).IsUnique();
+            entity.HasOne(c => c.Deck)
+                .WithMany(d => d.Cards)
+                .HasForeignKey(c => c.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // DeckSuggestionAddedCard
+        modelBuilder.Entity<DeckSuggestionAddedCard>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.CollectionCode).IsRequired();
+            entity.HasIndex(c => new { c.DeckSuggestionId, c.CollectionCode, c.CollectionNumber }).IsUnique();
+            entity.HasOne(c => c.Suggestion)
+                .WithMany(s => s.AddedCards)
+                .HasForeignKey(c => c.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // DeckSuggestionRemovedCard
+        modelBuilder.Entity<DeckSuggestionRemovedCard>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.CollectionCode).IsRequired();
+            entity.HasIndex(c => new { c.DeckSuggestionId, c.CollectionCode, c.CollectionNumber }).IsUnique();
+            entity.HasOne(c => c.Suggestion)
+                .WithMany(s => s.RemovedCards)
+                .HasForeignKey(c => c.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         // DeckSuggestionLike

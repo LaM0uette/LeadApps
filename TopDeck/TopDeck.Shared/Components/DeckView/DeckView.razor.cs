@@ -1,6 +1,7 @@
 ﻿using LocalizedComponent;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using TCGPocketDex.Contracts.Request;
 using TCGPocketDex.Domain.Models;
 using TopDeck.Domain.Models;
 using TopDeck.Shared.Modules.Requesters.TCGPCard;
@@ -12,11 +13,13 @@ public class DeckViewBase : LocalizedComponentBase
     #region Statements
 
     [Parameter, EditorRequired] public required Deck Deck { get; set; }
-    [Parameter, EditorRequired] public required IReadOnlyCollection<Card> Cards { get; set; }
+    
+    protected IReadOnlyCollection<Card> Cards { get; set; } = [];
 
     protected string DeckCode = string.Empty;
     
     [Inject] private IJSRuntime _js { get; set; } = null!;
+    [Inject] private TCGPCardRequester _tcgpCardRequester { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
@@ -25,7 +28,7 @@ public class DeckViewBase : LocalizedComponentBase
     
     protected override void OnInitialized()
     {
-        Console.WriteLine($"Loaded {Cards.Count} cards for deck {Deck.Name}");
+        LoadCards();
     }
 
     #endregion
@@ -46,6 +49,19 @@ public class DeckViewBase : LocalizedComponentBase
 
         await Task.Delay(1500);
         DeckCode = Deck.Code;
+        StateHasChanged();
+    }
+    
+    
+    private async void LoadCards()
+    {
+        List<CardRequest> cardRequests = [];
+        cardRequests.AddRange(Deck.Cards.Select(deckCard => new CardRequest(deckCard.CollectionCode, deckCard.CollectionNumber)));
+
+        DeckRequest deckRequest = new(cardRequests);
+        
+        Cards = await _tcgpCardRequester.GetByBatchAsync(deckRequest);
+        //Console.WriteLine($"Loaded {Cards.Count} cards for deck {Deck.Name}");
         StateHasChanged();
     }
 

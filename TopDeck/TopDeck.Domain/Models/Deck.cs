@@ -5,7 +5,7 @@ public record Deck(
     User Creator,
     string Name,
     string Code,
-    ICollection<int> CardIds,
+    ICollection<CardRef> Cards,
     ICollection<int> EnergyIds,
     ICollection<DeckLike> Likes,
     ICollection<DeckDislike> Dislikes,

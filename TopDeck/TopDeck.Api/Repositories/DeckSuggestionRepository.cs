@@ -64,6 +64,8 @@ public class DeckSuggestionRepository : IDeckSuggestionRepository
                 .Include(s => s.Suggestor)
                 .Include(s => s.Deck)
                     .ThenInclude(d => d.Creator)
+                .Include(s => s.AddedCards)
+                .Include(s => s.RemovedCards)
                 .Include(s => s.Likes)
                     .ThenInclude(l => l.User)
                 .Include(s => s.Dislikes)

@@ -12,15 +12,12 @@ public class HomeBase : LocalizedComponentBase
     #region Statements
     
     protected IReadOnlyList<Deck> Decks { get; set; } = [];
-    protected IReadOnlyCollection<Card> Cards = [];
 
     [Inject] private IDeckService _deckService { get; set; } = null!;
-    [Inject] private TCGPCardRequester _tcgpCardRequester { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
         Decks = await _deckService.GetAllAsync();
-        Cards = await _tcgpCardRequester.GetAllAsync();
         StateHasChanged();
     }
 

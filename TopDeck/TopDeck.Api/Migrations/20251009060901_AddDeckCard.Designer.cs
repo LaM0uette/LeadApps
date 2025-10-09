@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TopDeck.Api.Data;
@@ -11,9 +12,11 @@ using TopDeck.Api.Data;
 namespace TopDeck.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251009060901_AddDeckCard")]
+    partial class AddDeckCard
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,6 +145,10 @@ namespace TopDeck.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.PrimitiveCollection<int[]>("AddedCardIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
                     b.PrimitiveCollection<int[]>("AddedEnergyIds")
                         .IsRequired()
                         .HasColumnType("integer[]");
@@ -153,6 +160,10 @@ namespace TopDeck.Api.Migrations
 
                     b.Property<int>("DeckId")
                         .HasColumnType("integer");
+
+                    b.PrimitiveCollection<int[]>("RemovedCardIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
 
                     b.PrimitiveCollection<int[]>("RemovedEnergyIds")
                         .IsRequired()
@@ -173,32 +184,6 @@ namespace TopDeck.Api.Migrations
                     b.HasIndex("SuggestorId");
 
                     b.ToTable("DeckSuggestions", "data");
-                });
-
-            modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestionAddedCard", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CollectionCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("CollectionNumber")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("DeckSuggestionId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeckSuggestionId", "CollectionCode", "CollectionNumber")
-                        .IsUnique();
-
-                    b.ToTable("DeckSuggestionAddedCards", "data");
                 });
 
             modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestionDislike", b =>
@@ -239,32 +224,6 @@ namespace TopDeck.Api.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("DeckSuggestionLikes", "data");
-                });
-
-            modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestionRemovedCard", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CollectionCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("CollectionNumber")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("DeckSuggestionId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeckSuggestionId", "CollectionCode", "CollectionNumber")
-                        .IsUnique();
-
-                    b.ToTable("DeckSuggestionRemovedCards", "data");
                 });
 
             modelBuilder.Entity("TopDeck.Api.Entities.User", b =>
@@ -382,17 +341,6 @@ namespace TopDeck.Api.Migrations
                     b.Navigation("Suggestor");
                 });
 
-            modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestionAddedCard", b =>
-                {
-                    b.HasOne("TopDeck.Api.Entities.DeckSuggestion", "Suggestion")
-                        .WithMany("AddedCards")
-                        .HasForeignKey("DeckSuggestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Suggestion");
-                });
-
             modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestionDislike", b =>
                 {
                     b.HasOne("TopDeck.Api.Entities.DeckSuggestion", "Suggestion")
@@ -431,17 +379,6 @@ namespace TopDeck.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestionRemovedCard", b =>
-                {
-                    b.HasOne("TopDeck.Api.Entities.DeckSuggestion", "Suggestion")
-                        .WithMany("RemovedCards")
-                        .HasForeignKey("DeckSuggestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Suggestion");
-                });
-
             modelBuilder.Entity("TopDeck.Api.Entities.Deck", b =>
                 {
                     b.Navigation("Cards");
@@ -455,13 +392,9 @@ namespace TopDeck.Api.Migrations
 
             modelBuilder.Entity("TopDeck.Api.Entities.DeckSuggestion", b =>
                 {
-                    b.Navigation("AddedCards");
-
                     b.Navigation("Dislikes");
 
                     b.Navigation("Likes");
-
-                    b.Navigation("RemovedCards");
                 });
 #pragma warning restore 612, 618
         }

@@ -68,6 +68,7 @@ public class DeckRepository : IDeckRepository
         return include
             ? _db.Decks
                 .Include(d => d.Creator)
+                .Include(d => d.Cards)
                 .Include(d => d.Suggestions)
                     .ThenInclude(s => s.Likes)
                         .ThenInclude(l => l.User)

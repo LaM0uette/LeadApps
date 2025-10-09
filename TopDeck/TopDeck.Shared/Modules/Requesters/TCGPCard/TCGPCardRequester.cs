@@ -1,21 +1,23 @@
-﻿using TCGPocketDex.Domain.Models;
+﻿using TCGPocketDex.Contracts.Request;
+using TCGPocketDex.Domain.Models;
 using TCGPocketDex.SDK.Services;
+using TopDeck.Shared.Services.TCGPCard;
 
 namespace TopDeck.Shared.Modules.Requesters.TCGPCard;
 
 public class TCGPCardRequester
 {
-    private readonly ICardService _cardService;
+    private readonly ITCGPCardService _tcgpCardService;
     private readonly Dictionary<int, Card> _cache = new();
 
-    public TCGPCardRequester(ICardService cardService)
+    public TCGPCardRequester(ITCGPCardService tcgpCardService)
     {
-        _cardService = cardService;
+        _tcgpCardService = tcgpCardService;
     }
 
     public async Task<IReadOnlyCollection<Card>> GetAllAsync(CancellationToken ct = default)
     {
-        var cards = await _cardService.GetAllAsync(null, ct);
+        var cards = await _tcgpCardService.GetAllAsync(null, ct);
         foreach (var card in cards)
             _cache[card.Id] = card;
         return cards;
@@ -26,24 +28,18 @@ public class TCGPCardRequester
         if (_cache.TryGetValue(id, out var card))
             return card;
 
-        card = await _cardService.GetByIdAsync(id, null, ct);
+        card = await _tcgpCardService.GetByIdAsync(id, null, ct);
         if (card != null)
             _cache[id] = card;
 
         return card;
     }
 
-    public async Task<IReadOnlyCollection<Card>> GetCardsByIdsAsync(IEnumerable<int> ids, CancellationToken ct = default)
+    public async Task<List<Card>> GetByBatchAsync(DeckRequest deck, string? cultureOverride = null, CancellationToken ct = default)
     {
-        var results = new List<Card>();
-
-        foreach (var id in ids)
-        {
-            var card = await GetByIdAsync(id, ct);
-            if (card != null)
-                results.Add(card);
-        }
-
-        return results;
-    }
+        List<Card> cards = await _tcgpCardService.GetByBatchAsync(deck, cultureOverride, ct);
+        /*foreach (Card card in cards)
+            _cache[card.Id] = card;*/
+        return cards;
+    } 
 }
