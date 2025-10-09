@@ -22,6 +22,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<DeckSuggestionLike> DeckSuggestionLikes => Set<DeckSuggestionLike>();
     public DbSet<DeckDislike> DeckDislikes => Set<DeckDislike>();
     public DbSet<DeckSuggestionDislike> DeckSuggestionDislikes => Set<DeckSuggestionDislike>();
+    public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<DeckTag> DeckTags => Set<DeckTag>();
 
     #endregion
 
@@ -58,6 +60,12 @@ public class ApplicationDbContext : DbContext
             entity.HasMany(d => d.Cards)
                 .WithOne(c => c.Deck)
                 .HasForeignKey(c => c.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Tags relation via join entity DeckTag
+            entity.HasMany(d => d.DeckTags)
+                .WithOne(dt => dt.Deck)
+                .HasForeignKey(dt => dt.DeckId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Npgsql maps List<int> to integer[] automatically for energies
@@ -209,6 +217,29 @@ public class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
             entity.Property(l => l.CreatedAt)
                 .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+        });
+
+        // Tag
+        modelBuilder.Entity<Tag>(entity =>
+        {
+            entity.HasKey(t => t.Id);
+            entity.Property(t => t.Name).IsRequired();
+            entity.Property(t => t.ColorHex).IsRequired();
+            entity.HasIndex(t => t.Name).IsUnique();
+        });
+
+        // DeckTag (join)
+        modelBuilder.Entity<DeckTag>(entity =>
+        {
+            entity.HasKey(dt => new { dt.DeckId, dt.TagId });
+            entity.HasOne(dt => dt.Deck)
+                .WithMany(d => d.DeckTags)
+                .HasForeignKey(dt => dt.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(dt => dt.Tag)
+                .WithMany(t => t.DeckTags)
+                .HasForeignKey(dt => dt.TagId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         // DeckSuggestionDislike

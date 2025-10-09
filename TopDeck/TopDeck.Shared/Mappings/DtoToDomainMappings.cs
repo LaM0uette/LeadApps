@@ -35,6 +35,7 @@ public static class DtoToDomainMappings
             dto.Code,
             (dto.Cards ?? Array.Empty<DeckCardOutputDTO>()).Select(c => new DeckCard(c.CollectionCode, c.CollectionNumber, c.IsHighlighted)).ToList(),
             dto.EnergyIds?.ToList() ?? new List<int>(),
+            (dto.Tags ?? Array.Empty<TagOutputDTO>()).Select(t => new Tag(t.Id, t.Name, t.ColorHex)).ToList(),
             new List<DeckLike>(),
             new List<DeckDislike>(),
             new List<DeckSuggestion>(),

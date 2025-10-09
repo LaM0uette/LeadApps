@@ -22,6 +22,8 @@ public class Deck
     public ICollection<DeckDislike> Dislikes { get; set; } = [];
     
     public ICollection<DeckSuggestion> Suggestions { get; set; } = [];
+
+    public ICollection<DeckTag> DeckTags { get; set; } = [];
     
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

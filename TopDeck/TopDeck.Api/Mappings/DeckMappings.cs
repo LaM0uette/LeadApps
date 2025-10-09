@@ -18,7 +18,8 @@ public static class DeckMappings
             Name = dto.Name,
             Code = string.Empty, // TODO: change this
             Cards = allCards,
-            EnergyIds = dto.EnergyIds?.ToList() ?? []
+            EnergyIds = dto.EnergyIds?.ToList() ?? [],
+            DeckTags = (dto.TagIds ?? Array.Empty<int>()).Select(id => new DeckTag { Deck = null!, DeckId = 0, TagId = id, Tag = null! }).ToList()
         };
     }
 
@@ -34,6 +35,10 @@ public static class DeckMappings
         entity.Cards = allCards;
 
         entity.EnergyIds = dto.EnergyIds?.ToList() ?? [];
+
+        entity.DeckTags = (dto.TagIds ?? Array.Empty<int>())
+            .Select(id => new DeckTag { Deck = entity, DeckId = entity.Id, TagId = id, Tag = null! })
+            .ToList();
     }
 
     // Shallow output to avoid circular references: empty Likes and Suggestions
@@ -46,6 +51,7 @@ public static class DeckMappings
             entity.Code,
             entity.Cards.Select(c => new DeckCardOutputDTO(c.CollectionCode, c.CollectionNumber, c.IsHighlighted)).ToList(),
             entity.EnergyIds.ToList(),
+            entity.DeckTags.Select(dt => new TagOutputDTO(dt.TagId, dt.Tag?.Name ?? string.Empty, dt.Tag?.ColorHex ?? string.Empty)).ToList(),
             new List<DeckLikeOutputDTO>(),
             new List<DeckDislikeOutputDTO>(),
             new List<DeckSuggestionOutputDTO>(),
@@ -66,6 +72,7 @@ public static class DeckMappings
             entity.Code,
             entity.Cards.Select(c => new DeckCardOutputDTO(c.CollectionCode, c.CollectionNumber, c.IsHighlighted)).ToList(),
             entity.EnergyIds.ToList(),
+            entity.DeckTags.Select(dt => new TagOutputDTO(dt.TagId, dt.Tag?.Name ?? string.Empty, dt.Tag?.ColorHex ?? string.Empty)).ToList(),
             entity.Likes.Select(l => new DeckLikeOutputDTO(
                 shallowDeck,
                 l.User is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : l.User.ToOutput()

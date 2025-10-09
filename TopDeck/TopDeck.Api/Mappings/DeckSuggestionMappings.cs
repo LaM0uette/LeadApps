@@ -36,7 +36,7 @@ public static class DeckSuggestionMappings
         return new DeckSuggestionOutputDTO(
             s.Id,
             s.Suggestor is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : s.Suggestor.ToOutput(),
-            s.Deck is null ? new DeckOutputDTO(0, new UserOutputDTO(0, "", "", "", DateTime.MinValue), "", "", new List<DeckCardOutputDTO>(), new List<int>(), new List<DeckLikeOutputDTO>(), new List<DeckDislikeOutputDTO>(), new List<DeckSuggestionOutputDTO>(), DateTime.MinValue, DateTime.MinValue) : s.Deck.ToShallowOutput(),
+            s.Deck is null ? new DeckOutputDTO(0, new UserOutputDTO(0, "", "", "", DateTime.MinValue), "", "", new List<DeckCardOutputDTO>(), new List<int>(), new List<TagOutputDTO>(), new List<DeckLikeOutputDTO>(), new List<DeckDislikeOutputDTO>(), new List<DeckSuggestionOutputDTO>(), DateTime.MinValue, DateTime.MinValue) : s.Deck.ToShallowOutput(),
             s.AddedCards.Select(c => new DeckCardOutputDTO(c.CollectionCode, c.CollectionNumber, false)).ToList(),
             s.RemovedCards.Select(c => new DeckCardOutputDTO(c.CollectionCode, c.CollectionNumber, false)).ToList(),
             s.AddedEnergyIds.ToList(),
@@ -54,7 +54,7 @@ public static class DeckSuggestionMappings
         return new DeckSuggestionOutputDTO(
             s.Id,
             s.Suggestor is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : s.Suggestor.ToOutput(),
-            s.Deck is null ? new DeckOutputDTO(0, new UserOutputDTO(0, "", "", "", DateTime.MinValue), "", "", new List<DeckCardOutputDTO>(), new List<int>(), new List<DeckLikeOutputDTO>(), new List<DeckDislikeOutputDTO>(), new List<DeckSuggestionOutputDTO>(), DateTime.MinValue, DateTime.MinValue) : s.Deck.ToShallowOutput(),
+            s.Deck is null ? new DeckOutputDTO(0, new UserOutputDTO(0, "", "", "", DateTime.MinValue), "", "", new List<DeckCardOutputDTO>(), new List<int>(), new List<TagOutputDTO>(), new List<DeckLikeOutputDTO>(), new List<DeckDislikeOutputDTO>(), new List<DeckSuggestionOutputDTO>(), DateTime.MinValue, DateTime.MinValue) : s.Deck.ToShallowOutput(),
             s.AddedCards.Select(c => new DeckCardOutputDTO(c.CollectionCode, c.CollectionNumber, false)).ToList(),
             s.RemovedCards.Select(c => new DeckCardOutputDTO(c.CollectionCode, c.CollectionNumber, false)).ToList(),
             s.AddedEnergyIds.ToList(),
