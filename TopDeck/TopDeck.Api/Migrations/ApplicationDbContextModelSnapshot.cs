@@ -92,8 +92,7 @@ namespace TopDeck.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DeckId", "CollectionCode", "CollectionNumber")
-                        .IsUnique();
+                    b.HasIndex("DeckId");
 
                     b.ToTable("DeckCards", "data");
                 });

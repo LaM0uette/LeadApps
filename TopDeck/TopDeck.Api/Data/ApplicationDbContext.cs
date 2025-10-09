@@ -156,7 +156,7 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasKey(c => c.Id);
             entity.Property(c => c.CollectionCode).IsRequired();
-            entity.HasIndex(c => new { c.DeckId, c.CollectionCode, c.CollectionNumber }).IsUnique();
+            // Allow duplicate cards per deck: remove unique index on (DeckId, CollectionCode, CollectionNumber)
             entity.HasOne(c => c.Deck)
                 .WithMany(d => d.Cards)
                 .HasForeignKey(c => c.DeckId)

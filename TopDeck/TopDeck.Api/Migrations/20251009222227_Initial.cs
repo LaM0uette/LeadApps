@@ -16,6 +16,21 @@ namespace TopDeck.Api.Migrations
                 name: "data");
 
             migrationBuilder.CreateTable(
+                name: "Tags",
+                schema: "data",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    ColorHex = table.Column<string>(type: "character varying(7)", maxLength: 7, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 schema: "data",
                 columns: table => new
@@ -42,7 +57,6 @@ namespace TopDeck.Api.Migrations
                     CreatorId = table.Column<int>(type: "integer", nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Code = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    CardIds = table.Column<int[]>(type: "integer[]", nullable: false),
                     EnergyIds = table.Column<int[]>(type: "integer[]", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'")
@@ -57,6 +71,30 @@ namespace TopDeck.Api.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DeckCards",
+                schema: "data",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DeckId = table.Column<int>(type: "integer", nullable: false),
+                    CollectionCode = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    CollectionNumber = table.Column<int>(type: "integer", nullable: false),
+                    IsHighlighted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeckCards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DeckCards_Decks_DeckId",
+                        column: x => x.DeckId,
+                        principalSchema: "data",
+                        principalTable: "Decks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -124,8 +162,6 @@ namespace TopDeck.Api.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     SuggestorId = table.Column<int>(type: "integer", nullable: false),
                     DeckId = table.Column<int>(type: "integer", nullable: false),
-                    AddedCardIds = table.Column<int[]>(type: "integer[]", nullable: false),
-                    RemovedCardIds = table.Column<int[]>(type: "integer[]", nullable: false),
                     AddedEnergyIds = table.Column<int[]>(type: "integer[]", nullable: false),
                     RemovedEnergyIds = table.Column<int[]>(type: "integer[]", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
@@ -148,6 +184,56 @@ namespace TopDeck.Api.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DeckTags",
+                schema: "data",
+                columns: table => new
+                {
+                    DeckId = table.Column<int>(type: "integer", nullable: false),
+                    TagId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeckTags", x => new { x.DeckId, x.TagId });
+                    table.ForeignKey(
+                        name: "FK_DeckTags_Decks_DeckId",
+                        column: x => x.DeckId,
+                        principalSchema: "data",
+                        principalTable: "Decks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DeckTags_Tags_TagId",
+                        column: x => x.TagId,
+                        principalSchema: "data",
+                        principalTable: "Tags",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DeckSuggestionAddedCards",
+                schema: "data",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DeckSuggestionId = table.Column<int>(type: "integer", nullable: false),
+                    CollectionCode = table.Column<string>(type: "text", nullable: false),
+                    CollectionNumber = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeckSuggestionAddedCards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DeckSuggestionAddedCards_DeckSuggestions_DeckSuggestionId",
+                        column: x => x.DeckSuggestionId,
+                        principalSchema: "data",
+                        principalTable: "DeckSuggestions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -206,6 +292,35 @@ namespace TopDeck.Api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "DeckSuggestionRemovedCards",
+                schema: "data",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DeckSuggestionId = table.Column<int>(type: "integer", nullable: false),
+                    CollectionCode = table.Column<string>(type: "text", nullable: false),
+                    CollectionNumber = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeckSuggestionRemovedCards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DeckSuggestionRemovedCards_DeckSuggestions_DeckSuggestionId",
+                        column: x => x.DeckSuggestionId,
+                        principalSchema: "data",
+                        principalTable: "DeckSuggestions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeckCards_DeckId",
+                schema: "data",
+                table: "DeckCards",
+                column: "DeckId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_DeckDislikes_UserId",
                 schema: "data",
@@ -232,6 +347,13 @@ namespace TopDeck.Api.Migrations
                 column: "CreatorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DeckSuggestionAddedCards_DeckSuggestionId_CollectionCode_Co~",
+                schema: "data",
+                table: "DeckSuggestionAddedCards",
+                columns: new[] { "DeckSuggestionId", "CollectionCode", "CollectionNumber" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DeckSuggestionDislikes_UserId",
                 schema: "data",
                 table: "DeckSuggestionDislikes",
@@ -242,6 +364,13 @@ namespace TopDeck.Api.Migrations
                 schema: "data",
                 table: "DeckSuggestionLikes",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeckSuggestionRemovedCards_DeckSuggestionId_CollectionCode_~",
+                schema: "data",
+                table: "DeckSuggestionRemovedCards",
+                columns: new[] { "DeckSuggestionId", "CollectionCode", "CollectionNumber" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeckSuggestions_DeckId",
@@ -256,6 +385,19 @@ namespace TopDeck.Api.Migrations
                 column: "SuggestorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DeckTags_TagId",
+                schema: "data",
+                table: "DeckTags",
+                column: "TagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tags_Name",
+                schema: "data",
+                table: "Tags",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_OAuthProvider_OAuthId",
                 schema: "data",
                 table: "Users",
@@ -267,11 +409,19 @@ namespace TopDeck.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "DeckCards",
+                schema: "data");
+
+            migrationBuilder.DropTable(
                 name: "DeckDislikes",
                 schema: "data");
 
             migrationBuilder.DropTable(
                 name: "DeckLikes",
+                schema: "data");
+
+            migrationBuilder.DropTable(
+                name: "DeckSuggestionAddedCards",
                 schema: "data");
 
             migrationBuilder.DropTable(
@@ -283,7 +433,19 @@ namespace TopDeck.Api.Migrations
                 schema: "data");
 
             migrationBuilder.DropTable(
+                name: "DeckSuggestionRemovedCards",
+                schema: "data");
+
+            migrationBuilder.DropTable(
+                name: "DeckTags",
+                schema: "data");
+
+            migrationBuilder.DropTable(
                 name: "DeckSuggestions",
+                schema: "data");
+
+            migrationBuilder.DropTable(
+                name: "Tags",
                 schema: "data");
 
             migrationBuilder.DropTable(
