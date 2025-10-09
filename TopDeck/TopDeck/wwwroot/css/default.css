@@ -27,6 +27,7 @@
 
     --color-bg: #faf8f7;
     --color-border: #d6d0cf;
+    --color-outline: #ebeced;
 
     --color-text: #252829;
     --color-text-strong: #090909;
@@ -92,6 +93,7 @@
 
     --color-bg: #1a1716;
     --color-border: #423d3b;
+    --color-outline: #2c2a29;
 
     --color-text: #ebe8e5;
     --color-text-strong: #ffffff;

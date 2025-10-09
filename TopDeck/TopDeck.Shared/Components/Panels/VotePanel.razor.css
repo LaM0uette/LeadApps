@@ -6,6 +6,7 @@
     box-shadow: var(--drop-shadow-m);
     
     border: none;
+    outline: 1px solid var(--color-outline);
     border-radius: var(--radius-m);
     
     padding: 4px 6px;
