@@ -17,8 +17,23 @@ public class DeckViewBase : LocalizedComponentBase
 
     protected string DeckCode = string.Empty;
     
+    protected  Dictionary<int, string> EnergyTypes = new()
+    {
+        { 1, "Grass" },
+        { 2, "Fire" },
+        { 3, "Water" },
+        { 4, "Lightning" },
+        { 5, "Psychic" },
+        { 6, "Fighting" },
+        { 7, "Darkness" },
+        { 8, "Metal" },
+        { 9, "Dragon" },
+        { 10, "Colorless" }
+    };
+    
     [Inject] private IJSRuntime _js { get; set; } = null!;
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
+    
 
     protected override void OnParametersSet()
     {
