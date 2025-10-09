@@ -24,8 +24,8 @@
             }
             else
             {
-                <img src="@HighlightedCards[0].ImageUrl" alt="img deck 1"/>
-                <img src="@HighlightedCards[1].ImageUrl" alt="img deck 2"/>
+                <img src="@HighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                <img src="@HighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
             }
             
         </div>
@@ -42,7 +42,7 @@
             {
                 foreach (int energyId in Deck.EnergyIds)
                 {
-                    <img src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy "/>
+                    <img src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
                 }
             }
             
