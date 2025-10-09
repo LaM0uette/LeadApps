@@ -13,7 +13,7 @@ public class DeckViewBase : LocalizedComponentBase
 
     [Parameter, EditorRequired] public required Deck Deck { get; set; }
     
-    protected IReadOnlyCollection<TCGPCard> Cards { get; set; } = [];
+    protected IReadOnlyList<TCGPCard> HighlightedCards { get; set; } = [];
 
     protected string DeckCode = string.Empty;
     
@@ -28,12 +28,14 @@ public class DeckViewBase : LocalizedComponentBase
     protected override async Task OnInitializedAsync()
     {
         List<TCGPCardRequest> cardRequests = [];
-        cardRequests.AddRange(Deck.Cards.Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber)));
+        cardRequests.AddRange(Deck.Cards
+            .Where(c => c.IsHighlighted)
+            .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
+        );
 
         TCGPCardsRequest deckRequest = new(cardRequests);
-        Cards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest);
+        HighlightedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest);
         
-        Console.WriteLine($"Loaded {Cards.Count} cards for deck {Deck.Name}");
         StateHasChanged();
     }
 

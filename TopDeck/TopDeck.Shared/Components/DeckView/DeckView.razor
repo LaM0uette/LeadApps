@@ -18,21 +18,16 @@
 
         <div class="cards">
 
-            @{
-                TCGPCard? card1 = Cards.FirstOrDefault();
-                TCGPCard? card2 = Cards.LastOrDefault();
-            }
-
-            @if (card1 is not null)
+            @if (HighlightedCards.Count < 2)
             {
-                <img src="@card1.ImageUrl" alt="img deck 1"/>
+                <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p>
             }
-
-            @if (card2 is not null)
+            else
             {
-                <img src="@card2.ImageUrl" alt="img deck 2"/>
+                <img src="@HighlightedCards[0].ImageUrl" alt="img deck 1"/>
+                <img src="@HighlightedCards[1].ImageUrl" alt="img deck 2"/>
             }
-
+            
         </div>
 
         <div class="energies">
