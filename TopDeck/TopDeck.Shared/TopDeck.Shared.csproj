@@ -16,8 +16,8 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.8"/>
         <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="9.0.9" />
-        <PackageReference Include="TCGPocketDex.Domain" Version="1.0.0" />
-        <PackageReference Include="TCGPocketDex.SDK" Version="1.0.0" />
+        <PackageReference Include="TCGPocketDex.Domain" Version="1.0.1" />
+        <PackageReference Include="TCGPocketDex.SDK" Version="1.0.1" />
     </ItemGroup>
 
     <ItemGroup>
