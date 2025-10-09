@@ -30,6 +30,12 @@ public class DeckService : IDeckService
         return list.Select(d => d.ToOutput()).ToList();
     }
 
+    public async Task<IReadOnlyList<DeckOutputDTO>> GetPageAsync(int skip, int take, CancellationToken ct = default)
+    {
+        IReadOnlyList<Deck> list = await _decks.GetPageAsync(skip, take, includeRelations: true, ct);
+        return list.Select(d => d.ToOutput()).ToList();
+    }
+
     public async Task<DeckOutputDTO?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         Deck? entity = await _decks.GetByIdAsync(id, includeRelations: true, ct);

@@ -25,6 +25,16 @@ public class DeckRepository : IDeckRepository
         return await Query(includeRelations).AsNoTracking().OrderBy(d => d.Id).ToListAsync(ct);
     }
 
+    public async Task<IReadOnlyList<Deck>> GetPageAsync(int skip, int take, bool includeRelations = false, CancellationToken ct = default)
+    {
+        return await Query(includeRelations).AsNoTracking().OrderBy(d => d.Id).Skip(skip).Take(take).ToListAsync(ct);
+    }
+
+    public Task<int> CountAsync(CancellationToken ct = default)
+    {
+        return _db.Decks.CountAsync(ct);
+    }
+
     public async Task<Deck?> GetByIdAsync(int id, bool includeRelations = true, CancellationToken ct = default)
     {
         return await Query(includeRelations).AsNoTracking().FirstOrDefaultAsync(d => d.Id == id, ct);

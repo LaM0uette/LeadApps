@@ -13,6 +13,7 @@ public static class DecksEndpoints
         RouteGroupBuilder group = app.MapGroup("/api/decks");
 
         group.MapGet("", GetAllAsync);
+        group.MapGet("page", GetPageAsync);
         group.MapGet("{id:int}", GetByIdAsync);
         group.MapPost("", CreateAsync);
         group.MapPut("{id:int}", UpdateAsync);
@@ -28,6 +29,14 @@ public static class DecksEndpoints
     private static async Task<IResult> GetAllAsync([FromServices] IDeckService service, CancellationToken ct)
     {
         IReadOnlyList<DeckOutputDTO> items = await service.GetAllAsync(ct);
+        return Results.Ok(items);
+    }
+
+    private static async Task<IResult> GetPageAsync([FromServices] IDeckService service, [FromQuery] int skip = 0, [FromQuery] int take = 20, CancellationToken ct = default)
+    {
+        if (take <= 0) take = 20;
+        if (skip < 0) skip = 0;
+        IReadOnlyList<DeckOutputDTO> items = await service.GetPageAsync(skip, take, ct);
         return Results.Ok(items);
     }
 

@@ -21,6 +21,14 @@ public class DeckService : ApiService, IDeckService
         return list;
     }
 
+    public async Task<IReadOnlyList<Deck>> GetPageAsync(int skip, int take, CancellationToken ct = default)
+    {
+        string url = $"{_route}/page?skip={skip}&take={take}";
+        IReadOnlyList<DeckOutputDTO>? result = await GetJsonAsync<IReadOnlyList<DeckOutputDTO>>(url, ct);
+        var list = result?.Select(d => d.ToDomain()).ToList() ?? new List<Deck>();
+        return list;
+    }
+
     public async Task<Deck?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         DeckOutputDTO? dto = await GetJsonAsync<DeckOutputDTO>($"{_route}/{id}", ct);

@@ -24,10 +24,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <UpToDateCheckInput Remove="Modules\Components\Actions\AutoRedirect.razor" />
       <UpToDateCheckInput Remove="Modules\Components\Buttons\LmButton.razor" />
       <UpToDateCheckInput Remove="Modules\Components\Spacers\HorizontalSpacer.razor" />

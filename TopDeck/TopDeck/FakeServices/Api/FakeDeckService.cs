@@ -12,6 +12,12 @@ public class FakeDeckService : IDeckService
         return Task.FromResult(result);
     }
 
+    public Task<IReadOnlyList<Deck>> GetPageAsync(int skip, int take, CancellationToken ct = default)
+    {
+        IReadOnlyList<Deck> result = [];
+        return Task.FromResult(result);
+    }
+
     public Task<Deck?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         return Task.FromResult<Deck?>(null);
