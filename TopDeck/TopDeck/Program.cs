@@ -6,15 +6,12 @@ using Localizer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
 using Requesters.AuthUser;
-using TCGPocketDex.SDK.Http;
-using TCGPocketDex.SDK.Services;
+using TCGPCardRequester;
 using TopDeck.Components;
 using TopDeck.Contracts.DTO;
 using TopDeck.Endpoints;
 using TopDeck.FakeServices;
-using TopDeck.Shared.Modules.Requesters.TCGPCard;
 using TopDeck.Shared.Services;
-using TopDeck.Shared.Services.TCGPCard;
 using TopDeck.Shared.UIStore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -74,14 +71,14 @@ builder.Services.AddRazorComponents()
 builder.Services.AddSingleton<UIStore>();
 builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 
-builder.Services.AddSingleton<IDeckService, FakeDeckService>();
-builder.Services.AddScoped<IUserService, FakeUserService>();
-builder.Services.AddScoped<IAuthUserRequester, FakeAuthUserRequester>();
 
-builder.Services.AddScoped<IApiClient, ApiClient>();
-builder.Services.AddScoped<ICardService, CardService>(); // TODO: Replace with FakeCardService if needed
-builder.Services.AddScoped<ITCGPCardService, TCGPCardService>();
-builder.Services.AddScoped<TCGPCardRequester>();
+builder.Services.AddScoped<IAuthUserRequester, FakeAuthUserRequester>();
+builder.Services.AddScoped<IUserService, FakeUserService>();
+
+builder.Services.AddSingleton<IDeckService, FakeDeckService>();
+
+builder.Services.AddScoped<ITCGPCardRequester, TCGPCardRequester.TCGPCardRequester>();
+
 
 string[] supportedCultures = ["en", "fr"];
 builder.Services.Configure<RequestLocalizationOptions>(options =>

@@ -2,11 +2,8 @@ using Localizer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Requesters.AuthUser;
-using TCGPocketDex.SDK.Http;
-using TCGPocketDex.SDK.Services;
-using TopDeck.Shared.Modules.Requesters.TCGPCard;
+using TCGPCardRequester;
 using TopDeck.Shared.Services;
-using TopDeck.Shared.Services.TCGPCard;
 using TopDeck.Shared.UIStore;
 
 WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -22,15 +19,13 @@ builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticat
 builder.Services.AddSingleton<UIStore>();
 builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 
-builder.Services.AddScoped<IDeckService, DeckService>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthUserRequester, AuthUserRequester>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IDeckService, DeckService>();
 builder.Services.AddScoped<IDeckReactionService, DeckReactionService>();
 
-builder.Services.AddScoped<IApiClient, ApiClient>();
-builder.Services.AddScoped<ICardService, CardService>();
-builder.Services.AddScoped<ITCGPCardService, TCGPCardService>();
-builder.Services.AddScoped<TCGPCardRequester>();
+builder.Services.AddScoped<ITCGPCardRequester, TCGPCardRequester.TCGPCardRequester>();
 
 WebAssemblyHost host = builder.Build();
 

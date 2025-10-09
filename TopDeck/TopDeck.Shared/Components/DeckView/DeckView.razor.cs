@@ -1,10 +1,9 @@
 ﻿using LocalizedComponent;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using TCGPocketDex.Contracts.Request;
-using TCGPocketDex.Domain.Models;
+using TCGPCardRequester;
 using TopDeck.Domain.Models;
-using TopDeck.Shared.Modules.Requesters.TCGPCard;
+using TopDeck.Shared.Models.TCGP;
 
 namespace TopDeck.Shared.Components;
 
@@ -14,21 +13,28 @@ public class DeckViewBase : LocalizedComponentBase
 
     [Parameter, EditorRequired] public required Deck Deck { get; set; }
     
-    protected IReadOnlyCollection<Card> Cards { get; set; } = [];
+    protected IReadOnlyCollection<TCGPCard> Cards { get; set; } = [];
 
     protected string DeckCode = string.Empty;
     
     [Inject] private IJSRuntime _js { get; set; } = null!;
-    [Inject] private TCGPCardRequester _tcgpCardRequester { get; set; } = null!;
+    [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
         DeckCode = Deck.Code;
     }
     
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        LoadCards();
+        List<TCGPCardRequest> cardRequests = [];
+        cardRequests.AddRange(Deck.Cards.Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber)));
+
+        TCGPCardsRequest deckRequest = new(cardRequests);
+        Cards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest);
+        
+        Console.WriteLine($"Loaded {Cards.Count} cards for deck {Deck.Name}");
+        StateHasChanged();
     }
 
     #endregion
@@ -49,19 +55,6 @@ public class DeckViewBase : LocalizedComponentBase
 
         await Task.Delay(1500);
         DeckCode = Deck.Code;
-        StateHasChanged();
-    }
-    
-    
-    private async void LoadCards()
-    {
-        List<CardRequest> cardRequests = [];
-        cardRequests.AddRange(Deck.Cards.Select(deckCard => new CardRequest(deckCard.CollectionCode, deckCard.CollectionNumber)));
-
-        DeckRequest deckRequest = new(cardRequests);
-        
-        Cards = await _tcgpCardRequester.GetByBatchAsync(deckRequest);
-        //Console.WriteLine($"Loaded {Cards.Count} cards for deck {Deck.Name}");
         StateHasChanged();
     }
 

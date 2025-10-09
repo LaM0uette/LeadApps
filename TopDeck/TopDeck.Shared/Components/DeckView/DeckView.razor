@@ -1,5 +1,4 @@
 ﻿@namespace TopDeck.Shared.Components
-@using TCGPocketDex.Domain.Models
 @inherits DeckViewBase
 
 
@@ -20,18 +19,18 @@
         <div class="cards">
 
             @{
-                Card? card1 = Cards.FirstOrDefault();
-                Card? card2 = Cards.LastOrDefault();
+                TCGPCard? card1 = Cards.FirstOrDefault();
+                TCGPCard? card2 = Cards.LastOrDefault();
             }
 
             @if (card1 is not null)
             {
-                <img src="@card1.ImageUrl" alt="img deck 1"/>
+                <img src="https://tcgp-dex.com/cards@(card1.ImageUrl)" alt="img deck 1"/>
             }
 
             @if (card2 is not null)
             {
-                <img src="@card2.ImageUrl" alt="img deck 2"/>
+                <img src="https://tcgp-dex.com/cards@(card2.ImageUrl)" alt="img deck 2"/>
             }
 
         </div>

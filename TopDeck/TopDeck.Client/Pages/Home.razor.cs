@@ -1,8 +1,6 @@
 ﻿using LocalizedComponent;
 using Microsoft.AspNetCore.Components;
-using TCGPocketDex.Domain.Models;
 using TopDeck.Domain.Models;
-using TopDeck.Shared.Modules.Requesters.TCGPCard;
 using TopDeck.Shared.Services;
 
 namespace TopDeck.Client.Pages;
