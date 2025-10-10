@@ -12,11 +12,11 @@
 else
 {
     <div class="deck-details-page @GetEnergyClass(Deck.EnergyIds)">
-    
+        
         <div class="header">
-            
+
             <div class="title-content">
-                
+
                 <DeckNamePanel Name="@Deck.Name" Width="200px" Height="35px" FontSize="1.2em"/>
 
                 <div class="vote-panel-container">
@@ -25,17 +25,17 @@ else
                                UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"
                                Width="130px" Height="35px" FontSize="1.2em"/>
                 </div>
-                
+
             </div>
-            
+
             <VerticalSpacer Value="10"/>
-            
+
             <span class="code" @onclick="CopyCode">@DeckCode</span>
-            
+
             <VerticalSpacer Value="6"/>
-            
+
             <div class="deck-highlight">
-                
+
                 <div class="highlighted-cards">
                     @if (HighlightedCards.Count < 3)
                     {
@@ -48,44 +48,75 @@ else
                         <img src="@HighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>
                     }
                 </div>
-                
+
                 <div class="energies">
-            
+
                     @foreach (int energyId in Deck.EnergyIds)
-                    { 
+                    {
                         <img src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
                     }
-            
+
                 </div>
 
             </div>
 
             <VerticalSpacer Value="8"/>
-            
+
             <hr class="header-separator">
-            
+
         </div>
         
-        <div class="cards">
-            
-            @if (Cards.Count <= 0)
-            {
-                <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p>
-            }
-            else
-            {
-                foreach (TCGPCard card in Cards)
+        @if (CurrentTab is Tab.Cards)
+        {
+            <div class="cards">
+
+                @if (Cards.Count <= 0)
                 {
-                    <img src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                    <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p>
                 }
-            }
-            
-        </div>
+                else
+                {
+                    foreach (TCGPCard card in Cards)
+                    {
+                        <img src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                    }
+                }
+
+            </div>
+        }
+        else if (CurrentTab is Tab.Overview)
+        {
+            <div class="overview">
+                
+            </div>
+        }
+        else if (CurrentTab is Tab.Suggestions)
+        {
+            <div class="suggestions">
+                
+            </div>
+        }
         
         <a class="back" href="/decks">
             <img src="img/arrow-back-icon.svg" alt="back button"/>
         </a>
-    
+        
+        <div class="tabs">
+            
+            <button class="tab-button @(CurrentTab is Tab.Cards ? "active" : "")" @onclick="() => SelectTab(Tab.Cards)">
+                <img src="img/card-tab-icon@(CurrentTab is Tab.Cards ? "-active" : "").svg" alt="card tab button"/>
+            </button>
+
+            <button class="tab-button @(CurrentTab is Tab.Overview ? "active" : "")" @onclick="() => SelectTab(Tab.Overview)">
+                <img src="img/overview-tab-icon@(CurrentTab is Tab.Overview ? "-active" : "").svg" alt="overview tab button"/>
+            </button>
+
+            <button class="tab-button @(CurrentTab is Tab.Suggestions ? "active" : "")" @onclick="() => SelectTab(Tab.Suggestions)">
+                <img src="img/suggestions-tab-icon@(CurrentTab is Tab.Suggestions ? "-active" : "").svg" alt="suggestion tab button"/>
+            </button>
+
+        </div>
+        
     </div>
 }
 

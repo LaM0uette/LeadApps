@@ -10,6 +10,22 @@ namespace TopDeck.Client.Pages;
 
 public class DeckDetailsBase : LocalizedComponentBase
 {
+    #region Enums
+
+    protected enum Mode
+    {
+        View,
+        Edit
+    }
+    protected enum Tab
+    {
+        Cards,
+        Overview,
+        Suggestions
+    }
+
+    #endregion
+    
     #region Statements
 
     [Parameter, EditorRequired] public required string DeckCode { get; set; }
@@ -31,6 +47,9 @@ public class DeckDetailsBase : LocalizedComponentBase
         { 9, "Dragon" },
         { 10, "Colorless" }
     };
+    
+    protected Mode CurrentMode { get; set; } = Mode.View;
+    protected Tab CurrentTab { get; set; } = Tab.Cards;
     
     [Inject] private IJSRuntime _js { get; set; } = null!;
     [Inject] private NavigationManager _navigationManager { get; set; } = null!;
@@ -81,6 +100,11 @@ public class DeckDetailsBase : LocalizedComponentBase
         await Task.Delay(1500);
         DeckCode = Deck.Code;
         StateHasChanged();
+    }
+    
+    protected void SelectTab(Tab tab)
+    {
+        CurrentTab = tab;
     }
 
     #endregion

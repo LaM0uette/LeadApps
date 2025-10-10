@@ -164,7 +164,7 @@
 
     & > .back {
         position: absolute;
-        bottom: 30px;
+        bottom: 55px;
         
         left: 50%;
         transform: translateX(-50%);
@@ -201,7 +201,66 @@
             opacity: 0.6;
         }
     }
+
+
+    & > .tabs {
+        position: absolute;
+        bottom: 0;
+
+        width: 100%;
+        
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        
+        background: var(--color-bg);
+        border-top: 1px solid var(--color-border);
+        
+        user-select: none;
+
+
+        & > .tab-button {
+            width: 80px;
+            height: 40px;
+
+            border: none;
+            background: transparent;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            cursor: var(--cursor-pointer);
+            
+            
+            & > img {
+                width: 24px;
+                height: 24px;
+            }
+
+            &:hover > img {
+                opacity: 0.8;
+            }
+
+            &:active > img {
+                opacity: 0.6;
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 .energy-1::before{background:var(--gradient-grass)}
 .energy-2::before{background:var(--gradient-fire)}
