@@ -149,7 +149,7 @@
         align-content: start;
         gap: 5px;
 
-        margin: 10px 5px 0 5px;
+        margin: 10px 5px;
         box-sizing: border-box;
         
         overflow-y: auto;
@@ -160,6 +160,14 @@
             height: 160px;
             justify-self: center;
         }
+    }
+
+    & > .overview {
+        height: 100%;
+    }
+
+    & > .suggestions {
+        height: 100%;
     }
 
     & > .back {
@@ -204,9 +212,6 @@
 
 
     & > .tabs {
-        position: absolute;
-        bottom: 0;
-
         width: 100%;
         
         display: flex;
