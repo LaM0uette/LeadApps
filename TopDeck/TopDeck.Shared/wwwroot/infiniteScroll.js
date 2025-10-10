@@ -1,7 +1,10 @@
 ﻿(function(){
   const state = {
     handler: null,
-    target: null
+    target: null,
+    loading: false,
+    lastInvokeTs: 0,
+    throttleMs: 200
   };
 
   window.TopDeck = window.TopDeck || {};
@@ -27,9 +30,19 @@
         viewport = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
         fullHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
       }
-      if (scrollTop + viewport >= fullHeight - th){
-        // debounced by awaiting .NET side loading flag
-        try{ dotnetRef.invokeMethodAsync('OnNearBottom'); } catch(e){}
+      const nearBottom = (scrollTop + viewport) >= (fullHeight - th);
+      if (!nearBottom) return;
+      const now = (window.performance && performance.now) ? performance.now() : Date.now();
+      if (state.loading) return;
+      if (now - state.lastInvokeTs < state.throttleMs) return;
+      state.lastInvokeTs = now;
+      try{
+        state.loading = true;
+        Promise.resolve(dotnetRef.invokeMethodAsync('OnNearBottom'))
+          .catch(function(){})
+          .finally(function(){ state.loading = false; });
+      }catch(e){
+        state.loading = false;
       }
     };
 
@@ -42,6 +55,9 @@
     state.handler = handler;
     state.target = target;
     (target || window).addEventListener('scroll', handler, { passive: true });
+
+    // Run an initial check to preload if we're already near the bottom
+    try { handler(); } catch(e) {}
   };
 
   // Returns true if the content is taller than the viewport (can scroll)

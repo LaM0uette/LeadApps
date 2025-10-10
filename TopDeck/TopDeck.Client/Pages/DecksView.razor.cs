@@ -33,7 +33,7 @@ public class DecksViewBase : LocalizedComponentBase, IAsyncDisposable
         if (firstRender && _js is IJSInProcessRuntime && !_jsReady)
         {
             _objRef = DotNetObjectReference.Create(this);
-            await _js.InvokeVoidAsync("TopDeck.registerInfiniteScroll", _objRef, "#deck-scroll", 3000);
+            await _js.InvokeVoidAsync("TopDeck.registerInfiniteScroll", _objRef, "#deck-scroll", 6000);
             _jsReady = true;
             await EnsureInitialScrollAsync();
         }
