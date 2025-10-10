@@ -14,18 +14,43 @@ else
     <div class="deck-details-page @GetEnergyClass(Deck.EnergyIds)">
     
         <div class="header">
-        
-            <DeckNamePanel Name="@Deck.Name" Width="210px" Height="35px" FontSize="1.2em"/>
             
-            <div class="vote-panel-container">
-                <VotePanel DeckId="Deck.Id" 
-                           UserLikes="Deck.Likes.Select(l => l.User).ToList()"
-                           UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"
-                           Width="140px" Height="35px" FontSize="1.2em"/>
+            <div class="title-content">
+                
+                <DeckNamePanel Name="@Deck.Name" Width="210px" Height="35px" FontSize="1.2em"/>
+
+                <div class="vote-panel-container">
+                    <VotePanel DeckId="Deck.Id"
+                               UserLikes="Deck.Likes.Select(l => l.User).ToList()"
+                               UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"
+                               Width="140px" Height="35px" FontSize="1.2em"/>
+                </div>
+                
             </div>
             
+            <VerticalSpacer Value="10"/>
+            
             <span class="code" @onclick="CopyCode">@DeckCode</span>
-        
+            
+            <VerticalSpacer Value="6"/>
+            
+            <div class="highlighted-cards">
+                @if (HighlightedCards.Count < 3)
+                {
+                    <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p> /* TODO: replace this by placeholder img or two first img in deck */
+                }
+                else
+                {
+                    <img src="@HighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                    <img src="@HighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
+                    <img src="@HighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>
+                }
+            </div>
+
+            <VerticalSpacer Value="8"/>
+            
+            <hr class="header-separator">
+            
         </div>
     
     </div>
