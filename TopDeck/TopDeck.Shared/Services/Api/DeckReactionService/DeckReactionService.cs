@@ -5,36 +5,67 @@ namespace TopDeck.Shared.Services;
 // TODO: Need to cleen/refactor this service and the related components
 public class DeckReactionService : ApiService, IDeckReactionService
 {
+    #region Statements
+
     private const string LikesRoute = "/api/deck-likes";
     private const string DislikesRoute = "/api/deck-dislikes";
+    private const string SuggestionLikesRoute = "/api/suggestion-likes";
+    private const string SuggestionDislikesRoute = "/api/suggestion-dislikes";
 
-    public async Task<bool> LikeAsync(int deckId, int userId, bool on, CancellationToken ct = default)
+    #endregion
+
+    #region IDeckReactionService
+
+    public async Task<bool> LikeDeckAsync(int deckId, int userId, bool on, CancellationToken ct = default)
     {
-        if (on)
+        if (!on)
         {
-            // Create (idempotent on server)
-            var payload = new DeckLikeInputDTO(deckId, userId);
-            DeckLikeOutputDTO? result = await PostJsonAsync<DeckLikeInputDTO, DeckLikeOutputDTO>(LikesRoute, payload, ct);
-            return result is not null;
-        }
-        else
-        {
-            // Delete
             return await DeleteAsync($"{LikesRoute}/{deckId}/{userId}", ct);
         }
+        
+        DeckLikeInputDTO payload = new(deckId, userId);
+        DeckLikeOutputDTO? result = await PostJsonAsync<DeckLikeInputDTO, DeckLikeOutputDTO>(LikesRoute, payload, ct);
+        return result is not null;
+
     }
 
-    public async Task<bool> DislikeAsync(int deckId, int userId, bool on, CancellationToken ct = default)
+    public async Task<bool> DislikeDeckAsync(int deckId, int userId, bool on, CancellationToken ct = default)
     {
-        if (on)
-        {
-            var payload = new DeckDislikeInputDTO(deckId, userId);
-            DeckDislikeOutputDTO? result = await PostJsonAsync<DeckDislikeInputDTO, DeckDislikeOutputDTO>(DislikesRoute, payload, ct);
-            return result is not null;
-        }
-        else
+        if (!on)
         {
             return await DeleteAsync($"{DislikesRoute}/{deckId}/{userId}", ct);
         }
+        
+        DeckDislikeInputDTO payload = new(deckId, userId);
+        DeckDislikeOutputDTO? result = await PostJsonAsync<DeckDislikeInputDTO, DeckDislikeOutputDTO>(DislikesRoute, payload, ct);
+        return result is not null;
+
     }
+    
+    public async Task<bool> LikeSuggestionAsync(int suggestionId, int userId, bool on, CancellationToken ct = default)
+    {
+        if (!on)
+        {
+            return await DeleteAsync($"{SuggestionLikesRoute}/{suggestionId}/{userId}", ct);
+        }
+        
+        DeckSuggestionLikeInputDTO payload = new(suggestionId, userId);
+        DeckSuggestionLikeOutputDTO? result = await PostJsonAsync<DeckSuggestionLikeInputDTO, DeckSuggestionLikeOutputDTO>(SuggestionLikesRoute, payload, ct);
+        return result is not null;
+    }
+    
+    public async Task<bool> DislikeSuggestionAsync(int suggestionId, int userId, bool on, CancellationToken ct = default)
+    {
+        if (!on)
+        {
+            return await DeleteAsync($"{SuggestionDislikesRoute}/{suggestionId}/{userId}", ct);
+        }
+        
+        DeckSuggestionDislikeInputDTO payload = new(suggestionId, userId);
+        DeckSuggestionDislikeOutputDTO? result = await PostJsonAsync<DeckSuggestionDislikeInputDTO, DeckSuggestionDislikeOutputDTO>(SuggestionDislikesRoute, payload, ct);
+        return result is not null;
+    }
+
+    #endregion
+    
 }

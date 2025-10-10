@@ -106,6 +106,18 @@ else
         {
             <div class="suggestions">
                 
+                @if (Deck.Suggestions.Count <= 0)
+                {
+                    <p>@Localizer.Localize("deckdetails.text.nosuggestions", "No suggestions available for this deck.")</p>
+                }
+                else
+                {
+                    foreach (DeckSuggestion suggestion in Deck.Suggestions)
+                    {
+                        <SuggestionAccordion Suggestion="suggestion"/>
+                    }
+                }
+                
             </div>
         }
         

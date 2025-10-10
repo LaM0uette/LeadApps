@@ -1,0 +1,47 @@
+﻿@namespace TopDeck.Shared.Components
+@inherits SuggestionAccordionBase
+
+
+<div class="suggestion-accordion">
+    
+    <button class="header-button" 
+            style="width: @Width; height: @Height; font-size: @FontSize;"
+            @onclick="Toggle">
+        
+        <p class="suggestor">@Suggestion.Suggestor.UserName</p>
+                            
+        @*<div class="energies">
+
+            @foreach (int energyId in Suggestion.AddedEnergyIds)
+            {
+                <img src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
+            }
+            
+            @foreach (int energyId in Suggestion.RemovedEnergyIds)
+            {
+                <img src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
+            }
+
+        </div>*@
+                            
+        <div class="suggestion-vote-panel-container">
+            <VotePanel SuggestionId="Suggestion.Id"
+                       UserLikes="Suggestion.Likes.Select(l => l.User).ToList()"
+                       UserDislikes="Suggestion.Dislikes.Select(l => l.User).ToList()"
+                       Width="108px" Height="28px" FontSize="0.88em"/>
+        </div>
+        
+        <img class="arrow @(IsOpen ? "expanded" : "")" src="img/arrow-right.svg" alt="arrow"/>
+        
+    </button>
+
+    @if (IsOpen)
+    {
+        <div class="accordion-content">
+            <p>
+                test
+            </p>
+        </div>
+    }
+    
+</div>

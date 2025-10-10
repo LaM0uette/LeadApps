@@ -10,5 +10,6 @@
   "component.button.back.text": "Back",
   "feedback.text.copied": "Copied",
   "feedback.text.loading": "Loading...",
-  "feedback.text.notFound": "Not found"
+  "feedback.text.notFound": "Not found",
+  "page.deckDetail.nosuggestions.text": "No suggestions available for this deck."
 }

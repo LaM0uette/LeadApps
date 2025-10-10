@@ -9,7 +9,8 @@ public class VotePanelBase : ComponentBase
 {
     #region Statements
 
-    [Parameter, EditorRequired] public required int DeckId { get; set; }
+    [Parameter] public int? DeckId { get; set; }
+    [Parameter] public int? SuggestionId { get; set; }
     [Parameter] public IReadOnlyCollection<User> UserLikes { get; set; } = [];
     [Parameter] public IReadOnlyCollection<User> UserDislikes { get; set; } = [];
     [Parameter, EditorRequired] public required string Width { get; set; } = "100px";
@@ -55,8 +56,19 @@ public class VotePanelBase : ComponentBase
         IsDisliked = false;
 
         int userId = _uiStore.GetState<AuthenticatedUserState>().Id;
-        
-        await _deckReactionService.LikeAsync(DeckId, userId, IsLiked);
+
+        if (DeckId is not null && SuggestionId is null)
+        {
+            await _deckReactionService.LikeDeckAsync(DeckId.Value, userId, IsLiked);
+        }
+        else if (SuggestionId is not null && DeckId is null)
+        {
+            await _deckReactionService.LikeSuggestionAsync(SuggestionId.Value, userId, IsLiked);
+        }
+        else
+        {
+            throw new InvalidOperationException("Either DeckId or SuggestionId must be set, but not both.");
+        }
         
         if (IsLiked)
         {
@@ -82,7 +94,19 @@ public class VotePanelBase : ComponentBase
         IsLiked = false;
         
         int userId = _uiStore.GetState<AuthenticatedUserState>().Id;
-        await _deckReactionService.DislikeAsync(DeckId, userId, IsDisliked);
+        
+        if (DeckId is not null && SuggestionId is null)
+        {
+            await _deckReactionService.DislikeDeckAsync(DeckId.Value, userId, IsDisliked);
+        }
+        else if (SuggestionId is not null && DeckId is null)
+        {
+            await _deckReactionService.DislikeSuggestionAsync(SuggestionId.Value, userId, IsDisliked);
+        }
+        else
+        {
+            throw new InvalidOperationException("Either DeckId or SuggestionId must be set, but not both.");
+        }
         
         if (IsDisliked)
         {

@@ -1,0 +1,78 @@
+﻿.suggestion-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding: 0 8px;
+    box-sizing: border-box;
+    
+    overflow: hidden;
+    user-select: none;
+
+
+    & > .header-button {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 25px;
+
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-s);
+
+        background-color: var(--color-bg);
+        box-shadow: var(--shadow-s);
+
+        padding: 8px 12px;
+        box-sizing: border-box;
+
+        cursor: var(--cursor-pointer);
+
+
+        & > .suggestor {
+            flex: 1 1 auto;
+            min-width: 0;
+            max-width: 50%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: left;
+            text-overflow: ellipsis;
+        }
+
+        & > .energies {
+            display: flex;
+            gap: 2px;
+
+            & > img {
+                max-height: 16px;
+                max-width: 16px;
+                object-fit: contain;
+            }
+        }
+
+        & > .suggestion-vote-panel-container {
+            margin-left: auto;
+        }
+
+        & > .arrow {
+            flex: 0 0 22px;
+            
+            width: 22px;
+            height: 22px;
+            transition: transform 0.2s ease;
+            transform: rotate(0deg);
+            
+            
+            &.expanded {
+                transform: rotate(90deg);
+            }
+        }
+
+        &:hover {
+            opacity: 0.8;
+        }
+
+        &:active {
+            opacity: 0.6;
+        }
+    }
+}

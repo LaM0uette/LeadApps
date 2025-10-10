@@ -87,6 +87,8 @@ public class DeckRepository : IDeckRepository
                 .Include(d => d.DeckTags)
                     .ThenInclude(dt => dt.Tag)
                 .Include(d => d.Suggestions)
+                    .ThenInclude(s => s.Suggestor)
+                .Include(d => d.Suggestions)
                     .ThenInclude(s => s.Likes)
                         .ThenInclude(l => l.User)
                 .Include(d => d.Suggestions)
