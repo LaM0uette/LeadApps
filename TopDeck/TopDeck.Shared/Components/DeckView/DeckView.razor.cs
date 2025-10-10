@@ -78,7 +78,7 @@ public class DeckViewBase : LocalizedComponentBase
     
     protected void OpenDeckDetails()
     {
-        string url = $"/deck/{Deck.Code}";
+        string url = $"/decks/{Deck.Code}";
         _navigationManager.NavigateTo(url);
     }
 

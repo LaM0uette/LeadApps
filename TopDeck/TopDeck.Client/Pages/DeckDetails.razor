@@ -1,7 +1,8 @@
-﻿@page "/deck/{DeckCode}"
+﻿@page "/decks/{DeckCode}"
 @inherits DeckDetailsBase
+@attribute [AllowAnonymous]
 
-<PageTitle>Deck</PageTitle>
+<PageTitle>Deck - @(Deck?.Name ?? "Deck")</PageTitle>
 
 
 @if (Deck is null)
