@@ -17,7 +17,7 @@ public class DeckViewBase : LocalizedComponentBase
 
     protected string DeckCode = string.Empty;
     
-    protected  Dictionary<int, string> EnergyTypes = new()
+    protected readonly Dictionary<int, string> EnergyTypes = new()
     {
         { 1, "Grass" },
         { 2, "Fire" },
@@ -32,6 +32,7 @@ public class DeckViewBase : LocalizedComponentBase
     };
     
     [Inject] private IJSRuntime _js { get; set; } = null!;
+    [Inject] private NavigationManager _navigationManager { get; set; } = null!;
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
     
 
@@ -75,6 +76,12 @@ public class DeckViewBase : LocalizedComponentBase
         await Task.Delay(1500);
         DeckCode = Deck.Code;
         StateHasChanged();
+    }
+    
+    protected void OpenDeckDetails()
+    {
+        string url = $"/deck/{Deck.Code}";
+        _navigationManager.NavigateTo(url);
     }
 
     #endregion
