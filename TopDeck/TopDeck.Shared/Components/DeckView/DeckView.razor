@@ -9,7 +9,13 @@
         
         <DeckNamePanel Name="@Deck.Name"/>
         
-        <span class="code" @onclick="CopyCode">@DeckCode</span>
+        <span class="code"
+              @onclick:preventDefault 
+              @onclick:stopPropagation
+              @onclick="CopyCode"
+              >
+            @DeckCode
+        </span>
         
     </div>
     

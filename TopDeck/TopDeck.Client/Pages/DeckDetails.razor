@@ -14,8 +14,15 @@ else
     
         <div class="header">
         
-            <DeckNamePanel Name="@Deck.Name" Width="215px" Height="33px" FontSize="1.2em"/>
-        
+            <DeckNamePanel Name="@Deck.Name" Width="210px" Height="35px" FontSize="1.2em"/>
+            
+            <div class="vote-panel-container">
+                <VotePanel DeckId="Deck.Id" 
+                           UserLikes="Deck.Likes.Select(l => l.User).ToList()"
+                           UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"
+                           Width="140px" Height="35px" FontSize="1.2em"/>
+            </div>
+            
             <span class="code" @onclick="CopyCode">@DeckCode</span>
         
         </div>

@@ -1,4 +1,6 @@
 ﻿.deck-details-page {
+    position: relative;
+    
     width: 100%;
     height: 100%;
 
@@ -31,12 +33,18 @@
 
         z-index: 1;
 
+        & > .vote-panel-container {
+            align-self: self-start;
+        }
 
         & > .code {
-            align-self: self-start;
+            position: absolute;
+
+            top: 55px;
+            right: 8px;
 
             font-family: var(--font-bold), sans-serif;
-            font-size: 1.3em;
+            font-size: 1.2em;
 
             color: var(--color-text-very-light);
 

@@ -24,11 +24,11 @@ public class DeckDetailsBase : LocalizedComponentBase
     {
         Deck? deck = await _deckService.GetByCodeAsync(DeckCode);
         
-        if (deck == null)
+        /*if (deck == null)
         {
             _navigationManager.NavigateTo("/", true);
             return;
-        }
+        }*/
         
         Deck = deck;
     }

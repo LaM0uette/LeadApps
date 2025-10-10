@@ -12,6 +12,9 @@ public class VotePanelBase : ComponentBase
     [Parameter, EditorRequired] public required int DeckId { get; set; }
     [Parameter] public IReadOnlyCollection<User> UserLikes { get; set; } = [];
     [Parameter] public IReadOnlyCollection<User> UserDislikes { get; set; } = [];
+    [Parameter, EditorRequired] public required string Width { get; set; } = "110px";
+    [Parameter, EditorRequired] public required string Height { get; set; } = "33px";
+    [Parameter, EditorRequired] public required string FontSize { get; set; } = "0.9em";
     
     protected string LikeCountFormatted => Format(UserLikes.Count);
     

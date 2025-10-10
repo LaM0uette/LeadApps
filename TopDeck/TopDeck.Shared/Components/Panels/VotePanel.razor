@@ -2,7 +2,7 @@
 @inherits VotePanelBase
 
 
-<div class="vote-panel">
+<div class="vote-panel" style="width: @Width; height: @Height; font-size: @FontSize;">
     
     <button class="like-button" @onclick="OnLikeClicked">
         <img src="img/@(IsLiked ? "like-icon.svg" : "like-empty-icon.svg")" alt="like"/>
