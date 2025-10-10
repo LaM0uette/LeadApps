@@ -17,6 +17,20 @@ public class DeckDetailsBase : LocalizedComponentBase
     protected Deck? Deck;
     protected IReadOnlyList<TCGPCard> HighlightedCards { get; set; } = [];
     
+    protected readonly Dictionary<int, string> EnergyTypes = new()
+    {
+        { 1, "Grass" },
+        { 2, "Fire" },
+        { 3, "Water" },
+        { 4, "Lightning" },
+        { 5, "Psychic" },
+        { 6, "Fighting" },
+        { 7, "Darkness" },
+        { 8, "Metal" },
+        { 9, "Dragon" },
+        { 10, "Colorless" }
+    };
+    
     [Inject] private IJSRuntime _js { get; set; } = null!;
     [Inject] private NavigationManager _navigationManager { get; set; } = null!;
     [Inject] private IDeckService _deckService { get; set; } = null!;

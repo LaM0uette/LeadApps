@@ -22,6 +22,6 @@
 
 @media (min-width: 1024px) {
     .deck-view-container {
-        max-width: 60%;
+        width: 50%;
     }
 }

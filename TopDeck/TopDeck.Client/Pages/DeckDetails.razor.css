@@ -61,33 +61,65 @@
             }
         }
 
-        & > .highlighted-cards {
+        & > .deck-highlight {
+            width: 100%;
+            
             display: flex;
             flex-direction: row;
-            justify-content: center;
-            align-items: flex-end;
+            
+            
+            & > .highlighted-cards {
+                width: 65%;
+                
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: flex-end;
 
-            max-width: 100%;
-            overflow: hidden;
+                overflow: hidden;
 
-            z-index: 1;
+                z-index: 1;
 
 
-            & > img {
-                max-height: 120px;;
-                object-fit: contain;
+                & > img {
+                    max-height: 120px;;
+                    object-fit: contain;
+                }
+
+                & > img:nth-child(2) {
+                    transform: scale(0.8);
+                    transform-origin: bottom center;
+                }
+
+                & > img:nth-child(3) {
+                    transform: scale(0.8);
+                    transform-origin: bottom left;
+                }
             }
 
-            & > img:nth-child(2) {
-                transform: scale(0.8);
-                transform-origin: bottom center;
-            }
+            & > .energies {
+                width: 35%;
+                
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                gap: 8px;
 
-            & > img:nth-child(3) {
-                transform: scale(0.8);
-                transform-origin: bottom left;
+                padding-top: 40px;
+                box-sizing: border-box;
+
+                z-index: 1;
+
+
+                & > img {
+                    max-height: 26px;
+                    max-width: 26px;
+                    object-fit: contain;
+                }
             }
         }
+        
 
         & > .header-separator {
             width: 100%;
@@ -116,7 +148,7 @@
 
 @media (min-width: 1024px) {
     .deck-details-page {
-        width: 60%;
+        width: 50%;
         margin: 0 auto;
     }
 }

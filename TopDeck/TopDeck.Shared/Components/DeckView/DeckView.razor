@@ -41,16 +41,9 @@
 
         <div class="energies">
             
-            @if (HighlightedCards.Count < 2)
-            {
-                <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p>
-            }
-            else
-            {
-                foreach (int energyId in Deck.EnergyIds)
-                {
-                    <img src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
-                }
+            @foreach (int energyId in Deck.EnergyIds)
+            { 
+                <img src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
             }
             
         </div>

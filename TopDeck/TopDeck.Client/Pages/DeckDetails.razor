@@ -34,18 +34,33 @@ else
             
             <VerticalSpacer Value="6"/>
             
-            <div class="highlighted-cards">
-                @if (HighlightedCards.Count < 3)
-                {
-                    <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p> /* TODO: replace this by placeholder img or two first img in deck */
-                }
-                else
-                {
-                    <img src="@HighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
-                    <img src="@HighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
-                    <img src="@HighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>
-                }
+            <div class="deck-highlight">
+                
+                <div class="highlighted-cards">
+                    @if (HighlightedCards.Count < 3)
+                    {
+                        <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p> /* TODO: replace this by placeholder img or two first img in deck */
+                    }
+                    else
+                    {
+                        <img src="@HighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img src="@HighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img src="@HighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>
+                    }
+                </div>
+                
+                <div class="energies">
+            
+                    @foreach (int energyId in Deck.EnergyIds)
+                    { 
+                        <img src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
+                    }
+            
+                </div>
+
             </div>
+            
+            
 
             <VerticalSpacer Value="8"/>
             
