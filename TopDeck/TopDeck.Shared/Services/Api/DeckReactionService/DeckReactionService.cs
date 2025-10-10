@@ -9,8 +9,8 @@ public class DeckReactionService : ApiService, IDeckReactionService
 
     private const string LikesRoute = "/api/deck-likes";
     private const string DislikesRoute = "/api/deck-dislikes";
-    private const string SuggestionLikesRoute = "/api/suggestion-likes";
-    private const string SuggestionDislikesRoute = "/api/suggestion-dislikes";
+    private const string SuggestionLikesRoute = "/api/deck-suggestion-likes";
+    private const string SuggestionDislikesRoute = "/api/deck-suggestion-dislikes";
 
     #endregion
 
