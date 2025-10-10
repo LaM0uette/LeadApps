@@ -153,7 +153,6 @@
         box-sizing: border-box;
         
         overflow-y: auto;
-        /*scrollbar-width: none;*/
 
 
         & > img {

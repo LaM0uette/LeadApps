@@ -33,7 +33,7 @@ public class DecksViewBase : LocalizedComponentBase, IAsyncDisposable
         if (firstRender && _js is IJSInProcessRuntime && !_jsReady)
         {
             _objRef = DotNetObjectReference.Create(this);
-            await _js.InvokeVoidAsync("TopDeck.registerInfiniteScroll", _objRef, 3000);
+            await _js.InvokeVoidAsync("TopDeck.registerInfiniteScroll", _objRef, "#deck-scroll", 3000);
             _jsReady = true;
             await EnsureInitialScrollAsync();
         }
@@ -87,7 +87,7 @@ public class DecksViewBase : LocalizedComponentBase, IAsyncDisposable
         if (!_jsReady || !_hasMore) return;
         try
         {
-            bool canScroll = await _js.InvokeAsync<bool>("TopDeck.canScroll", 0);
+            bool canScroll = await _js.InvokeAsync<bool>("TopDeck.canScroll", "#deck-scroll", 0);
             if (!canScroll)
             {
                 int targetCount = _take * 2;
@@ -95,7 +95,7 @@ public class DecksViewBase : LocalizedComponentBase, IAsyncDisposable
                 {
                     await LoadMoreAsync();
                     await InvokeAsync(StateHasChanged);
-                    bool afterCanScroll = await _js.InvokeAsync<bool>("TopDeck.canScroll", 0);
+                    bool afterCanScroll = await _js.InvokeAsync<bool>("TopDeck.canScroll", "#deck-scroll", 0);
                     if (afterCanScroll) break;
                 }
             }

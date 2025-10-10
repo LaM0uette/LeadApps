@@ -124,6 +124,21 @@
     --radius-l: 12px;
 }
 
+:root {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-secondary) transparent;
+}
+:root::-webkit-scrollbar {
+    width: 6px;
+}
+:root::-webkit-scrollbar-track {
+    background: transparent;
+}
+:root::-webkit-scrollbar-thumb {
+    background-color: var(--color-secondary);
+    border-radius: 4px;
+}
+
 body {
     background-color: var(--color-bg);
     color: var(--color-text);

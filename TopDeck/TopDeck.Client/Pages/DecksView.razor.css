@@ -24,13 +24,11 @@
     gap: 10px;
     
     overflow-y: auto;
-    /*scrollbar-width: none;*/
 }
 
 
 @media (min-width: 1024px) {
     .deck-view-container {
-        width: 50%;
-        margin: 20px auto 0 auto;
+        padding: 0 25%;
     }
 }

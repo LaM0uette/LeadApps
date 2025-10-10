@@ -1,40 +1,75 @@
 ﻿(function(){
   const state = {
-    handler: null
+    handler: null,
+    target: null
   };
 
   window.TopDeck = window.TopDeck || {};
 
-  window.TopDeck.registerInfiniteScroll = function(dotnetRef, threshold){
-    const th = typeof threshold === 'number' ? threshold : 300;
+  // Register infinite scroll on either a specific container (by CSS selector) or the window.
+  // Usage:
+  //   registerInfiniteScroll(dotnetRef, threshold)
+  //   registerInfiniteScroll(dotnetRef, selector, threshold)
+  window.TopDeck.registerInfiniteScroll = function(dotnetRef, selectorOrThreshold, maybeThreshold){
+    const hasSelector = typeof selectorOrThreshold === 'string';
+    const target = hasSelector ? (document.querySelector(selectorOrThreshold) || window) : window;
+    const th = hasSelector ? (typeof maybeThreshold === 'number' ? maybeThreshold : 300) : (typeof selectorOrThreshold === 'number' ? selectorOrThreshold : 300);
+
     const handler = function(){
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-      const viewport = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
-      const fullHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+      const el = (target && target !== window) ? target : null;
+      let scrollTop, viewport, fullHeight;
+      if (el){
+        scrollTop = el.scrollTop || 0;
+        viewport = el.clientHeight || 0;
+        fullHeight = el.scrollHeight || 0;
+      } else {
+        scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        viewport = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
+        fullHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+      }
       if (scrollTop + viewport >= fullHeight - th){
         // debounced by awaiting .NET side loading flag
         try{ dotnetRef.invokeMethodAsync('OnNearBottom'); } catch(e){}
       }
     };
+
+    // Remove previous
     if (state.handler){
-      window.removeEventListener('scroll', state.handler);
+      const prevTarget = state.target || window;
+      prevTarget.removeEventListener('scroll', state.handler);
     }
+
     state.handler = handler;
-    window.addEventListener('scroll', handler, { passive: true });
+    state.target = target;
+    (target || window).addEventListener('scroll', handler, { passive: true });
   };
 
-  // Returns true if the page content is taller than the viewport (can scroll)
-  window.TopDeck.canScroll = function(threshold){
-    const th = typeof threshold === 'number' ? threshold : 0;
-    const viewport = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
-    const fullHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
-    return (fullHeight - th) > viewport;
+  // Returns true if the content is taller than the viewport (can scroll)
+  // Usage:
+  //   canScroll(threshold)
+  //   canScroll(selector, threshold)
+  window.TopDeck.canScroll = function(selectorOrThreshold, maybeThreshold){
+    const hasSelector = typeof selectorOrThreshold === 'string';
+    const el = hasSelector ? document.querySelector(selectorOrThreshold) : null;
+    const th = hasSelector ? (typeof maybeThreshold === 'number' ? maybeThreshold : 0) : (typeof selectorOrThreshold === 'number' ? selectorOrThreshold : 0);
+
+    if (el){
+      const viewport = el.clientHeight || 0;
+      const fullHeight = el.scrollHeight || 0;
+      return (fullHeight - th) > viewport;
+    } else {
+      const viewport = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
+      const fullHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+      return (fullHeight - th) > viewport;
+    }
   };
 
   window.TopDeck.unregisterInfiniteScroll = function(){
     if (state.handler){
-      window.removeEventListener('scroll', state.handler);
+      const target = state.target || window;
+      target.removeEventListener('scroll', state.handler);
       state.handler = null;
+      state.target = null;
     }
   };
 })();
