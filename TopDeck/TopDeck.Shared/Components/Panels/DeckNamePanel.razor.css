@@ -1,0 +1,37 @@
+﻿.deck-name-panel {
+    width: 110px;
+    height: 26px;
+    
+    background: var(--color-bg);
+    box-shadow: var(--drop-shadow-m);
+    
+    border: none;
+    outline: 1px solid var(--color-outline);
+    border-radius: var(--radius-m);
+    
+    padding: 4px 6px;
+    box-sizing: border-box;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    cursor: var(--cursor-default);
+    user-select: none;
+    
+    
+    & > .name {
+        font-family: var(--font-extra-bold), sans-serif;
+        font-size: 0.9em;
+
+        flex-grow: 1;
+        text-align: center;
+        
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        
+        color: var(--color-secondary);
+    }
+}

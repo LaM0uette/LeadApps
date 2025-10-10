@@ -11,8 +11,7 @@ public static class UserMappings
         {
             OAuthProvider = dto.OAuthProvider,
             OAuthId = dto.OAuthId,
-            UserName = dto.UserName,
-            Email = dto.Email
+            UserName = dto.UserName
         };
     }
 
@@ -21,16 +20,15 @@ public static class UserMappings
         entity.OAuthProvider = dto.OAuthProvider;
         entity.OAuthId = dto.OAuthId;
         entity.UserName = dto.UserName;
-        entity.Email = dto.Email;
     }
 
     public static UserOutputDTO ToOutput(this User entity)
     {
-        return new UserOutputDTO(entity.Id, entity.OAuthProvider, entity.OAuthId, entity.UserName, entity.Email, entity.CreatedAt);
+        return new UserOutputDTO(entity.Id, entity.OAuthProvider, entity.OAuthId, entity.UserName, entity.CreatedAt);
     }
 
     public static UserInputDTO ToInput(this User entity)
     {
-        return new UserInputDTO(entity.OAuthProvider, entity.OAuthId, entity.UserName, entity.Email);
+        return new UserInputDTO(entity.OAuthProvider, entity.OAuthId, entity.UserName);
     }
 }

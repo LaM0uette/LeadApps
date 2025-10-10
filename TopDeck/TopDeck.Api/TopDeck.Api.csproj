@@ -21,4 +21,8 @@
       <ProjectReference Include="..\TopDeck.Contracts\TopDeck.Contracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Data\FakeData\" />
+    </ItemGroup>
+
 </Project>

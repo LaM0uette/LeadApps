@@ -40,10 +40,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDeckRepository, DeckRepository>();
 builder.Services.AddScoped<IDeckSuggestionRepository, DeckSuggestionRepository>();
+builder.Services.AddScoped<IDeckLikeRepository, DeckLikeRepository>();
+builder.Services.AddScoped<IDeckSuggestionLikeRepository, DeckSuggestionLikeRepository>();
+builder.Services.AddScoped<IDeckDislikeRepository, DeckDislikeRepository>();
+builder.Services.AddScoped<IDeckSuggestionDislikeRepository, DeckSuggestionDislikeRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDeckService, DeckService>();
 builder.Services.AddScoped<IDeckSuggestionService, DeckSuggestionService>();
+builder.Services.AddScoped<IDeckLikeService, DeckLikeService>();
+builder.Services.AddScoped<IDeckSuggestionLikeService, DeckSuggestionLikeService>();
+builder.Services.AddScoped<IDeckDislikeService, DeckDislikeService>();
+builder.Services.AddScoped<IDeckSuggestionDislikeService, DeckSuggestionDislikeService>();
 
 WebApplication app = builder.Build();
 
@@ -61,11 +69,14 @@ app.UseCors("AppPolicy");
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 
 // map endpoints
 app.MapUsersEndpoints();
 app.MapDecksEndpoints();
 app.MapDeckSuggestionsEndpoints();
+app.MapDeckLikesEndpoints();
+app.MapDeckSuggestionLikesEndpoints();
+app.MapDeckDislikesEndpoints();
+app.MapDeckSuggestionDislikesEndpoints();
 
 app.Run();

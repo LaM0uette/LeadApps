@@ -1,22 +1,51 @@
 ﻿@page "/"
+@using TopDeck.Domain.Models
 @inherits HomeBase
 @attribute [AllowAnonymous]
 
-<PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<PageTitle>TOPDECK</PageTitle>
 
-Welcome to your new app.
 
-<AuthorizeView>
-    <Authorized>        
-        <a href="Account/Logout">Log out</a>
-    </Authorized>
-    <NotAuthorized>
+<div class="home-page">
+    
+    <AuthorizeView>
+        <Authorized>    
+                
+            <LmButton style="position: absolute; top: 20px; right: 20px;" Href="/Account/Logout" ForceLoad>
+                @Localizer.Localize("component.button.logout.text", "Log out")
+            </LmButton>
+                
+        </Authorized>
+        <NotAuthorized>
+                
+            <LmButton style="position: absolute; top: 20px; right: 20px;" Href="/Login">
+                @Localizer.Localize("component.button.login.text", "Log in")
+            </LmButton>
+                
+        </NotAuthorized>
+    </AuthorizeView>
+    
+    <div class="home-page-content">
         
-        <div class="auth-panel-container">
-            <AuthPanel/>
+        <VerticalSpacer Value="20"/>
+        
+        <div class="deck-view-container">
+            
+            @if (Decks.Count <= 0)
+            {
+                <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p>
+            }
+            else
+            {
+                foreach (Deck deck in Decks)
+                {
+                    <DeckView Deck="deck"/>
+                }
+            }
+            
         </div>
-        
-    </NotAuthorized>
-</AuthorizeView>
+
+    </div>
+    
+</div>

@@ -1,11 +1,17 @@
 using System.Globalization;
 using System.Security.Claims;
 using Auth0.AspNetCore.Authentication;
+using Helpers.Auth0;
 using Localizer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Components.Authorization;
+using Requesters.AuthUser;
+using TCGPCardRequester;
 using TopDeck.Components;
 using TopDeck.Contracts.DTO;
 using TopDeck.Endpoints;
+using TopDeck.FakeServices;
+using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -24,39 +30,38 @@ builder.Services
             OnTokenValidated = async context =>
             {
                 ClaimsPrincipal? user = context.Principal;
+                string? sub = user?.FindFirstValue(ClaimTypes.NameIdentifier);
+                
+                if (!Auth0SubHelper.TryParse(sub, out string provider, out string authId)) 
+                    return;
 
-                string? authId = user?.FindFirstValue(ClaimTypes.NameIdentifier);
-                string provider = authId?.Split('|').FirstOrDefault() ?? "unknown";
+                string? email =
+                    user?.FindFirstValue(ClaimTypes.Email) ??
+                    user?.Claims.FirstOrDefault(c => c.Type == "email")?.Value ??
+                    (user?.FindFirstValue(ClaimTypes.Name)?.Contains('@') == true ? user.FindFirstValue(ClaimTypes.Name) : null);
 
-                string? fullName = user?.FindFirstValue(ClaimTypes.Name);
-                string? given    = user?.FindFirstValue(ClaimTypes.GivenName);
-                string? surname  = user?.FindFirstValue(ClaimTypes.Surname);
-                string email    = user?.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+                string fullName =
+                    user?.FindFirstValue(ClaimTypes.Name) ??
+                    $"{user?.FindFirstValue(ClaimTypes.GivenName)} {user?.FindFirstValue(ClaimTypes.Surname)}".Trim();
 
-                string userName = !string.IsNullOrWhiteSpace(fullName)
-                    ? fullName
-                    : $"{given} {surname}".Trim();
+                string? nickname = user?.Claims.FirstOrDefault(c => c.Type == "nickname")?.Value;
 
-                if (!string.IsNullOrEmpty(authId))
-                {
-                    IHttpClientFactory factory = context.HttpContext.RequestServices.GetRequiredService<IHttpClientFactory>();
-                    HttpClient http = factory.CreateClient("Api");
+                string userName = !string.IsNullOrWhiteSpace(nickname)
+                    ? nickname
+                    : !string.IsNullOrWhiteSpace(fullName) ? fullName : email ?? "unknown";
 
-                    UserInputDTO dto = new(
-                        provider,
-                        authId,
-                        userName,
-                        email
-                    );
+                IHttpClientFactory factory = context.HttpContext.RequestServices.GetRequiredService<IHttpClientFactory>();
+                HttpClient http = factory.CreateClient("Api");
 
-                    await http.PostAsJsonAsync("api/users", dto, context.HttpContext.RequestAborted);
-                }
+                UserInputDTO dto = new(provider, authId, userName);
+                await http.PostAsJsonAsync("api/users", dto, context.HttpContext.RequestAborted);
             }
         };
     });
 
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents()
@@ -65,6 +70,15 @@ builder.Services.AddRazorComponents()
 // Services
 builder.Services.AddSingleton<UIStore>();
 builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
+
+
+builder.Services.AddScoped<IAuthUserRequester, FakeAuthUserRequester>();
+builder.Services.AddScoped<IUserService, FakeUserService>();
+
+builder.Services.AddSingleton<IDeckService, FakeDeckService>();
+
+builder.Services.AddScoped<ITCGPCardRequester, TCGPCardRequester.TCGPCardRequester>();
+
 
 string[] supportedCultures = ["en", "fr"];
 builder.Services.Configure<RequestLocalizationOptions>(options =>

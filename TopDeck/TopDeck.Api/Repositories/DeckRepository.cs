@@ -25,6 +25,16 @@ public class DeckRepository : IDeckRepository
         return await Query(includeRelations).AsNoTracking().OrderBy(d => d.Id).ToListAsync(ct);
     }
 
+    public async Task<IReadOnlyList<Deck>> GetPageAsync(int skip, int take, bool includeRelations = false, CancellationToken ct = default)
+    {
+        return await Query(includeRelations).AsNoTracking().OrderBy(d => d.Id).Skip(skip).Take(take).ToListAsync(ct);
+    }
+
+    public Task<int> CountAsync(CancellationToken ct = default)
+    {
+        return _db.Decks.CountAsync(ct);
+    }
+
     public async Task<Deck?> GetByIdAsync(int id, bool includeRelations = true, CancellationToken ct = default)
     {
         return await Query(includeRelations).AsNoTracking().FirstOrDefaultAsync(d => d.Id == id, ct);
@@ -52,6 +62,12 @@ public class DeckRepository : IDeckRepository
         await _db.SaveChangesAsync(ct);
         return true;
     }
+    
+    
+    public async Task<bool> ExistsByCodeAsync(string code, CancellationToken ct = default)
+    {
+        return await _db.Decks.AnyAsync(d => d.Code == code, ct);
+    }
 
     #endregion
 
@@ -60,7 +76,22 @@ public class DeckRepository : IDeckRepository
     private IQueryable<Deck> Query(bool include)
     {
         return include
-            ? _db.Decks.Include(d => d.Creator).Include(d => d.Suggestions).AsQueryable()
+            ? _db.Decks
+                .Include(d => d.Creator)
+                .Include(d => d.Cards)
+                .Include(d => d.DeckTags)
+                    .ThenInclude(dt => dt.Tag)
+                .Include(d => d.Suggestions)
+                    .ThenInclude(s => s.Likes)
+                        .ThenInclude(l => l.User)
+                .Include(d => d.Suggestions)
+                    .ThenInclude(s => s.Dislikes)
+                        .ThenInclude(dl => dl.User)
+                .Include(d => d.Likes)
+                    .ThenInclude(l => l.User)
+                .Include(d => d.Dislikes)
+                    .ThenInclude(dl => dl.User)
+                .AsQueryable()
             : _db.Decks.AsQueryable();
     }
 

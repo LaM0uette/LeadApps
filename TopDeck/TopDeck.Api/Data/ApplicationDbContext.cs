@@ -12,20 +12,18 @@ public class ApplicationDbContext : DbContext
 
     #region DbSets
 
-    public DbSet<User> Users
-    {
-        get { return Set<User>(); }
-    }
-
-    public DbSet<Deck> Decks
-    {
-        get { return Set<Deck>(); }
-    }
-
-    public DbSet<DeckSuggestion> DeckSuggestions
-    {
-        get { return Set<DeckSuggestion>(); }
-    }
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Deck> Decks => Set<Deck>();
+    public DbSet<DeckCard> DeckCards => Set<DeckCard>();
+    public DbSet<DeckSuggestion> DeckSuggestions => Set<DeckSuggestion>();
+    public DbSet<DeckSuggestionAddedCard> DeckSuggestionAddedCards => Set<DeckSuggestionAddedCard>();
+    public DbSet<DeckSuggestionRemovedCard> DeckSuggestionRemovedCards => Set<DeckSuggestionRemovedCard>();
+    public DbSet<DeckLike> DeckLikes => Set<DeckLike>();
+    public DbSet<DeckSuggestionLike> DeckSuggestionLikes => Set<DeckSuggestionLike>();
+    public DbSet<DeckDislike> DeckDislikes => Set<DeckDislike>();
+    public DbSet<DeckSuggestionDislike> DeckSuggestionDislikes => Set<DeckSuggestionDislike>();
+    public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<DeckTag> DeckTags => Set<DeckTag>();
 
     #endregion
 
@@ -43,7 +41,6 @@ public class ApplicationDbContext : DbContext
             entity.Property(u => u.OAuthProvider).IsRequired();
             entity.Property(u => u.OAuthId).IsRequired();
             entity.Property(u => u.UserName).IsRequired();
-            entity.Property(u => u.Email).IsRequired();
 
             entity.HasIndex(u => new { u.OAuthProvider, u.OAuthId }).IsUnique();
 
@@ -59,11 +56,32 @@ public class ApplicationDbContext : DbContext
             entity.Property(d => d.Code).IsRequired();
             entity.HasIndex(d => d.Code).IsUnique();
 
-            // Npgsql mappe List<int> vers integer[] automatiquement
-            entity.Property(d => d.CardIds).HasColumnType("integer[]");
+            // Cards relation
+            entity.HasMany(d => d.Cards)
+                .WithOne(c => c.Deck)
+                .HasForeignKey(c => c.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Tags relation via join entity DeckTag
+            entity.HasMany(d => d.DeckTags)
+                .WithOne(dt => dt.Deck)
+                .HasForeignKey(dt => dt.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Npgsql maps List<int> to integer[] automatically for energies
             entity.Property(d => d.EnergyIds).HasColumnType("integer[]");
 
-            entity.Property(d => d.Likes).HasDefaultValue(0);
+            // Likes handled via DeckLike join entity
+            entity.HasMany(d => d.Likes)
+                .WithOne(l => l.Deck)
+                .HasForeignKey(l => l.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Dislikes handled via DeckDislike join entity
+            entity.HasMany(d => d.Dislikes)
+                .WithOne(l => l.Deck)
+                .HasForeignKey(l => l.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(d => d.Creator)
                 .WithMany()
@@ -80,12 +98,26 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasKey(s => s.Id);
 
-            entity.Property(s => s.AddedCardIds).HasColumnType("integer[]");
-            entity.Property(s => s.RemovedCardIds).HasColumnType("integer[]");
+            // Energies as arrays
             entity.Property(s => s.AddedEnergyIds).HasColumnType("integer[]");
             entity.Property(s => s.RemovedEnergyIds).HasColumnType("integer[]");
 
-            entity.Property(s => s.Likes).HasDefaultValue(0);
+            // Cards relations
+            entity.HasMany(s => s.AddedCards)
+                .WithOne(c => c.Suggestion)
+                .HasForeignKey(c => c.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(s => s.RemovedCards)
+                .WithOne(c => c.Suggestion)
+                .HasForeignKey(c => c.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Likes handled via DeckSuggestionLike join entity
+            entity.HasMany(s => s.Likes)
+                .WithOne(l => l.Suggestion)
+                .HasForeignKey(l => l.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(s => s.Suggestor)
                 .WithMany()
@@ -100,6 +132,129 @@ public class ApplicationDbContext : DbContext
             entity.Property(s => s.CreatedAt)
                 .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
             entity.Property(s => s.UpdatedAt)
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+        });
+
+        // DeckLike
+        modelBuilder.Entity<DeckLike>(entity =>
+        {
+            entity.HasKey(l => new { l.DeckId, l.UserId });
+            entity.HasOne(l => l.Deck)
+                .WithMany(d => d.Likes)
+                .HasForeignKey(l => l.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(l => l.CreatedAt)
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+        });
+
+        // DeckCard
+        modelBuilder.Entity<DeckCard>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.CollectionCode).IsRequired();
+            // Allow duplicate cards per deck: remove unique index on (DeckId, CollectionCode, CollectionNumber)
+            entity.HasOne(c => c.Deck)
+                .WithMany(d => d.Cards)
+                .HasForeignKey(c => c.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // DeckSuggestionAddedCard
+        modelBuilder.Entity<DeckSuggestionAddedCard>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.CollectionCode).IsRequired();
+            entity.HasIndex(c => new { c.DeckSuggestionId, c.CollectionCode, c.CollectionNumber }).IsUnique();
+            entity.HasOne(c => c.Suggestion)
+                .WithMany(s => s.AddedCards)
+                .HasForeignKey(c => c.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // DeckSuggestionRemovedCard
+        modelBuilder.Entity<DeckSuggestionRemovedCard>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.CollectionCode).IsRequired();
+            entity.HasIndex(c => new { c.DeckSuggestionId, c.CollectionCode, c.CollectionNumber }).IsUnique();
+            entity.HasOne(c => c.Suggestion)
+                .WithMany(s => s.RemovedCards)
+                .HasForeignKey(c => c.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // DeckSuggestionLike
+        modelBuilder.Entity<DeckSuggestionLike>(entity =>
+        {
+            entity.HasKey(l => new { l.DeckSuggestionId, l.UserId });
+            entity.HasOne(l => l.Suggestion)
+                .WithMany(s => s.Likes)
+                .HasForeignKey(l => l.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(l => l.CreatedAt)
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+        });
+
+        // DeckDislike
+        modelBuilder.Entity<DeckDislike>(entity =>
+        {
+            entity.HasKey(l => new { l.DeckId, l.UserId });
+            entity.HasOne(l => l.Deck)
+                .WithMany(d => d.Dislikes)
+                .HasForeignKey(l => l.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(l => l.CreatedAt)
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+        });
+
+        // Tag
+        modelBuilder.Entity<Tag>(entity =>
+        {
+            entity.HasKey(t => t.Id);
+            entity.Property(t => t.Name).IsRequired();
+            entity.Property(t => t.ColorHex).IsRequired();
+            entity.HasIndex(t => t.Name).IsUnique();
+        });
+
+        // DeckTag (join)
+        modelBuilder.Entity<DeckTag>(entity =>
+        {
+            entity.HasKey(dt => new { dt.DeckId, dt.TagId });
+            entity.HasOne(dt => dt.Deck)
+                .WithMany(d => d.DeckTags)
+                .HasForeignKey(dt => dt.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(dt => dt.Tag)
+                .WithMany(t => t.DeckTags)
+                .HasForeignKey(dt => dt.TagId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // DeckSuggestionDislike
+        modelBuilder.Entity<DeckSuggestionDislike>(entity =>
+        {
+            entity.HasKey(l => new { l.DeckSuggestionId, l.UserId });
+            entity.HasOne(l => l.Suggestion)
+                .WithMany(s => s.Dislikes)
+                .HasForeignKey(l => l.DeckSuggestionId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(l => l.CreatedAt)
                 .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
         });
     }

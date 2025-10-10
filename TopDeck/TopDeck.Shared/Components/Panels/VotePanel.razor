@@ -1,0 +1,19 @@
+﻿@namespace TopDeck.Shared.Components
+@inherits VotePanelBase
+
+
+<div class="vote-panel">
+    
+    <button class="like-button" @onclick="OnLikeClicked">
+        <img src="img/@(IsLiked ? "like-icon.svg" : "like-empty-icon.svg")" alt="like"/>
+    </button>
+    
+    <span class="like-count">@LikeCountFormatted</span>
+    
+    <div  class="separator"></div>
+    
+    <button class="dislike-button" @onclick="OnDislikeClicked">
+        <img src="img/@(IsDisliked ? "like-icon.svg" : "like-empty-icon.svg")" alt="dislike"/>
+    </button>
+    
+</div>

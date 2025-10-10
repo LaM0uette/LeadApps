@@ -30,9 +30,9 @@ public class UserRepository : IUserRepository
         return await _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, ct);
     }
 
-    public async Task<User?> GetByOAuthAsync(string provider, string oAuthId, CancellationToken ct = default)
+    public async Task<User?> GetByOAuthAsync(string provider, string id, CancellationToken ct = default)
     {
-        return await _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.OAuthProvider == provider && x.OAuthId == oAuthId, ct);
+        return await _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.OAuthProvider == provider && x.OAuthId == id, ct);
     }
 
     public async Task<User> AddAsync(User user, CancellationToken ct = default)

@@ -15,12 +15,15 @@ public class Deck
     [MaxLength(10)]
     public required string Code { get; set; }
     
-    public ICollection<int> CardIds { get; set; } = [];
+    public ICollection<DeckCard> Cards { get; set; } = [];
     public ICollection<int> EnergyIds { get; set; } = [];
     
-    public int Likes { get; set; } = 0;
+    public ICollection<DeckLike> Likes { get; set; } = [];
+    public ICollection<DeckDislike> Dislikes { get; set; } = [];
     
     public ICollection<DeckSuggestion> Suggestions { get; set; } = [];
+
+    public ICollection<DeckTag> DeckTags { get; set; } = [];
     
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

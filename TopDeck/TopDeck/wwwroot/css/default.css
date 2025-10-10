@@ -27,11 +27,13 @@
 
     --color-bg: #faf8f7;
     --color-border: #d6d0cf;
+    --color-outline: #ebeced;
 
     --color-text: #252829;
     --color-text-strong: #090909;
     --color-text-muted: #6e6a69;
     --color-text-light: #a8a4a2;
+    --color-text-very-light: #effafa;
 
     --color-info: #8ab8e3;
     --color-success: #7bcca0;
@@ -40,8 +42,42 @@
     
     --color-ok: #7bcca0;
     --color-cancel: #ed8072;
+
     
-    --shadow-box: 0 1px 1px rgba(30, 25, 25, 0.06), 0 2px 4px rgba(30, 25, 25, 0.04);
+    /* Pokemon Energy Colors */
+    --energy-grass-1: #b9e2c1; --energy-grass-mid: #98d4a7; --energy-grass-2: #7acb91;
+    --energy-fire-1: #e8b89f; --energy-fire-mid: #e59d9b; --energy-fire-2: #de8498;
+    --energy-water-1: #b3d6eb; --energy-water-mid: #8fc4e0; --energy-water-2: #6bb3d8;
+    --energy-lightning-1: #f8efb0; --energy-lightning-mid: #f6e68c; --energy-lightning-2: #f2db68;
+    --energy-psychic-1: #d8c1e7; --energy-psychic-mid: #c9a6dc; --energy-psychic-2: #b78bd0;
+    --energy-fighting-1: #f2c2ad; --energy-fighting-mid: #ea9f83; --energy-fighting-2: #e3805b;
+    --energy-darkness-1: #b0b8c1; --energy-darkness-mid: #8e9aa7; --energy-darkness-2: #6f7c8d;
+    --energy-metal-1: #d1d7db; --energy-metal-mid: #b8c1c8; --energy-metal-2: #9faab4;
+    --energy-dragon-1: #e6ddb0; --energy-dragon-mid: #d9c57f; --energy-dragon-2: #c9ac50;
+    --energy-colorless-1: #f0efec; --energy-colorless-mid: #dfddd9; --energy-colorless-2: #cbc7c2;
+
+    --gradient-grass: linear-gradient(115deg,var(--energy-grass-1) 0%,var(--energy-grass-mid) 58%,var(--energy-grass-2) 100%);
+    --gradient-fire: linear-gradient(115deg,var(--energy-fire-1) 0%,var(--energy-fire-mid) 58%,var(--energy-fire-2) 100%);
+    --gradient-water: linear-gradient(115deg,var(--energy-water-1) 0%,var(--energy-water-mid) 58%,var(--energy-water-2) 100%);
+    --gradient-lightning: linear-gradient(115deg,var(--energy-lightning-1) 0%,var(--energy-lightning-mid) 58%,var(--energy-lightning-2) 100%);
+    --gradient-psychic: linear-gradient(115deg,var(--energy-psychic-1) 0%,var(--energy-psychic-mid) 58%,var(--energy-psychic-2) 100%);
+    --gradient-fighting: linear-gradient(115deg,var(--energy-fighting-1) 0%,var(--energy-fighting-mid) 58%,var(--energy-fighting-2) 100%);
+    --gradient-darkness: linear-gradient(115deg,var(--energy-darkness-1) 0%,var(--energy-darkness-mid) 58%,var(--energy-darkness-2) 100%);
+    --gradient-metal: linear-gradient(115deg,var(--energy-metal-1) 0%,var(--energy-metal-mid) 58%,var(--energy-metal-2) 100%);
+    --gradient-dragon: linear-gradient(115deg,var(--energy-dragon-1) 0%,var(--energy-dragon-mid) 58%,var(--energy-dragon-2) 100%);
+    --gradient-colorless: linear-gradient(115deg,var(--energy-colorless-1) 0%,var(--energy-colorless-mid) 58%,var(--energy-colorless-2) 100%);
+
+    
+    --shadow-s: 0 1px 2px rgba(30, 25, 25, 0.052);
+    --shadow-m: 0 1px 1px rgba(30, 25, 25, 0.06), 0 2px 4px rgba(30, 25, 25, 0.04);
+    --shadow-l: 0 10px 15px rgba(30, 25, 25, 0.1), 0 4px 6px rgba(30, 25, 25, 0.05);
+    --shadow-xl: 0 20px 25px rgba(30, 25, 25, 0.15), 0 10px 10px rgba(30, 25, 25, 0.05);
+
+    --drop-shadow-s: 2px 2px 4px rgba(30, 25, 25, 0.052);
+    --drop-shadow-m: 3px 3px 6px rgba(30, 25, 25, 0.06), 5px 5px 10px rgba(30, 25, 25, 0.04);
+    --drop-shadow-l: 6px 6px 12px rgba(30, 25, 25, 0.1), 10px 10px 20px rgba(30, 25, 25, 0.05);
+    --drop-shadow-xl: 10px 10px 20px rgba(30, 25, 25, 0.15), 15px 15px 30px rgba(30, 25, 25, 0.05);
+    
     --radius-s: 3px;
     --radius-m: 7px;
     --radius-l: 12px;
@@ -57,11 +93,13 @@
 
     --color-bg: #1a1716;
     --color-border: #423d3b;
+    --color-outline: #2c2a29;
 
     --color-text: #ebe8e5;
     --color-text-strong: #ffffff;
     --color-text-muted: #b4aeac;
     --color-text-light: #7a7471;
+    --color-text-very-light: #4c4847;
 
     --color-info: #7da9d6;
     --color-success: #6db492;
@@ -71,7 +109,16 @@
     --color-ok: #6db492;
     --color-cancel: #e07466;
 
-    --shadow-box: 0 1px 1px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-s: 0 1px 2px rgba(255, 255, 255, 0.052);
+    --shadow-m: 0 1px 2px rgba(255, 255, 255, 0.06), 0 2px 4px rgba(255, 255, 255, 0.04);
+    --shadow-l: 0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(255, 255, 255, 0.05);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.5), 0 10px 10px rgba(255, 255, 255, 0.06);
+
+    --drop-shadow-s: 2px 2px 4px rgba(0, 0, 0, 0.42);
+    --drop-shadow-m: 3px 3px 6px rgba(0, 0, 0, 0.45), 5px 5px 10px rgba(255, 255, 255, 0.04);
+    --drop-shadow-l: 6px 6px 12px rgba(0, 0, 0, 0.6), 10px 10px 20px rgba(255, 255, 255, 0.05);
+    --drop-shadow-xl: 10px 10px 20px rgba(0, 0, 0, 0.7), 15px 15px 30px rgba(255, 255, 255, 0.06);
+    
     --radius-s: 3px;
     --radius-m: 7px;
     --radius-l: 12px;

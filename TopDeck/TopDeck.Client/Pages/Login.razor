@@ -1,0 +1,30 @@
+﻿@page "/Login"
+@inherits LoginBase
+@attribute [AllowAnonymous]
+
+
+<PageTitle>TOPDECK - Login</PageTitle>
+
+
+<div class="login-page">
+    
+    <AuthorizeView>
+        <Authorized>   
+            
+            <AutoRedirect RedirectUri="/"/>
+            
+        </Authorized>
+        <NotAuthorized>
+            
+            <LmButton style="position: absolute; top: 20px; right: 20px;" Href="/">
+                @Localizer.Localize("component.button.back.text", "Back")
+            </LmButton>
+
+            <div class="auth-panel-container">
+                <AuthPanel/>
+            </div>
+
+        </NotAuthorized>
+    </AuthorizeView>
+
+</div>

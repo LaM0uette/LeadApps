@@ -4,5 +4,10 @@
   "authPanel.providerButton.text.microsoft": "Connecter vous avec Microsoft",
   "authPanel.providerButton.text.apple": "Connecter vous avec Apple",
   "authPanel.providerButton.text.twitch": "Connecter vous avec Twitch",
-  "authPanel.providerButton.text.twitter": "Connecter vous avec Twitter"
+  "authPanel.providerButton.text.twitter": "Connecter vous avec Twitter",
+  "component.button.login.text": "Se connecter",
+  "component.button.logout.text": "Se déconnecter",
+  "component.button.back.text": "Retour",
+  "feedback.text.copied": "Copié",
+  "feedback.text.loading": "Chargement..."
 }

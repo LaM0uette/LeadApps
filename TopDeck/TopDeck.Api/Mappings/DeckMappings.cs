@@ -7,14 +7,19 @@ public static class DeckMappings
 {
     public static Deck ToEntity(this DeckInputDTO dto)
     {
+        var allCards = (dto.Cards ?? Array.Empty<DeckCardInputDTO>())
+            .Select(c => new DeckCard { Deck = null!, DeckId = 0, CollectionCode = c.CollectionCode, CollectionNumber = c.CollectionNumber, IsHighlighted = c.IsHighlighted })
+            .ToList();
+
         return new Deck
         {
             CreatorId = dto.CreatorId,
             Creator = null!, // set by EF from CreatorId
             Name = dto.Name,
-            Code = dto.Code,
-            CardIds = dto.CardIds?.ToList() ?? [],
-            EnergyIds = dto.EnergyIds?.ToList() ?? []
+            Code = string.Empty, // TODO: change this
+            Cards = allCards,
+            EnergyIds = dto.EnergyIds?.ToList() ?? [],
+            DeckTags = (dto.TagIds ?? Array.Empty<int>()).Select(id => new DeckTag { Deck = null!, DeckId = 0, TagId = id, Tag = null! }).ToList()
         };
     }
 
@@ -22,30 +27,61 @@ public static class DeckMappings
     {
         entity.CreatorId = dto.CreatorId;
         entity.Name = dto.Name;
-        entity.Code = dto.Code;
-        entity.CardIds = dto.CardIds?.ToList() ?? [];
+        entity.Code = string.Empty; // TODO: change this
+
+        var allCards = (dto.Cards ?? Array.Empty<DeckCardInputDTO>())
+            .Select(c => new DeckCard { Deck = entity, DeckId = entity.Id, CollectionCode = c.CollectionCode, CollectionNumber = c.CollectionNumber, IsHighlighted = c.IsHighlighted })
+            .ToList();
+        entity.Cards = allCards;
+
         entity.EnergyIds = dto.EnergyIds?.ToList() ?? [];
+
+        entity.DeckTags = (dto.TagIds ?? Array.Empty<int>())
+            .Select(id => new DeckTag { Deck = entity, DeckId = entity.Id, TagId = id, Tag = null! })
+            .ToList();
+    }
+
+    // Shallow output to avoid circular references: empty Likes and Suggestions
+    public static DeckOutputDTO ToShallowOutput(this Deck entity)
+    {
+        return new DeckOutputDTO(
+            entity.Id,
+            entity.Creator is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : entity.Creator.ToOutput(),
+            entity.Name,
+            entity.Code,
+            entity.Cards.Select(c => new DeckCardOutputDTO(c.CollectionCode, c.CollectionNumber, c.IsHighlighted)).ToList(),
+            entity.EnergyIds.ToList(),
+            entity.DeckTags.Select(dt => new TagOutputDTO(dt.TagId, dt.Tag?.Name ?? string.Empty, dt.Tag?.ColorHex ?? string.Empty)).ToList(),
+            new List<DeckLikeOutputDTO>(),
+            new List<DeckDislikeOutputDTO>(),
+            new List<DeckSuggestionOutputDTO>(),
+            entity.CreatedAt,
+            entity.UpdatedAt
+        );
     }
 
     public static DeckOutputDTO ToOutput(this Deck entity)
     {
+        // Build a shallow deck instance for nested references within likes to prevent recursion
+        DeckOutputDTO shallowDeck = entity.ToShallowOutput();
+
         return new DeckOutputDTO(
             entity.Id,
-            entity.Creator is null ? new UserInputDTO("", "", "", "") : new UserInputDTO(entity.Creator.OAuthProvider, entity.Creator.OAuthId, entity.Creator.UserName, entity.Creator.Email),
+            entity.Creator is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : entity.Creator.ToOutput(),
             entity.Name,
             entity.Code,
-            entity.CardIds.ToList(),
+            entity.Cards.Select(c => new DeckCardOutputDTO(c.CollectionCode, c.CollectionNumber, c.IsHighlighted)).ToList(),
             entity.EnergyIds.ToList(),
-            entity.Likes,
-            entity.Suggestions.Select(s => new DeckSuggestionInputDTO(
-                s.SuggestorId,
-                s.DeckId,
-                s.AddedCardIds.ToList(),
-                s.RemovedCardIds.ToList(),
-                s.AddedEnergyIds.ToList(),
-                s.RemovedEnergyIds.ToList(),
-                s.Likes
+            entity.DeckTags.Select(dt => new TagOutputDTO(dt.TagId, dt.Tag?.Name ?? string.Empty, dt.Tag?.ColorHex ?? string.Empty)).ToList(),
+            entity.Likes.Select(l => new DeckLikeOutputDTO(
+                shallowDeck,
+                l.User is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : l.User.ToOutput()
             )).ToList(),
+            entity.Dislikes.Select(l => new DeckDislikeOutputDTO(
+                shallowDeck,
+                l.User is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : l.User.ToOutput()
+            )).ToList(),
+            entity.Suggestions.Select(s => s.ToOutput()).ToList(),
             entity.CreatedAt,
             entity.UpdatedAt
         );

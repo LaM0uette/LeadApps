@@ -3,7 +3,7 @@
 public record DeckInputDTO(
     int CreatorId,
     string Name,
-    string Code,
-    ICollection<int> CardIds,
-    ICollection<int> EnergyIds
+    ICollection<DeckCardInputDTO> Cards,
+    ICollection<int> EnergyIds,
+    ICollection<int> TagIds
 );
