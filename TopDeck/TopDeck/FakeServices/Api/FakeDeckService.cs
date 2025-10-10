@@ -22,6 +22,11 @@ public class FakeDeckService : IDeckService
     {
         return Task.FromResult<Deck?>(null);
     }
+    
+    public Task<Deck?> GetByCodeAsync(string code, CancellationToken ct = default)
+    {
+        return Task.FromResult<Deck?>(null);
+    }
 
     public Task<Deck> CreateAsync(DeckInputDTO dto, CancellationToken ct = default)
     {

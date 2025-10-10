@@ -8,6 +8,7 @@ public interface IDeckService
     Task<IReadOnlyList<Deck>> GetAllAsync(CancellationToken ct = default);
     Task<IReadOnlyList<Deck>> GetPageAsync(int skip, int take, CancellationToken ct = default);
     Task<Deck?> GetByIdAsync(int id, CancellationToken ct = default);
+    Task<Deck?> GetByCodeAsync(string code, CancellationToken ct = default);
     Task<Deck> CreateAsync(DeckInputDTO dto, CancellationToken ct = default);
     Task<Deck?> UpdateAsync(int id, DeckInputDTO dto, CancellationToken ct = default);
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);

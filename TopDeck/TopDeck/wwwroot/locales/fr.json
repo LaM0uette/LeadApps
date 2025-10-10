@@ -9,5 +9,6 @@
   "component.button.logout.text": "Se déconnecter",
   "component.button.back.text": "Retour",
   "feedback.text.copied": "Copié",
-  "feedback.text.loading": "Chargement..."
+  "feedback.text.loading": "Chargement...",
+  "feedback.text.notFound": "Introuvable"
 }

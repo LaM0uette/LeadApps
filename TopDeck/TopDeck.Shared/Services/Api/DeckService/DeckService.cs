@@ -25,13 +25,19 @@ public class DeckService : ApiService, IDeckService
     {
         string url = $"{_route}/page?skip={skip}&take={take}";
         IReadOnlyList<DeckOutputDTO>? result = await GetJsonAsync<IReadOnlyList<DeckOutputDTO>>(url, ct);
-        var list = result?.Select(d => d.ToDomain()).ToList() ?? new List<Deck>();
+        List<Deck> list = result?.Select(d => d.ToDomain()).ToList() ?? [];
         return list;
     }
 
     public async Task<Deck?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         DeckOutputDTO? dto = await GetJsonAsync<DeckOutputDTO>($"{_route}/{id}", ct);
+        return dto?.ToDomain();
+    }
+    
+    public async Task<Deck?> GetByCodeAsync(string code, CancellationToken ct = default)
+    {
+        DeckOutputDTO? dto = await GetJsonAsync<DeckOutputDTO>($"{_route}/deck/{code}", ct);
         return dto?.ToDomain();
     }
 

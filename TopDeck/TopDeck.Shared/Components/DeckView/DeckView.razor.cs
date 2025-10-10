@@ -52,8 +52,6 @@ public class DeckViewBase : LocalizedComponentBase
         TCGPCardsRequest deckRequest = new(cardRequests);
         HighlightedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest);
         
-        Console.WriteLine($"HighlightedCards: {HighlightedCards.Count}");
-        
         StateHasChanged();
     }
 

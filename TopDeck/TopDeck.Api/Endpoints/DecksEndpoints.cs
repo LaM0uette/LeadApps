@@ -15,6 +15,7 @@ public static class DecksEndpoints
         group.MapGet("", GetAllAsync);
         group.MapGet("page", GetPageAsync);
         group.MapGet("{id:int}", GetByIdAsync);
+        group.MapGet("deck/{code}", GetByCodeAsync);
         group.MapPost("", CreateAsync);
         group.MapPut("{id:int}", UpdateAsync);
         group.MapDelete("{id:int}", DeleteAsync);
@@ -43,6 +44,12 @@ public static class DecksEndpoints
     private static async Task<IResult> GetByIdAsync([FromServices] IDeckService service, int id, CancellationToken ct)
     {
         DeckOutputDTO? item = await service.GetByIdAsync(id, ct);
+        return item is null ? Results.NotFound() : Results.Ok(item);
+    }
+    
+    private static async Task<IResult> GetByCodeAsync([FromServices] IDeckService service, string code, CancellationToken ct)
+    {
+        DeckOutputDTO? item = await service.GetByCodeAsync(code, ct);
         return item is null ? Results.NotFound() : Results.Ok(item);
     }
 

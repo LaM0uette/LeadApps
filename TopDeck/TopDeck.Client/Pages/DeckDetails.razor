@@ -4,4 +4,23 @@
 <PageTitle>Deck</PageTitle>
 
 
-<p>@DeckCode</p>
+@if (Deck is null)
+{
+    <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p>
+}
+else
+{
+    <div class="deck-details-page @GetEnergyClass(Deck.EnergyIds)">
+    
+        <div class="header">
+        
+            <DeckNamePanel Name="@Deck.Name" Width="215px" Height="33px" FontSize="1.2em"/>
+        
+            <span class="code" @onclick="CopyCode">@DeckCode</span>
+        
+        </div>
+    
+    </div>
+}
+
+

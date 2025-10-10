@@ -41,6 +41,12 @@ public class DeckService : IDeckService
         Deck? entity = await _decks.GetByIdAsync(id, includeRelations: true, ct);
         return entity?.ToOutput();
     }
+    
+    public async Task<DeckOutputDTO?> GetByCodeAsync(string code, CancellationToken ct = default)
+    {
+        Deck? entity = await _decks.GetByCodeAsync(code, includeRelations: true, ct);
+        return entity?.ToOutput();
+    }
 
     public async Task<DeckOutputDTO> CreateAsync(DeckInputDTO dto, CancellationToken ct = default)
     {

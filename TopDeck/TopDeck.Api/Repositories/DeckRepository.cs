@@ -39,6 +39,11 @@ public class DeckRepository : IDeckRepository
     {
         return await Query(includeRelations).AsNoTracking().FirstOrDefaultAsync(d => d.Id == id, ct);
     }
+    
+    public async Task<Deck?> GetByCodeAsync(string code, bool includeRelations = true, CancellationToken ct = default)
+    {
+        return await Query(includeRelations).AsNoTracking().FirstOrDefaultAsync(d => d.Code == code, ct);
+    }
 
     public async Task<Deck> AddAsync(Deck deck, CancellationToken ct = default)
     {
