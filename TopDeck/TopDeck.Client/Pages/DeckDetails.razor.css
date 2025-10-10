@@ -109,3 +109,12 @@
 .energy-8::before{background:var(--gradient-metal)}
 .energy-9::before{background:var(--gradient-dragon)}
 .energy-10::before{background:var(--gradient-colorless)}
+
+
+
+@media (min-width: 1024px) {
+    .deck-details-page {
+        width: 60%;
+        margin: 0 auto;
+    }
+}

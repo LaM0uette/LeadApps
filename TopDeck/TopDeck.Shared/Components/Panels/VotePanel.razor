@@ -2,9 +2,14 @@
 @inherits VotePanelBase
 
 
-<div class="vote-panel" style="width: @Width; height: @Height; font-size: @FontSize;">
+<div class="vote-panel" style="width: @Width; height: @Height; font-size: @FontSize;"
+     @onclick:preventDefault 
+     @onclick:stopPropagation>
     
-    <button class="like-button" @onclick="OnLikeClicked">
+    <button class="like-button" 
+            @onclick:preventDefault 
+            @onclick:stopPropagation
+            @onclick="OnLikeClicked">
         <img src="img/@(IsLiked ? "like-icon.svg" : "like-empty-icon.svg")" alt="like"/>
     </button>
     
@@ -12,7 +17,10 @@
     
     <div  class="separator"></div>
     
-    <button class="dislike-button" @onclick="OnDislikeClicked">
+    <button class="dislike-button"
+            @onclick:preventDefault 
+            @onclick:stopPropagation
+            @onclick="OnDislikeClicked">
         <img src="img/@(IsDisliked ? "like-icon.svg" : "like-empty-icon.svg")" alt="dislike"/>
     </button>
     
