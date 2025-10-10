@@ -88,6 +88,18 @@ else
         {
             <div class="overview">
                 
+                @if (Cards.Count <= 0)
+                {
+                    <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p>
+                }
+                else
+                {
+                    foreach (TCGPCard card in Cards)
+                    {
+                        <img src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                    }
+                }
+                
             </div>
         }
         else if (CurrentTab is Tab.Suggestions)

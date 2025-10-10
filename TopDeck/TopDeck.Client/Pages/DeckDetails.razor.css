@@ -164,6 +164,24 @@
 
     & > .overview {
         height: 100%;
+
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 65px);
+        justify-content: center;
+        align-content: start;
+        gap: 5px;
+
+        margin: 10px 5px;
+        box-sizing: border-box;
+
+        overflow-y: auto;
+
+
+        & > img {
+            width: 65px;
+            height: 90px;
+            justify-self: center;
+        }
     }
 
     & > .suggestions {
