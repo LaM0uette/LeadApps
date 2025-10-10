@@ -7,25 +7,6 @@
 
 
 <div class="deck-view-page">
-    
-    <AuthorizeView>
-        <Authorized>    
-                
-            <LmButton style="position: absolute; top: 20px; right: 20px;" Href="/Account/Logout" ForceLoad>
-                @Localizer.Localize("component.button.logout.text", "Log out")
-            </LmButton>
-                
-        </Authorized>
-        <NotAuthorized>
-                
-            <LmButton style="position: absolute; top: 20px; right: 20px;" Href="/Login">
-                @Localizer.Localize("component.button.login.text", "Log in")
-            </LmButton>
-                
-        </NotAuthorized>
-    </AuthorizeView>
-    
-    <VerticalSpacer Value="20"/>
         
     <div class="deck-view-container">
             

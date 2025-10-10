@@ -2,10 +2,9 @@
 @inherits LmButtonBase
 
 
-<div class="lm-button"
-     style="width: @Width; height: @Height; @style"
-     @onclick="OnClicked">
-    
+<a class="lm-button"
+   href="@Href"
+   style="width: @Width; height: @Height; @style"
+   target="@Target">
     @ChildContent
-    
-</div>
+</a>

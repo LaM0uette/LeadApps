@@ -17,4 +17,5 @@
     
     cursor: var(--cursor-pointer);
     user-select: none;
+    text-decoration: none;
 }

@@ -15,6 +15,7 @@ public class DeckDetailsBase : LocalizedComponentBase
     [Parameter, EditorRequired] public required string DeckCode { get; set; }
 
     protected Deck? Deck;
+    protected IReadOnlyList<TCGPCard> Cards { get; set; } = [];
     protected IReadOnlyList<TCGPCard> HighlightedCards { get; set; } = [];
     
     protected readonly Dictionary<int, string> EnergyTypes = new()
@@ -50,13 +51,12 @@ public class DeckDetailsBase : LocalizedComponentBase
         
         List<TCGPCardRequest> cardRequests = [];
         cardRequests.AddRange(Deck.Cards
-            .Where(c => c.IsHighlighted)
             .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
         );
 
         TCGPCardsRequest deckRequest = new(cardRequests);
-        HighlightedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest);
-        Console.WriteLine(HighlightedCards.Count);
+        Cards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest);
+        HighlightedCards = Cards.Where(c => Deck.Cards.Any(dc => dc.IsHighlighted && dc.CollectionCode == c.Collection.Code && dc.CollectionNumber == c.CollectionNumber)).ToList();
     }
 
     #endregion
