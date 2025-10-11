@@ -11,5 +11,6 @@
   "feedback.text.copied": "Copié",
   "feedback.text.loading": "Chargement...",
   "feedback.text.notFound": "Introuvable",
-  "page.deckDetail.nosuggestions.text": "Aucune suggestion disponible pour ce deck."
+  "page.deckDetail.nosuggestions.text": "Aucune suggestion disponible pour ce deck.",
+  "page.decksView.noCards.text": "Aucune carte trouvée."
 }

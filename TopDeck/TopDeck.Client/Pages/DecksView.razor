@@ -10,9 +10,9 @@
         
     <div id="deck-scroll" class="deck-view-container">
             
-        @if (Decks.Count <= 0)
+        @if (Decks.Count <= 0 && !HasMore)
         {
-            <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p>
+            <p>@Localizer.Localize("page.decksView.noCards.text", "No cards found.")</p>
         }
         else
         {
@@ -20,6 +20,14 @@
             {
                 <DeckView Deck="deck"/>
             }
+        }
+        
+        @if (IsLoading && HasMore)
+        {
+            <div class="deck-loader" aria-live="polite" aria-busy="true">
+                <div class="spinner" role="status" title="Loading"></div>
+                <span class="loader-text">@Localizer.Localize("feedback.text.loading", "Loading...")</span>
+            </div>
         }
             
     </div>
