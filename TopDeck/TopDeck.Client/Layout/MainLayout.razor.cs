@@ -24,8 +24,6 @@ public class MainLayoutBase : LayoutComponentBase
     
     protected override async Task OnInitializedAsync()
     {
-        await Localizer.InitializeAsync();
-
         if (_authenticationStateTask is not null)
         {
             AuthenticationState state = await _authenticationStateTask;
