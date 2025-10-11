@@ -1,10 +1,9 @@
 ﻿@namespace TopDeck.Shared.Components
-@inherits LmButtonBase
+@inherits RedirectButtonBase
 
 
-<a class="lm-button"
-   href="@Href"
+<a class="redirect-button"
    style="width: @Width; height: @Height; @style"
-   target="@Target">
+   href="@Href" target="@Target">
     @ChildContent
 </a>

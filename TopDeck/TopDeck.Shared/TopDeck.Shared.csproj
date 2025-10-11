@@ -32,7 +32,6 @@
 
     <ItemGroup>
       <AdditionalFiles Include="Components\Actions\AutoRedirect.razor" />
-      <AdditionalFiles Include="Components\Buttons\LmButton.razor" />
       <AdditionalFiles Include="Components\Spacers\HorizontalSpacer.razor" />
       <AdditionalFiles Include="Components\Spacers\VerticalSpacer.razor" />
     </ItemGroup>

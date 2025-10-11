@@ -16,53 +16,53 @@
 
     cursor: var(--cursor-default);
     user-select: none;
-    
-    
-    & > button {
-        width: 22px;
-        height: 22px;
-        
-        border: none;
-        background: transparent;
-        
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        
-        cursor: var(--cursor-pointer);
-        
-        
-        &:hover {
-            opacity: 0.8;
-            scale: 1.1;
-        }
+}
 
-        &:active {
-            opacity: 0.6;
-        }
-
-        & > img {
-            width: 20px;
-            height: 20px;
-        }
-    }
-
-    & > .dislike-button {
-        transform: rotate(180deg);
-    }
-    
-    & > .like-count {
+    .vote-panel__like-count {
         font-family: var(--font-extra-bold), sans-serif;
-
+    
         flex-grow: 1;
         text-align: center;
-        
+    
         color: var(--color-secondary);
     }
 
-    & > .separator {
+    .vote-panel__separator {
         border-left: 2px solid var(--color-secondary);
         height: 75%;
         margin: 0 4px 0 2px;
     }
+
+
+.vote-button {
+    width: 22px;
+    height: 22px;
+
+    border: none;
+    background: transparent;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: var(--cursor-pointer);
+}
+
+    .vote-button:hover {
+        opacity: 0.8;
+        scale: 1.1;
+    }
+
+    .vote-button:active {
+        opacity: 0.6;
+    }
+    
+    .vote-like-button__icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    
+.vote-dislike-button {
+    transform: rotate(180deg);
 }

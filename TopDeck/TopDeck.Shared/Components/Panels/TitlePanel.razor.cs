@@ -2,7 +2,7 @@
 
 namespace TopDeck.Shared.Components;
 
-public class DeckNamePanelBase : ComponentBase
+public class TitlePanelBase : ComponentBase
 {
     #region Statements
 

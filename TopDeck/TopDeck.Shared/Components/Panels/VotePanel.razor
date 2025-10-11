@@ -2,26 +2,22 @@
 @inherits VotePanelBase
 
 
-<div class="vote-panel" style="width: @Width; height: @Height; font-size: @FontSize;"
-     @onclick:preventDefault 
-     @onclick:stopPropagation>
-    
-    <button class="like-button" 
+<div class="vote-panel" 
+     style="width: @Width; height: @Height; font-size: @FontSize;">
+    <button class="vote-button vote-like-button" 
             @onclick:preventDefault 
             @onclick:stopPropagation
             @onclick="OnLikeClicked">
-        <img src="img/@(IsLiked ? "like-icon.svg" : "like-empty-icon.svg")" alt="like"/>
+        <img class="vote-like-button__icon" src="img/@(IsLiked ? "like-icon.svg" : "like-empty-icon.svg")" alt="like"/>
     </button>
     
-    <span class="like-count">@LikeCountFormatted</span>
+    <p class="vote-panel__like-count">@LikeCountFormatted</p>
+    <div  class="vote-panel__separator"></div>
     
-    <div  class="separator"></div>
-    
-    <button class="dislike-button"
+    <button class="vote-button vote-dislike-button"
             @onclick:preventDefault 
             @onclick:stopPropagation
             @onclick="OnDislikeClicked">
-        <img src="img/@(IsDisliked ? "like-icon.svg" : "like-empty-icon.svg")" alt="dislike"/>
+        <img class="vote-like-button__icon" src="img/@(IsDisliked ? "like-icon.svg" : "like-empty-icon.svg")" alt="dislike"/>
     </button>
-    
 </div>
