@@ -52,6 +52,7 @@
             font-size: 0.7em;
             
             color: var(--color-text-very-light);
+            text-shadow: var(--shadow-m);
             
             cursor: var(--cursor-text);
 
@@ -123,6 +124,11 @@
         position: absolute;
         bottom: 8px;
         right: 8px;
+
+
+        & > .vote-panel-container {
+            box-shadow: var(--drop-shadow-m);
+        }
     }
 
     &:hover {

@@ -1,6 +1,5 @@
 ﻿.vote-panel {
     background: var(--color-bg);
-    box-shadow: var(--drop-shadow-m);
     
     border: none;
     outline: 1px solid var(--color-outline);

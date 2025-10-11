@@ -52,9 +52,11 @@
     
     <div class="footer">
         
-        <VotePanel DeckId="Deck.Id" 
-                   UserLikes="Deck.Likes.Select(l => l.User).ToList()"
-                   UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"/>
+        <div class="vote-panel-container">
+            <VotePanel DeckId="Deck.Id"
+                       UserLikes="Deck.Likes.Select(l => l.User).ToList()"
+                       UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"/>
+        </div>
         
     </div>
     

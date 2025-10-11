@@ -48,6 +48,11 @@
             align-items: center;
 
             z-index: 2;
+
+
+            & > .vote-panel-container {
+                box-shadow: var(--drop-shadow-m);
+            }
         }
 
         & > .code {
@@ -57,6 +62,7 @@
             font-size: 1.2em;
 
             color: var(--color-text-very-light);
+            text-shadow: var(--shadow-m);
 
             cursor: var(--cursor-text);
 
