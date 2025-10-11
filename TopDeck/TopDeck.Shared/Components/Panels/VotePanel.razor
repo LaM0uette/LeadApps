@@ -3,7 +3,9 @@
 
 
 <div class="vote-panel" 
-     style="width: @Width; height: @Height; font-size: @FontSize;">
+     style="width: @Width; height: @Height; font-size: @FontSize;"
+     @onclick:preventDefault 
+     @onclick:stopPropagation>
     <button class="vote-button vote-like-button" 
             @onclick:preventDefault 
             @onclick:stopPropagation
