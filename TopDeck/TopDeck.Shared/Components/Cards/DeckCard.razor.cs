@@ -50,7 +50,7 @@ public class DeckCardBase : AppComponentBase
         );
 
         TCGPCardsRequest deckRequest = new(cardRequests);
-        HighlightedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest);
+        HighlightedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest, loadThumbnail:true);
     }
 
     #endregion

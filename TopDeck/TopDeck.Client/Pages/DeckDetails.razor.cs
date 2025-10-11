@@ -75,7 +75,7 @@ public class DeckDetailsBase : AppComponentBase
         );
 
         TCGPCardsRequest deckRequest = new(cardRequests);
-        Cards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest);
+        Cards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest, loadThumbnail:true);
         HighlightedCards = Cards.Where(c => Deck.Cards.Any(dc => dc.IsHighlighted && dc.CollectionCode == c.Collection.Code && dc.CollectionNumber == c.CollectionNumber)).ToList();
     }
 

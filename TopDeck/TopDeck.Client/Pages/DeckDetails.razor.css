@@ -322,3 +322,9 @@
         transform-origin: top right;
     }
 }
+
+@media (min-width: 2048px) {
+    .deck-details-page {
+        width: 32%;
+    }
+}

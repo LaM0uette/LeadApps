@@ -36,8 +36,8 @@ public class SuggestionAccordionBase : AppComponentBase
         TCGPCardsRequest addedCardsRequests = new(addedCardRequests);
         TCGPCardsRequest removedCardsRequests = new(removedCardRequests);
         
-        AddedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(addedCardsRequests);
-        RemovedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(removedCardsRequests);
+        AddedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(addedCardsRequests, loadThumbnail:true);
+        RemovedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(removedCardsRequests, loadThumbnail:true);
     }
 
     #endregion
