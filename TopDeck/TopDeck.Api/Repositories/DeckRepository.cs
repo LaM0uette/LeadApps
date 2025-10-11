@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TopDeck.Api.Data;
 using TopDeck.Api.Entities;
-using TopDeck.Api.Repositories.Interfaces;
 
 namespace TopDeck.Api.Repositories;
 
@@ -20,35 +19,26 @@ public class DeckRepository : IDeckRepository
 
     #region Repository
     
-    public async Task<IReadOnlyList<Deck>> GetAllAsync(bool includeRelations = false, CancellationToken ct = default)
+    public DbSet<Deck> GetDbSet()
     {
-        return await Query(includeRelations).AsNoTracking().OrderBy(d => d.Id).ToListAsync(ct);
-    }
-
-    public async Task<IReadOnlyList<Deck>> GetPageAsync(int skip, int take, bool includeRelations = false, CancellationToken ct = default)
-    {
-        return await Query(includeRelations).AsNoTracking().OrderBy(d => d.Id).Skip(skip).Take(take).ToListAsync(ct);
-    }
-
-    public Task<int> CountAsync(CancellationToken ct = default)
-    {
-        return _db.Decks.CountAsync(ct);
-    }
-
-    public async Task<Deck?> GetByIdAsync(int id, bool includeRelations = true, CancellationToken ct = default)
-    {
-        return await Query(includeRelations).AsNoTracking().FirstOrDefaultAsync(d => d.Id == id, ct);
+        return _db.Decks;
     }
     
-    public async Task<Deck?> GetByCodeAsync(string code, bool includeRelations = true, CancellationToken ct = default)
+    public async Task<IReadOnlyList<Deck>> GetAllAsync(bool includeAll, CancellationToken ct = default)
     {
-        return await Query(includeRelations).AsNoTracking().FirstOrDefaultAsync(d => d.Code == code, ct);
+        return await Query(includeAll).AsNoTracking().AsSplitQuery().OrderBy(dto => dto.CreatedAt).ThenBy(dto => dto.Id).ToListAsync(ct);
     }
-
+    
+    public async Task<Deck?> GetByIdAsync(int id, bool includeAll, CancellationToken ct = default)
+    {
+        return await Query(includeAll).AsNoTracking().FirstOrDefaultAsync(deck => deck.Id == id, ct);
+    }
+    
     public async Task<Deck> AddAsync(Deck deck, CancellationToken ct = default)
     {
         _db.Decks.Add(deck);
         await _db.SaveChangesAsync(ct);
+        
         return deck;
     }
 
@@ -56,15 +46,20 @@ public class DeckRepository : IDeckRepository
     {
         _db.Decks.Update(deck);
         await _db.SaveChangesAsync(ct);
+        
         return deck;
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
     {
-        Deck? existing = await _db.Decks.FirstOrDefaultAsync(x => x.Id == id, ct);
-        if (existing is null) return false;
+        Deck? existing = await _db.Decks.FirstOrDefaultAsync(deck => deck.Id == id, ct);
+        
+        if (existing is null) 
+            return false;
+        
         _db.Decks.Remove(existing);
         await _db.SaveChangesAsync(ct);
+        
         return true;
     }
     
@@ -73,35 +68,35 @@ public class DeckRepository : IDeckRepository
     {
         return await _db.Decks.AnyAsync(d => d.Code == code, ct);
     }
-
+    
     #endregion
 
     #region Methods
-
-    private IQueryable<Deck> Query(bool include)
+    
+    private IQueryable<Deck> Query(bool includeAll)
     {
-        return include
+        return includeAll
             ? _db.Decks
                 .Include(d => d.Creator)
                 .Include(d => d.Cards)
                 .Include(d => d.DeckTags)
-                    .ThenInclude(dt => dt.Tag)
+                .ThenInclude(dt => dt.Tag)
                 .Include(d => d.Suggestions)
-                    .ThenInclude(s => s.Suggestor)
+                .ThenInclude(s => s.Suggestor)
                 .Include(d => d.Suggestions)
-                    .ThenInclude(s => s.AddedCards)
+                .ThenInclude(s => s.AddedCards)
                 .Include(d => d.Suggestions)
-                    .ThenInclude(s => s.RemovedCards)
+                .ThenInclude(s => s.RemovedCards)
                 .Include(d => d.Suggestions)
-                    .ThenInclude(s => s.Likes)
-                        .ThenInclude(l => l.User)
+                .ThenInclude(s => s.Likes)
+                .ThenInclude(l => l.User)
                 .Include(d => d.Suggestions)
-                    .ThenInclude(s => s.Dislikes)
-                        .ThenInclude(dl => dl.User)
+                .ThenInclude(s => s.Dislikes)
+                .ThenInclude(dl => dl.User)
                 .Include(d => d.Likes)
-                    .ThenInclude(l => l.User)
+                .ThenInclude(l => l.User)
                 .Include(d => d.Dislikes)
-                    .ThenInclude(dl => dl.User)
+                .ThenInclude(dl => dl.User)
                 .AsQueryable()
             : _db.Decks.AsQueryable();
     }

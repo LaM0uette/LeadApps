@@ -3,6 +3,6 @@
 namespace TopDeck.Contracts.DTO;
 
 public record DeckLikeOutputDTO(
-    [property: JsonPropertyName("deck")] DeckOutputDTO Deck,
+    [property: JsonPropertyName("deck")] DeckOutputDTOold Deck,
     [property: JsonPropertyName("user")] UserOutputDTO User
 );

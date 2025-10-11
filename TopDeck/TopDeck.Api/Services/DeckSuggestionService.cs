@@ -1,5 +1,6 @@
 using TopDeck.Api.Entities;
 using TopDeck.Api.Mappings;
+using TopDeck.Api.Repositories;
 using TopDeck.Api.Repositories.Interfaces;
 using TopDeck.Api.Services.Interfaces;
 using TopDeck.Contracts.DTO;
@@ -42,7 +43,7 @@ public class DeckSuggestionService : IDeckSuggestionService
         // Validate FKs
         if (await _users.GetByIdAsync(dto.SuggestorId, ct) is null)
             throw new InvalidOperationException($"Suggestor with id {dto.SuggestorId} not found");
-        if (await _decks.GetByIdAsync(dto.DeckId, includeRelations: false, ct) is null)
+        if (await _decks.GetByIdAsync(dto.DeckId, false, ct) is null)
             throw new InvalidOperationException($"Deck with id {dto.DeckId} not found");
 
         DeckSuggestion entity = dto.ToEntity();
@@ -58,7 +59,7 @@ public class DeckSuggestionService : IDeckSuggestionService
 
         if (await _users.GetByIdAsync(dto.SuggestorId, ct) is null)
             throw new InvalidOperationException($"Suggestor with id {dto.SuggestorId} not found");
-        if (await _decks.GetByIdAsync(dto.DeckId, includeRelations: false, ct) is null)
+        if (await _decks.GetByIdAsync(dto.DeckId, false, ct) is null)
             throw new InvalidOperationException($"Deck with id {dto.DeckId} not found");
 
         existing.UpdateEntity(dto);

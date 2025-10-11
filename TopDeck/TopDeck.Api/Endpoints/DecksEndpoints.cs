@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TopDeck.Api.DTO;
 using TopDeck.Api.Services.Interfaces;
 using TopDeck.Contracts.DTO;
 
@@ -13,12 +14,13 @@ public static class DecksEndpoints
         RouteGroupBuilder group = app.MapGroup("/api/decks");
 
         group.MapGet("", GetAllAsync);
-        group.MapGet("page", GetPageAsync);
         group.MapGet("{id:int}", GetByIdAsync);
-        group.MapGet("deck/{code}", GetByCodeAsync);
         group.MapPost("", CreateAsync);
         group.MapPut("{id:int}", UpdateAsync);
         group.MapDelete("{id:int}", DeleteAsync);
+        
+        group.MapGet("page", GetPageAsync);
+        group.MapGet("deck/{code}", GetByCodeAsync);
 
         return app;
     }
@@ -27,29 +29,15 @@ public static class DecksEndpoints
 
     #region Endpoints
 
-    private static async Task<IResult> GetAllAsync([FromServices] IDeckService service, CancellationToken ct)
+    private static async Task<IResult> GetAllAsync([FromServices] IDeckService service, bool includeAll, CancellationToken ct)
     {
-        IReadOnlyList<DeckOutputDTO> items = await service.GetAllAsync(ct);
+        IReadOnlyList<DeckOutputDTO> items = await service.GetAllAsync(includeAll, ct);
         return Results.Ok(items);
-    }
-
-    private static async Task<IResult> GetPageAsync([FromServices] IDeckService service, [FromQuery] int skip = 0, [FromQuery] int take = 20, CancellationToken ct = default)
-    {
-        if (take <= 0) take = 20;
-        if (skip < 0) skip = 0;
-        IReadOnlyList<DeckOutputDTO> items = await service.GetPageAsync(skip, take, ct);
-        return Results.Ok(items);
-    }
-
-    private static async Task<IResult> GetByIdAsync([FromServices] IDeckService service, int id, CancellationToken ct)
-    {
-        DeckOutputDTO? item = await service.GetByIdAsync(id, ct);
-        return item is null ? Results.NotFound() : Results.Ok(item);
     }
     
-    private static async Task<IResult> GetByCodeAsync([FromServices] IDeckService service, string code, CancellationToken ct)
+    private static async Task<IResult> GetByIdAsync([FromServices] IDeckService service, int id, bool includeAll, CancellationToken ct)
     {
-        DeckOutputDTO? item = await service.GetByCodeAsync(code, ct);
+        DeckOutputDTO? item = await service.GetByIdAsync(id, includeAll, ct);
         return item is null ? Results.NotFound() : Results.Ok(item);
     }
 
@@ -83,6 +71,25 @@ public static class DecksEndpoints
     {
         bool ok = await service.DeleteAsync(id, ct);
         return ok ? Results.NoContent() : Results.NotFound();
+    }
+    
+    
+    private static async Task<IResult> GetPageAsync([FromServices] IDeckService service, [FromQuery] int skip = 0, [FromQuery] int take = 20, CancellationToken ct = default)
+    {
+        if (take <= 0) 
+            take = 20;
+        
+        if (skip < 0) 
+            skip = 0;
+        
+        IReadOnlyList<DeckOutputDTO> items = await service.GetDeckCardPageAsync(skip, take, ct);
+        return Results.Ok(items);
+    }
+    
+    private static async Task<IResult> GetByCodeAsync([FromServices] IDeckService service, string code, CancellationToken ct)
+    {
+        DeckOutputDTO? item = await service.GetDeckCardByCodeAsync(code, ct);
+        return item is null ? Results.NotFound() : Results.Ok(item);
     }
 
     #endregion

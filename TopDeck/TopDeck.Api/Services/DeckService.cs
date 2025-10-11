@@ -1,6 +1,9 @@
 using Helpers.Generators;
+using Microsoft.EntityFrameworkCore;
+using TopDeck.Api.DTO;
 using TopDeck.Api.Entities;
 using TopDeck.Api.Mappings;
+using TopDeck.Api.Repositories;
 using TopDeck.Api.Repositories.Interfaces;
 using TopDeck.Api.Services.Interfaces;
 using TopDeck.Contracts.DTO;
@@ -24,35 +27,24 @@ public class DeckService : IDeckService
 
     #region IService
     
-    public async Task<IReadOnlyList<DeckOutputDTO>> GetAllAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<DeckOutputDTO>> GetAllAsync(bool includeAll = true, CancellationToken ct = default)
     {
-        IReadOnlyList<Deck> list = await _decks.GetAllAsync(includeRelations: true, ct);
-        return list.Select(d => d.ToOutput()).ToList();
+        IReadOnlyList<Deck> list = await _decks.GetAllAsync(includeAll, ct);
+        return list.MapToDTO();
     }
 
-    public async Task<IReadOnlyList<DeckOutputDTO>> GetPageAsync(int skip, int take, CancellationToken ct = default)
+    public async Task<DeckOutputDTO?> GetByIdAsync(int id, bool includeAll = true, CancellationToken ct = default)
     {
-        IReadOnlyList<Deck> list = await _decks.GetPageAsync(skip, take, includeRelations: true, ct);
-        return list.Select(d => d.ToOutput()).ToList();
-    }
-
-    public async Task<DeckOutputDTO?> GetByIdAsync(int id, CancellationToken ct = default)
-    {
-        Deck? entity = await _decks.GetByIdAsync(id, includeRelations: true, ct);
-        return entity?.ToOutput();
-    }
-    
-    public async Task<DeckOutputDTO?> GetByCodeAsync(string code, CancellationToken ct = default)
-    {
-        Deck? entity = await _decks.GetByCodeAsync(code, includeRelations: true, ct);
-        return entity?.ToOutput();
+        Deck? entity = await _decks.GetByIdAsync(id, includeAll, ct);
+        return entity?.MapToDTO();
     }
 
     public async Task<DeckOutputDTO> CreateAsync(DeckInputDTO dto, CancellationToken ct = default)
     {
-        // Validate creator exists
         User? creator = await _users.GetByIdAsync(dto.CreatorId, ct);
-        if (creator is null) throw new InvalidOperationException($"Creator with id {dto.CreatorId} not found");
+        
+        if (creator is null) 
+            throw new InvalidOperationException($"Creator with id {dto.CreatorId} not found");
 
         ValidateDeckLimits(dto);
 
@@ -63,35 +55,53 @@ public class DeckService : IDeckService
             throw new InvalidOperationException("Failed to generate unique deck code");
         
         Deck created = await _decks.AddAsync(entity, ct);
-
-        // Reload with relations for output
-        Deck withRelations = await _decks.GetByIdAsync(created.Id, includeRelations: true, ct) ?? created;
-        return withRelations.ToOutput();
+        return created.MapToDTO();
     }
 
     public async Task<DeckOutputDTO?> UpdateAsync(int id, DeckInputDTO dto, CancellationToken ct = default)
     {
-        Deck? existing = await _decks.GetByIdAsync(id, includeRelations: false, ct);
-        if (existing is null) return null;
+        Deck? existing = await _decks.GetByIdAsync(id, false, ct);
+        
+        if (existing is null) 
+            return null;
 
-        // Validate new creator id exists if changed
         if (existing.CreatorId != dto.CreatorId)
         {
             User? creator = await _users.GetByIdAsync(dto.CreatorId, ct);
-            if (creator is null) throw new InvalidOperationException($"Creator with id {dto.CreatorId} not found");
+            
+            if (creator is null) 
+                throw new InvalidOperationException($"Creator with id {dto.CreatorId} not found");
         }
 
         ValidateDeckLimits(dto);
 
         existing.UpdateEntity(dto);
         Deck updated = await _decks.UpdateAsync(existing, ct);
-        Deck withRelations = await _decks.GetByIdAsync(updated.Id, includeRelations: true, ct) ?? updated;
-        return withRelations.ToOutput();
+        return updated.MapToDTO();
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
     {
         return await _decks.DeleteAsync(id, ct);
+    }
+    
+    
+    public async Task<IReadOnlyList<DeckOutputDTO>> GetDeckCardPageAsync(int skip, int take, CancellationToken ct = default)
+    {
+        return await _decks.GetDbSet()
+            .OrderBy(d => d.CreatedAt).ThenBy(d => d.Id)
+            .Select(DeckMapper.Expression)
+            .AsNoTracking().AsSplitQuery()
+            .Skip(skip).Take(take)
+            .ToListAsync(ct);
+    }
+    
+    public async Task<DeckOutputDTO?> GetDeckCardByCodeAsync(string code, CancellationToken ct = default)
+    {
+        return await _decks.GetDbSet()
+            .Select(DeckMapper.Expression)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(dto => dto.Code == code, ct);
     }
 
     #endregion
@@ -112,13 +122,13 @@ public class DeckService : IDeckService
 
     private static void ValidateDeckLimits(DeckInputDTO dto)
     {
-        int cardCount = dto.Cards?.Count ?? 0;
-        int highlightedCount = dto.Cards?.Count(c => c.IsHighlighted) ?? 0;
+        int cardCount = dto.Cards.Count;
+        int highlightedCount = dto.Cards.Count(c => c.IsHighlighted);
 
         if (cardCount > 20)
-            throw new InvalidOperationException("Un deck ne peut pas contenir plus de 20 cartes.");
+            throw new InvalidOperationException("A deck cannot contain more than 20 cards.");
         if (highlightedCount > 3)
-            throw new InvalidOperationException("Les cartes mises en avant sont limitées à 3.");
+            throw new InvalidOperationException("The cards highlighted are limited to 3.");
     }
 
     #endregion

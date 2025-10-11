@@ -1,14 +1,14 @@
+using Microsoft.EntityFrameworkCore;
 using TopDeck.Api.Entities;
 
-namespace TopDeck.Api.Repositories.Interfaces;
+namespace TopDeck.Api.Repositories;
 
 public interface IDeckRepository
 {
-    Task<IReadOnlyList<Deck>> GetAllAsync(bool includeRelations = false, CancellationToken ct = default);
-    Task<IReadOnlyList<Deck>> GetPageAsync(int skip, int take, bool includeRelations = false, CancellationToken ct = default);
-    Task<int> CountAsync(CancellationToken ct = default);
-    Task<Deck?> GetByIdAsync(int id, bool includeRelations = true, CancellationToken ct = default);
-    Task<Deck?> GetByCodeAsync(string code, bool includeRelations = true, CancellationToken ct = default);
+    DbSet<Deck> GetDbSet();
+    
+    Task<IReadOnlyList<Deck>> GetAllAsync(bool includeAll = true, CancellationToken ct = default);
+    Task<Deck?> GetByIdAsync(int id, bool includeAll = true, CancellationToken ct = default);
     Task<Deck> AddAsync(Deck deck, CancellationToken ct = default);
     Task<Deck> UpdateAsync(Deck deck, CancellationToken ct = default);
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);

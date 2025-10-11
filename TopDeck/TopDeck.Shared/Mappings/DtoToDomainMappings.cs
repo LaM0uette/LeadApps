@@ -23,7 +23,7 @@ public static class DtoToDomainMappings
     }
 
     // DECK
-    public static Deck ToDomain(this DeckOutputDTO dto)
+    public static Deck ToDomain(this DeckOutputDTOold dto)
     {
         if (dto is null) throw new ArgumentNullException(nameof(dto));
 
@@ -33,9 +33,9 @@ public static class DtoToDomainMappings
             dto.Creator.ToDomain(),
             dto.Name,
             dto.Code,
-            (dto.Cards ?? Array.Empty<DeckCardOutputDTO>()).Select(c => new DeckCard(c.CollectionCode, c.CollectionNumber, c.IsHighlighted)).ToList(),
+            (dto.Cards ?? Array.Empty<DeckCardOutputDTOold>()).Select(c => new DeckCard(c.CollectionCode, c.CollectionNumber, c.IsHighlighted)).ToList(),
             dto.EnergyIds?.ToList() ?? new List<int>(),
-            (dto.Tags ?? Array.Empty<TagOutputDTO>()).Select(t => new Tag(t.Id, t.Name, t.ColorHex)).ToList(),
+            (dto.Tags ?? Array.Empty<TagOutputDTOold>()).Select(t => new Tag(t.Id, t.Name, t.ColorHex)).ToList(),
             new List<DeckLike>(),
             new List<DeckDislike>(),
             new List<DeckSuggestion>(),
@@ -108,8 +108,8 @@ public static class DtoToDomainMappings
             dto.Id,
             dto.Suggestor.ToDomain(),
             deck,
-            (dto.AddedCards ?? Array.Empty<DeckCardOutputDTO>()).Select(c => new DeckCard(c.CollectionCode, c.CollectionNumber, false)).ToList(),
-            (dto.RemovedCards ?? Array.Empty<DeckCardOutputDTO>()).Select(c => new DeckCard(c.CollectionCode, c.CollectionNumber, false)).ToList(),
+            (dto.AddedCards ?? Array.Empty<DeckCardOutputDTOold>()).Select(c => new DeckCard(c.CollectionCode, c.CollectionNumber, false)).ToList(),
+            (dto.RemovedCards ?? Array.Empty<DeckCardOutputDTOold>()).Select(c => new DeckCard(c.CollectionCode, c.CollectionNumber, false)).ToList(),
             dto.AddedEnergyIds?.ToList() ?? new List<int>(),
             dto.RemovedEnergyIds?.ToList() ?? new List<int>(),
             new List<DeckSuggestionLike>(),
@@ -140,8 +140,8 @@ public static class DtoToDomainMappings
             dto.Id,
             dto.Suggestor.ToDomain(),
             deckContext,
-            (dto.AddedCards ?? Array.Empty<DeckCardOutputDTO>()).Select(c => new DeckCard(c.CollectionCode, c.CollectionNumber, false)).ToList(),
-            (dto.RemovedCards ?? Array.Empty<DeckCardOutputDTO>()).Select(c => new DeckCard(c.CollectionCode, c.CollectionNumber, false)).ToList(),
+            (dto.AddedCards ?? Array.Empty<DeckCardOutputDTOold>()).Select(c => new DeckCard(c.CollectionCode, c.CollectionNumber, false)).ToList(),
+            (dto.RemovedCards ?? Array.Empty<DeckCardOutputDTOold>()).Select(c => new DeckCard(c.CollectionCode, c.CollectionNumber, false)).ToList(),
             dto.AddedEnergyIds?.ToList() ?? new List<int>(),
             dto.RemovedEnergyIds?.ToList() ?? new List<int>(),
             new List<DeckSuggestionLike>(),

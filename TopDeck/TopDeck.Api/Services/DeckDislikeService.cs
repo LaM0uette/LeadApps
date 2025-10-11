@@ -1,5 +1,6 @@
 ﻿using TopDeck.Api.Entities;
 using TopDeck.Api.Mappings;
+using TopDeck.Api.Repositories;
 using TopDeck.Api.Repositories.Interfaces;
 using TopDeck.Api.Services.Interfaces;
 using TopDeck.Contracts.DTO;
@@ -24,7 +25,7 @@ public class DeckDislikeService : IDeckDislikeService
     public async Task<DeckDislikeOutputDTO?> CreateAsync(DeckDislikeInputDTO dto, CancellationToken ct = default)
     {
         // Validate FKs
-        if (await _decks.GetByIdAsync(dto.DeckId, includeRelations: true, ct) is not Deck deck)
+        if (await _decks.GetByIdAsync(dto.DeckId, true, ct) is not Deck deck)
             throw new InvalidOperationException($"Deck with id {dto.DeckId} not found");
         if (await _users.GetByIdAsync(dto.UserId, ct) is not User user)
             throw new InvalidOperationException($"User with id {dto.UserId} not found");
