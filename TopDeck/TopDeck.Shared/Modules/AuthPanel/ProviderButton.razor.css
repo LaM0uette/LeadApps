@@ -14,32 +14,30 @@
     gap: 6px;
     
     cursor: var(--cursor-pointer);
+}
 
-
-    &:hover {
+    .provider-button:hover {
         opacity: 0.8;
         box-shadow: none;
     }
-
-    &:active {
+    
+    .provider-button:active {
         opacity: 0.6;
     }
 
-
-    & > .icon {
-        width: 24px;
-        height: 24px;
-
-
-        & > img {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-        }
-    }
-    
-    & > .text {
+    .provider-button__text {
         font-family: var(--font-bold), sans-serif;
         font-size: 0.8em;
     }
+
+
+.provider-icon-container {
+    width: 24px;
+    height: 24px;
 }
+
+    .provider-icon-container__icon {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+    }

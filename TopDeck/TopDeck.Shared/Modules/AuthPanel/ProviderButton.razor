@@ -6,12 +6,10 @@
 <button class="provider-button" 
         style="width: @Width; height: @Height"
         @onclick="Login">
-
     <HorizontalSpacer Value="5"/>
-    <div class="icon">
-        <img src="@IconPath" alt="provider button">
+    <div class="provider-icon-container">
+        <img class="provider-icon-container__icon" src="@IconPath" alt="provider button">
     </div>
-    <span class="text">@Localizer.Localize(TextKey, $"Sign up with {Provider}")</span>
+    <p class="provider-button__text">@Localizer.Localize(TextKey, $"Sign up with {Provider}")</p>
     <HorizontalSpacer Value="5"/>
-    
 </button>

@@ -4,9 +4,7 @@
 
 <div class="deck-card @GetEnergyClass(Deck.EnergyIds)"
      @onclick="OpenDeckDetails">
-    
     <div class="deck-card-header">
-        
         <div class="deck-card-title-panel-container">
             <TitlePanel Name="@Deck.Name"/>
         </div>
@@ -17,13 +15,11 @@
               @onclick="CopyCode">
             @DeckCode
         </span>
-        
     </div>
     
     <div class="deck-card-body">
-        
         <VerticalSpacer Value="18"/>
-
+        
         <div class="deck-highlight-cards">
 
             @if (HighlightedCards.Count < 2)
@@ -39,7 +35,7 @@
         </div>
         
         <VerticalSpacer Value="14"/>
-
+        
         <div class="deck-highlight-energies">
             
             @foreach (int energyId in Deck.EnergyIds)
@@ -48,17 +44,13 @@
             }
             
         </div>
-
     </div>
     
     <div class="deck-card-footer">
-        
         <div class="deck-vote-panel-container">
             <VotePanel DeckId="Deck.Id"
                        UserLikes="Deck.Likes.Select(l => l.User).ToList()"
                        UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"/>
         </div>
-        
     </div>
-    
 </div>
