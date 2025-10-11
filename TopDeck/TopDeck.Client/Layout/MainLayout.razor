@@ -1,38 +1,31 @@
 ﻿@inherits MainLayoutBase
 
 
-<div class="page">
-    
-    <header>
-        
-        <div class="logo-container">
-            <img src="img/logo.svg" alt="topdeck logo"> 
+<div class="main-layout">
+    <header class="main-layout-header">
+        <div class="topdeck-logo">
+            <img class="topdeck-logo__icon" src="img/logo.svg" alt="topdeck logo"> 
         </div>
         
-        <h1 class="title">TOPDECK</h1>
+        <h1 class="main-layout-header__title">TOPDECK</h1>
         
         <AuthorizeView>
             <Authorized>    
-                
                 <RedirectButton style="margin-left: auto;margin-right: 20px;" Href="/Account/Logout">
                     @Localizer.Localize("component.button.logout.text", "Log out")
                 </RedirectButton>
-                
             </Authorized>
             <NotAuthorized>
-                
                 <RedirectButton style="margin-left: auto;margin-right: 20px;" Href="/Login">
                     @Localizer.Localize("component.button.login.text", "Log in")
                 </RedirectButton>
-                
             </NotAuthorized>
         </AuthorizeView>
         
-        <hr class="header-separator">
-
+        <hr class="main-layout-header__separator">
     </header>
     
-    <main>
+    <main class="main-layout-body">
         @if (!IsReady)
         {
             <VerticalSpacer Value="40"/>
@@ -43,16 +36,14 @@
             @Body
         }
     </main>
-
-    @*<footer>
+    
+    @*<footer class="main-layout-footer">
         © 2025 LaM0uette
     </footer>*@
-    
     
     <div id="blazor-error-ui" data-nosnippet>
         An unhandled error has occurred.
         <a href="." class="reload">Reload</a>
         <span class="dismiss">🗙</span>
     </div>
-    
 </div>
