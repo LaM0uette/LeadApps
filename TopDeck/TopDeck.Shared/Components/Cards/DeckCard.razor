@@ -1,31 +1,30 @@
 ﻿@namespace TopDeck.Shared.Components
-@inherits DeckViewBase
+@inherits DeckCardBase
 
 
-<div class="deck-view @GetEnergyClass(Deck.EnergyIds)"
+<div class="deck-card @GetEnergyClass(Deck.EnergyIds)"
      @onclick="OpenDeckDetails">
     
-    <div class="header">
+    <div class="deck-card-header">
         
-        <div class="deck-name-panel-container">
+        <div class="deck-card-title-panel-container">
             <TitlePanel Name="@Deck.Name"/>
         </div>
         
-        <span class="code"
+        <span class="deck-card-code"
               @onclick:preventDefault 
               @onclick:stopPropagation
-              @onclick="CopyCode"
-              >
+              @onclick="CopyCode">
             @DeckCode
         </span>
         
     </div>
     
-    <div class="content">
+    <div class="deck-card-body">
         
         <VerticalSpacer Value="18"/>
 
-        <div class="cards">
+        <div class="deck-highlight-cards">
 
             @if (HighlightedCards.Count < 2)
             {
@@ -33,28 +32,28 @@
             }
             else
             {
-                <img src="@HighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
-                <img src="@HighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
+                <img class="deck-highlight-cards__card" src="@HighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                <img class="deck-highlight-cards__card" src="@HighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
             }
             
         </div>
         
         <VerticalSpacer Value="14"/>
 
-        <div class="energies">
+        <div class="deck-highlight-energies">
             
             @foreach (int energyId in Deck.EnergyIds)
             { 
-                <img src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
+                <img class="deck-highlight-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
             }
             
         </div>
 
     </div>
     
-    <div class="footer">
+    <div class="deck-card-footer">
         
-        <div class="vote-panel-container">
+        <div class="deck-vote-panel-container">
             <VotePanel DeckId="Deck.Id"
                        UserLikes="Deck.Likes.Select(l => l.User).ToList()"
                        UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"/>

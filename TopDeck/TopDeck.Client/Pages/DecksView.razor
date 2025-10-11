@@ -1,4 +1,5 @@
 ﻿@page "/decks"
+@using DeckCard = TopDeck.Shared.Components.DeckCard
 @inherits DecksViewBase
 @attribute [AllowAnonymous]
 
@@ -18,7 +19,7 @@
         {
             foreach (Deck deck in Decks)
             {
-                <DeckView Deck="deck"/>
+                <DeckCard Deck="deck"/>
             }
         }
         
