@@ -20,16 +20,20 @@ public class DecksViewBase : LocalizedComponentBase, IAsyncDisposable
     private bool _prefillInProgress;
     private long _lastLoadTicks;
     private bool _pendingBottomTrigger;
-
+    private readonly SemaphoreSlim _loadLock = new(1, 1);
+    
     [Inject] private IDeckService _deckService { get; set; } = null!;
     [Inject] private IJSRuntime _js { get; set; } = null!;
-
+    
     private DotNetObjectReference<DecksViewBase>? _objRef;
-
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && _js is IJSInProcessRuntime && !_jsReady)
         {
+            // Prevent JS-triggered callbacks from kicking off loads before we prefill
+            _prefillInProgress = true;
+            
             _objRef = DotNetObjectReference.Create(this);
             await _js.InvokeVoidAsync("TopDeck.registerInfiniteScroll", _objRef, "#deck-scroll", 800);
             
@@ -111,14 +115,15 @@ public class DecksViewBase : LocalizedComponentBase, IAsyncDisposable
     
     private async Task LoadMoreAsync()
     {
-        IsLoading = true;
-        await InvokeAsync(StateHasChanged);
-        
-        // Ensure the UI has a chance to render the loader before starting the network call
-        await Task.Yield();
-        
+        await _loadLock.WaitAsync();
         try
         {
+            IsLoading = true;
+            await InvokeAsync(StateHasChanged);
+            
+            // Ensure the UI has a chance to render the loader before starting the network call
+            await Task.Yield();
+            
             IReadOnlyList<Deck> page = await _deckService.GetPageAsync(_skip, _take);
             
             if (page.Count > 0)
@@ -151,6 +156,7 @@ public class DecksViewBase : LocalizedComponentBase, IAsyncDisposable
         {
             _lastLoadTicks = DateTime.UtcNow.Ticks;
             IsLoading = false;
+            _loadLock.Release();
             // Ensure the loader disappears promptly after the load completes
             await InvokeAsync(StateHasChanged);
         }
