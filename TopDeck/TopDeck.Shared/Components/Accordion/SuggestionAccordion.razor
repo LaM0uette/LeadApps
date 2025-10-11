@@ -3,26 +3,10 @@
 
 
 <div class="suggestion-accordion">
-    
-    <button class="header-button" 
+    <button class="suggestion-button" 
             style="width: @Width; height: @Height; font-size: @FontSize;"
             @onclick="Toggle">
-        
-        <p class="suggestor">@Suggestion.Suggestor.UserName</p>
-                            
-        @*<div class="energies">
-
-            @foreach (int energyId in Suggestion.AddedEnergyIds)
-            {
-                <img src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
-            }
-            
-            @foreach (int energyId in Suggestion.RemovedEnergyIds)
-            {
-                <img src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
-            }
-
-        </div>*@
+        <p class="suggestion-button__suggestor">@Suggestion.Suggestor.UserName</p>
                             
         <div class="suggestion-vote-panel-container">
             <VotePanel SuggestionId="Suggestion.Id"
@@ -31,35 +15,30 @@
                        Width="108px" Height="28px" FontSize="0.88em"/>
         </div>
         
-        <img class="arrow @(IsOpen ? "expanded" : "")" src="img/arrow-right.svg" alt="arrow"/>
-        
+        <img class="suggestion-button__arrow @(IsOpen ? "suggestion-button__arrow--expanded" : "")" src="img/arrow-right.svg" alt="arrow"/>
     </button>
 
     @if (IsOpen)
     {
-        <div class="accordion-content">
-            
+        <div class="suggestion-cards">
             @foreach (TCGPCard card in RemovedCards)
             {
-                <div class="card">
-                    <img class="card-img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
-                    <div class="card-icon">
-                        <img src="img/minus-icon.svg" alt="minus icon"/>
+                <div class="suggestion-card">
+                    <img class="suggestion-card__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                    <div class="suggestion-card-state">
+                        <img class="suggestion-card-state__icon" src="img/minus-icon.svg" alt="minus icon"/>
                     </div>
                 </div>
             }
-                
             @foreach (TCGPCard card in AddedCards)
             {
-                <div class="card">
-                    <img class="card-img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
-                    <div class="card-icon">
-                        <img src="img/plus-icon.svg" alt="plus icon"/>
+                <div class="suggestion-card">
+                    <img class="suggestion-card__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                    <div class="suggestion-card-state">
+                        <img class="suggestion-card-state__icon" src="img/plus-icon.svg" alt="plus icon"/>
                     </div>
                 </div>
             }
-            
         </div>
     }
-    
 </div>
