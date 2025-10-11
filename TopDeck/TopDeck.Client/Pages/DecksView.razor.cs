@@ -6,7 +6,7 @@ using TopDeck.Shared.Services;
 
 namespace TopDeck.Client.Pages;
 
-public class DecksViewBase : AppComponentBase, IAsyncDisposable
+public class DecksViewBase : AppComponentBase
 {
     #region Statements
     
@@ -15,7 +15,7 @@ public class DecksViewBase : AppComponentBase, IAsyncDisposable
     protected bool HasMore { get; private set; } = true;
 
     private int _skip;
-    private const int _take = 20;
+    private const int _take = 30;
     private bool _jsReady;
     private bool _prefillInProgress;
     private long _lastLoadTicks;
@@ -23,19 +23,18 @@ public class DecksViewBase : AppComponentBase, IAsyncDisposable
     private readonly SemaphoreSlim _loadLock = new(1, 1);
     
     [Inject] private IDeckService _deckService { get; set; } = null!;
-    [Inject] private IJSRuntime _js { get; set; } = null!;
     
     private DotNetObjectReference<DecksViewBase>? _objRef;
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && _js is IJSInProcessRuntime && !_jsReady)
+        if (firstRender && JS is IJSInProcessRuntime && !_jsReady)
         {
             // Prevent JS-triggered callbacks from kicking off loads before we prefill
             _prefillInProgress = true;
             
             _objRef = DotNetObjectReference.Create(this);
-            await _js.InvokeVoidAsync("TopDeck.registerInfiniteScroll", _objRef, "#deck-scroll", 800);
+            await JS.InvokeVoidAsync("TopDeck.registerInfiniteScroll", _objRef, "#deck-scroll", 800);
             
             _jsReady = true;
             await EnsureInitialScrollAsync();
@@ -76,7 +75,7 @@ public class DecksViewBase : AppComponentBase, IAsyncDisposable
         
         try
         {
-            bool canScroll = await _js.InvokeAsync<bool>("TopDeck.canScroll", "#deck-scroll", 0);
+            bool canScroll = await JS.InvokeAsync<bool>("TopDeck.canScroll", "#deck-scroll", 0);
             
             if (!canScroll)
             {
@@ -90,7 +89,7 @@ public class DecksViewBase : AppComponentBase, IAsyncDisposable
                     await InvokeAsync(StateHasChanged);
                     iterations++;
                     
-                    bool afterCanScroll = await _js.InvokeAsync<bool>("TopDeck.canScroll", "#deck-scroll", 0);
+                    bool afterCanScroll = await JS.InvokeAsync<bool>("TopDeck.canScroll", "#deck-scroll", 0);
                     
                     if (afterCanScroll) 
                         break;
@@ -138,7 +137,7 @@ public class DecksViewBase : AppComponentBase, IAsyncDisposable
                     
                     if (_jsReady)
                     {
-                        await _js.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll");
+                        await JS.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll");
                     }
                 }
             }
@@ -148,7 +147,7 @@ public class DecksViewBase : AppComponentBase, IAsyncDisposable
                 
                 if (_jsReady)
                 {
-                    await _js.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll");
+                    await JS.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll");
                 }
             }
         }
@@ -157,6 +156,7 @@ public class DecksViewBase : AppComponentBase, IAsyncDisposable
             _lastLoadTicks = DateTime.UtcNow.Ticks;
             IsLoading = false;
             _loadLock.Release();
+            
             // Ensure the loader disappears promptly after the load completes
             await InvokeAsync(StateHasChanged);
         }
@@ -166,13 +166,15 @@ public class DecksViewBase : AppComponentBase, IAsyncDisposable
 
     #region IAsyncDisposable
 
-    public async ValueTask DisposeAsync()
+    public override async ValueTask DisposeAsync()
     {
+        await base.DisposeAsync();
+        
         try
         {
             if (_jsReady)
             {
-                await _js.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll"); 
+                await JS.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll"); 
                 
             }
         }

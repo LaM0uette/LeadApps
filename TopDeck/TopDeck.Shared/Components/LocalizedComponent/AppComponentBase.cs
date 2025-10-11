@@ -53,7 +53,7 @@ public class AppComponentBase : ComponentBase, IAsyncDisposable
 
     #region IAsyncDisposable
 
-    public async ValueTask DisposeAsync()
+    public virtual async ValueTask DisposeAsync()
     {
         if (_objRef != null)
         {
