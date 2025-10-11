@@ -8,9 +8,7 @@
 
 
 <div class="decks-view-page">
-        
     <div id="deck-scroll" class="deck-cards">
-            
         @if (Decks.Count <= 0 && !HasMore)
         {
             <p class="deck-cards__no-cards-text">@Localizer.Localize("page.decksView.noCards.text", "No cards found.")</p>
@@ -27,7 +25,5 @@
         {
             <LoadingWheel/>
         }
-            
     </div>
-    
 </div>
