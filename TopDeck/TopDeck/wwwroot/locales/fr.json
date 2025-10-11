@@ -11,6 +11,6 @@
   "component.loadingWheel.text": "Chargement…",
   "feedback.text.copied": "Copié",
   "feedback.text.notFound": "Introuvable",
-  "page.deckDetail.nosuggestions.text": "Aucune suggestion disponible pour ce deck.",
+  "page.deckDetail.noSuggestions.text": "Aucune suggestion disponible pour ce deck.",
   "page.decksView.noCards.text": "Aucune carte trouvée."
 }

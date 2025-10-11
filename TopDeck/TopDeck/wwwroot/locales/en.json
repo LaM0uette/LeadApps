@@ -11,6 +11,6 @@
   "component.loadingWheel.text": "Loading…",
   "feedback.text.copied": "Copied",
   "feedback.text.notFound": "Not found",
-  "page.deckDetail.nosuggestions.text": "No suggestions available for this deck.",
+  "page.deckDetail.noSuggestions.text": "No suggestions available for this deck.",
   "page.decksView.noCards.text": "No cards found."
 }
