@@ -2,6 +2,6 @@
 
 namespace TopDeck.Client.Pages;
 
-public class HomeBase : LocalizedComponentBase
+public class HomeBase : AppComponentBase
 {
 }

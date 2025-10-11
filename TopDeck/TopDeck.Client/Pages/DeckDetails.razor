@@ -27,7 +27,9 @@ else
                 </div>
             </div>
 
-            <VerticalSpacer Value="10"/>
+            @if (IsMobile) { <VerticalSpacer Value="10"/> }
+            else { <VerticalSpacer Value="25"/> }
+            
             <span class="deck-details-header__code" @onclick="CopyCode">@DeckCode</span>
             <VerticalSpacer Value="6"/>
 

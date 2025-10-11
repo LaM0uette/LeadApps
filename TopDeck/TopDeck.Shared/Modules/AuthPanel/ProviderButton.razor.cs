@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace AuthPanel;
 
-public class ProviderButtonBase : LocalizedComponentBase
+public class ProviderButtonBase : AppComponentBase
 {
     #region Statements
 

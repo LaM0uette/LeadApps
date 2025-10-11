@@ -18,7 +18,8 @@
     </div>
     
     <div class="deck-card-body">
-        <VerticalSpacer Value="18"/>
+        @if (IsMobile) { <VerticalSpacer Value="18"/> }
+        else { <VerticalSpacer Value="38"/> }
         
         <div class="deck-highlight-cards">
 

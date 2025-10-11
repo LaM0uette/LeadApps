@@ -8,7 +8,7 @@ using TopDeck.Shared.Services;
 
 namespace TopDeck.Client.Pages;
 
-public class DeckDetailsBase : LocalizedComponentBase
+public class DeckDetailsBase : AppComponentBase
 {
     #region Enums
 
@@ -17,6 +17,7 @@ public class DeckDetailsBase : LocalizedComponentBase
         View,
         Edit
     }
+    
     protected enum Tab
     {
         Cards,

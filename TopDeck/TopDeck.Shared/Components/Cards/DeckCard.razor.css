@@ -167,16 +167,12 @@
     }
 
     .deck-card-title-panel-container {
-        transform: scale(1.5);
+        transform: scale(1.4);
         transform-origin: top left;
     }
     
     .deck-card-code {
         font-size: 1.2em;
-    }
-
-    .deck-card-body {
-        margin-top: 20px;
     }
 
     .deck-highlight-cards {
@@ -200,7 +196,7 @@
     }
 
         .deck-vote-panel-container {
-            transform: scale(1.5);
+            transform: scale(1.4);
             transform-origin: bottom right;
         }
 }

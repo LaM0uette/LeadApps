@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 namespace AuthPanel;
 
-public class AuthPanelBase : LocalizedComponentBase
+public class AuthPanelBase : AppComponentBase
 {
     #region Statements
     

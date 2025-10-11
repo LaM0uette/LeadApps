@@ -7,7 +7,7 @@ using TopDeck.Shared.Models.TCGP;
 
 namespace TopDeck.Shared.Components;
 
-public class DeckCardBase : LocalizedComponentBase
+public class DeckCardBase : AppComponentBase
 {
     #region Statements
 

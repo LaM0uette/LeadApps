@@ -2,6 +2,6 @@
 
 namespace TopDeck.Client.Pages;
 
-public class LoginBase : LocalizedComponentBase
+public class LoginBase : AppComponentBase
 {
 }

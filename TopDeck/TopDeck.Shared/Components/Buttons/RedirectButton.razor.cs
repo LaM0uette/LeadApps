@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace TopDeck.Shared.Components;
 
-public class RedirectButtonBase : LocalizedComponentBase
+public class RedirectButtonBase : AppComponentBase
 {
     #region Statements
 

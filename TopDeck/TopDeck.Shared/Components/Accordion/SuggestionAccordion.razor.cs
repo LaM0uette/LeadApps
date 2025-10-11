@@ -6,7 +6,7 @@ using TopDeck.Shared.Models.TCGP;
 
 namespace TopDeck.Shared.Components;
 
-public class SuggestionAccordionBase : LocalizedComponentBase
+public class SuggestionAccordionBase : AppComponentBase
 {
     #region Statements
 

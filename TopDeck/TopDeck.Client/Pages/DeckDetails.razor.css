@@ -313,12 +313,12 @@
         }
 
     .deck-details-title-panel-container {
-        transform: scale(1.5);
+        transform: scale(1.4);
         transform-origin: top left;
     }
 
     .deck-details-vote-panel-container {
-        transform: scale(1.5);
+        transform: scale(1.4);
         transform-origin: top right;
     }
 }

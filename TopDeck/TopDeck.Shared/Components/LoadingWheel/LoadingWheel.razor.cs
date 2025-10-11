@@ -2,6 +2,6 @@
 
 namespace TopDeck.Shared.Components;
 
-public class LoadingWheelBase : LocalizedComponentBase
+public class LoadingWheelBase : AppComponentBase
 {
 }

@@ -6,7 +6,7 @@ using TopDeck.Shared.Services;
 
 namespace TopDeck.Client.Pages;
 
-public class DecksViewBase : LocalizedComponentBase, IAsyncDisposable
+public class DecksViewBase : AppComponentBase, IAsyncDisposable
 {
     #region Statements
     
