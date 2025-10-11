@@ -17,13 +17,13 @@ else
 
             <div class="title-content">
 
-                <DeckNamePanel Name="@Deck.Name" Width="200px" Height="35px" FontSize="1.2em"/>
+                <DeckNamePanel Name="@Deck.Name" Width="200px" Height="35px" FontSize="1.1em"/>
 
                 <div class="vote-panel-container">
                     <VotePanel DeckId="Deck.Id"
                                UserLikes="Deck.Likes.Select(l => l.User).ToList()"
                                UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"
-                               Width="130px" Height="35px" FontSize="1.2em"/>
+                               Width="130px" Height="35px" FontSize="1.1em"/>
                 </div>
 
             </div>

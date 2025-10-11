@@ -43,7 +43,7 @@
         box-sizing: border-box;
 
         z-index: 1;
-
+        
 
         & > .code {
             align-self: self-start;
@@ -127,7 +127,8 @@
 
 
         & > .vote-panel-container {
-            box-shadow: var(--drop-shadow-m);
+            width: 100%;
+            box-shadow: var(--drop-shadow-s);
         }
     }
 
@@ -149,3 +150,58 @@
 .energy-9::before{background:var(--gradient-dragon)}
 .energy-10::before{background:var(--gradient-colorless)}
 
+
+
+
+
+@media (min-width: 1024px) {
+    .deck-view {
+        width: 275px;
+        height: 380px;
+        
+        &::before {
+            clip-path: polygon(0 0, 100% 0, 100% 55%, 0 85%);
+        }
+
+        & > .header {
+            font-size: 1.2em;
+
+            & > .code {
+                font-size: 1.2em;
+            }
+
+            & > .deck-name-panel-container {
+                transform: scale(1.5);
+                transform-origin: top left;
+            }
+        }
+
+        & > .content {
+            margin-top: 20px;
+            
+            & > .cards {
+                margin-top: -3px;
+                margin-bottom: 8px;
+            }
+
+            & > .energies {
+                gap: 15px;
+                
+                & > img {
+                    max-height: 34px;
+                    max-width: 34px;
+                }
+            }
+        }
+
+        & > .footer {
+            bottom: 12px;
+            right: 12px;
+
+            & > .vote-panel-container {
+                transform: scale(1.5);
+                transform-origin: bottom right;
+            }
+        }
+    }
+}

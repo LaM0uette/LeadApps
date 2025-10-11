@@ -7,7 +7,9 @@
     
     <div class="header">
         
-        <DeckNamePanel Name="@Deck.Name"/>
+        <div class="deck-name-panel-container">
+            <DeckNamePanel Name="@Deck.Name"/>
+        </div>
         
         <span class="code"
               @onclick:preventDefault 
@@ -37,7 +39,7 @@
             
         </div>
         
-        <VerticalSpacer Value="12"/>
+        <VerticalSpacer Value="14"/>
 
         <div class="energies">
             

@@ -9,7 +9,7 @@ public class DeckNamePanelBase : ComponentBase
     [Parameter, EditorRequired] public required string Name { get; set; }
     [Parameter, EditorRequired] public required string Width { get; set; } = "100px";
     [Parameter, EditorRequired] public required string Height { get; set; } = "26px";
-    [Parameter, EditorRequired] public required string FontSize { get; set; } = "0.8em";
+    [Parameter, EditorRequired] public required string FontSize { get; set; } = "0.63em";
     
     #endregion
 }
