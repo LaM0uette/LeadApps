@@ -8,8 +8,8 @@
   "component.button.login.text": "Log in",
   "component.button.logout.text": "Log out",
   "component.button.back.text": "Back",
+  "component.loadingWheel.text": "Loading…",
   "feedback.text.copied": "Copied",
-  "feedback.text.loading": "Loading...",
   "feedback.text.notFound": "Not found",
   "page.deckDetail.nosuggestions.text": "No suggestions available for this deck.",
   "page.decksView.noCards.text": "No cards found."

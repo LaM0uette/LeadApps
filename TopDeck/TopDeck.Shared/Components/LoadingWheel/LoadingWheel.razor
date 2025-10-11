@@ -1,0 +1,8 @@
+﻿@namespace TopDeck.Shared.Components
+@inherits LoadingWheelBase
+
+
+<div class="loading-wheel" aria-live="polite" aria-busy="true">
+    <div class="loading-wheel__wheel" role="status" title="Loading"></div>
+    <span class="loading-wheel__text">@Localizer.Localize("component.loadingWheel.text", "Loading...")</span>
+</div>

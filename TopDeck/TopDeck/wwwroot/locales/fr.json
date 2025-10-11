@@ -8,8 +8,8 @@
   "component.button.login.text": "Se connecter",
   "component.button.logout.text": "Se déconnecter",
   "component.button.back.text": "Retour",
+  "component.loadingWheel.text": "Chargement…",
   "feedback.text.copied": "Copié",
-  "feedback.text.loading": "Chargement...",
   "feedback.text.notFound": "Introuvable",
   "page.deckDetail.nosuggestions.text": "Aucune suggestion disponible pour ce deck.",
   "page.decksView.noCards.text": "Aucune carte trouvée."
