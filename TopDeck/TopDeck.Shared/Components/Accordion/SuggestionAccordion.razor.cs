@@ -1,6 +1,8 @@
 ﻿using LocalizedComponent;
 using Microsoft.AspNetCore.Components;
+using TCGPCardRequester;
 using TopDeck.Domain.Models;
+using TopDeck.Shared.Models.TCGP;
 
 namespace TopDeck.Shared.Components;
 
@@ -14,20 +16,29 @@ public class SuggestionAccordionBase : LocalizedComponentBase
     [Parameter, EditorRequired] public required string FontSize { get; set; } = "1em";
 
     protected bool IsOpen;
+    protected IReadOnlyList<TCGPCard> AddedCards { get; set; } = [];
+    protected IReadOnlyList<TCGPCard> RemovedCards { get; set; } = [];
     
-    protected readonly Dictionary<int, string> EnergyTypes = new()
+    [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
+    
+    protected override async Task OnParametersSetAsync()
     {
-        { 1, "Grass" },
-        { 2, "Fire" },
-        { 3, "Water" },
-        { 4, "Lightning" },
-        { 5, "Psychic" },
-        { 6, "Fighting" },
-        { 7, "Darkness" },
-        { 8, "Metal" },
-        { 9, "Dragon" },
-        { 10, "Colorless" }
-    };
+        List<TCGPCardRequest> addedCardRequests = [];
+        addedCardRequests.AddRange(Suggestion.AddedCards
+            .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
+        );
+
+        List<TCGPCardRequest> removedCardRequests = [];
+        removedCardRequests.AddRange(Suggestion.RemovedCards
+            .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
+        );
+        
+        TCGPCardsRequest addedCardsRequests = new(addedCardRequests);
+        TCGPCardsRequest removedCardsRequests = new(removedCardRequests);
+        
+        AddedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(addedCardsRequests);
+        RemovedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(removedCardsRequests);
+    }
 
     #endregion
 

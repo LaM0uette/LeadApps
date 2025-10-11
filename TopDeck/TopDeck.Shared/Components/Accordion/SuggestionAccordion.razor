@@ -38,9 +38,27 @@
     @if (IsOpen)
     {
         <div class="accordion-content">
-            <p>
-                test
-            </p>
+            
+            @foreach (TCGPCard card in RemovedCards)
+            {
+                <div class="card">
+                    <img class="card-img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                    <div class="card-icon">
+                        <img src="img/minus-icon.svg" alt="minus icon"/>
+                    </div>
+                </div>
+            }
+                
+            @foreach (TCGPCard card in AddedCards)
+            {
+                <div class="card">
+                    <img class="card-img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                    <div class="card-icon">
+                        <img src="img/plus-icon.svg" alt="plus icon"/>
+                    </div>
+                </div>
+            }
+            
         </div>
     }
     

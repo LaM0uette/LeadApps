@@ -1,7 +1,7 @@
 ﻿.suggestion-accordion {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 
     padding: 0 8px;
     box-sizing: border-box;
@@ -73,6 +73,58 @@
 
         &:active {
             opacity: 0.6;
+        }
+    }
+
+    & > .accordion-content {
+        height: 100%;
+
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 65px);
+        justify-content: center;
+        align-content: start;
+        gap: 5px;
+
+        margin: 0 5px 25px 5px;
+        box-sizing: border-box;
+        
+
+        & > .card {
+            position: relative;
+
+            width: 65px;
+            height: 90px;
+            justify-self: center;
+
+
+            & > .card-img {
+                width: 100%;
+                height: 100%;
+            }
+            
+            & > .card-icon {
+                position: absolute;
+                bottom: 6px;
+                right: 6px;
+                
+                width: 24px;
+                height: 24px;
+                
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                
+                background: var(--color-bg);
+                box-shadow: var(--shadow-l);
+                
+                border-radius: 50%;
+
+                & > img {
+                    width: 80%;
+                    height: 80%;
+                    justify-self: center;
+                }
+            }
         }
     }
 }

@@ -114,8 +114,14 @@ else
                 {
                     foreach (DeckSuggestion suggestion in Deck.Suggestions)
                     {
+                        if (suggestion.AddedCards.Count == 0 && suggestion.RemovedCards.Count == 0)
+                            continue;
+                        
                         <SuggestionAccordion Suggestion="suggestion"/>
+                        <VerticalSpacer Value="8"/>
                     }
+                    
+                    <VerticalSpacer Value="70"/>
                 }
                 
             </div>
