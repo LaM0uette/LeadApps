@@ -285,13 +285,6 @@
 
 
 
-
-
-
-
-
-
-
 .energy-1::before{background:var(--gradient-grass)}
 .energy-2::before{background:var(--gradient-fire)}
 .energy-3::before{background:var(--gradient-water)}
@@ -307,8 +300,29 @@
 
 @media (min-width: 1024px) {
     .deck-details-page {
-        width: 50%;
+        width: 45%;
         margin: 0 auto;
         outline: 1px solid var(--color-outline);
+
+        & > .header {
+            padding: 12px;
+            
+            & > .title-content {
+                
+                & > .deck-name-panel-container {
+                    transform: scale(1.5);
+                    transform-origin: top left;
+                }
+
+                & > .vote-panel-container {
+                    transform: scale(1.5);
+                    transform-origin: top right;
+                }
+            }
+            
+            & > .code {
+                font-size: 1.5em;
+            }
+        }
     }
 }
