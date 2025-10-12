@@ -32,7 +32,7 @@ public class DeckLikeService : IDeckLikeService
         DeckLike? existing = await _likes.GetByIdAsync(dto.DeckId, dto.UserId, ct);
         if (existing is not null)
         {
-            DeckLikeOutputDTO output = new(deck.ToShallowOutput(), user.ToOutput());
+            DeckLikeOutputDTO output = new(deck.ToShallowOutput(), user.MapToDTO());
             return output;
         }
 
@@ -48,7 +48,7 @@ public class DeckLikeService : IDeckLikeService
         }, ct);
 
         // Return DTO
-        return new DeckLikeOutputDTO(deck.ToShallowOutput(), user.ToOutput());
+        return new DeckLikeOutputDTO(deck.ToShallowOutput(), user.MapToDTO());
     }
 
     public async Task<bool> DeleteAsync(int deckId, int userId, CancellationToken ct = default)

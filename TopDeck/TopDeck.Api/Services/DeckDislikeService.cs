@@ -32,7 +32,7 @@ public class DeckDislikeService : IDeckDislikeService
         DeckDislike? existing = await _dislikes.GetByIdAsync(dto.DeckId, dto.UserId, ct);
         if (existing is not null)
         {
-            return new DeckDislikeOutputDTO(deck.ToShallowOutput(), user.ToOutput());
+            return new DeckDislikeOutputDTO(deck.ToShallowOutput(), user.MapToDTO());
         }
 
         // Mutual exclusion: remove existing like, if any
@@ -46,7 +46,7 @@ public class DeckDislikeService : IDeckDislikeService
             User = null!
         }, ct);
 
-        return new DeckDislikeOutputDTO(deck.ToShallowOutput(), user.ToOutput());
+        return new DeckDislikeOutputDTO(deck.ToShallowOutput(), user.MapToDTO());
     }
 
     public async Task<bool> DeleteAsync(int deckId, int userId, CancellationToken ct = default)

@@ -98,7 +98,7 @@ app.UseHttpsRedirection();
 app.UseResponseCompression();
 
 // map endpoints
-app.MapUsersEndpoints();
+app.MapUserEndpoints();
 app.MapDeckItemEndpoints();
 app.MapDeckSuggestionsEndpoints();
 app.MapDeckLikesEndpoints();

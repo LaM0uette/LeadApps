@@ -19,44 +19,41 @@ public class UserService : IUserService
     #endregion
 
     #region IService
-
-    public async Task<IReadOnlyList<UserOutputDTO>> GetAllAsync(CancellationToken ct = default)
+    
+    public async Task<UserOutputDTO?> GetByOAuthIdAsync(AuthUserInputDTO dto, CancellationToken ct = default)
     {
-        IReadOnlyList<User> users = await _repo.GetAllAsync(ct);
-        return users.Select(u => u.ToOutput()).ToList();
+        User? entity = await _repo.GetByOAuthIdAsync(dto.Provider, dto.OAuthId, ct);
+        return entity?.MapToDTO();
     }
     
-    public async Task<UserOutputDTO?> GetByIdAsync(int id, CancellationToken ct = default)
+    public async Task<UserOutputDTO?> GetByUuidAsync(Guid uuid, CancellationToken ct = default)
     {
-        User? entity = await _repo.GetByIdAsync(id, ct);
-        return entity?.ToOutput();
-    }
-    
-    public async Task<UserOutputDTO?> GetByOAuthAsync(UserOAuthInputDTO dto, CancellationToken ct = default)
-    {
-        User? entity = await _repo.GetByOAuthAsync(dto.Provider, dto.Id, ct);
-        return entity?.ToOutput();
+        User? entity = await _repo.GetByUuidAsync(uuid, ct);
+        return entity?.MapToDTO();
     }
 
     public async Task<UserOutputDTO> CreateAsync(UserInputDTO dto, CancellationToken ct = default)
     {
-        User? existing = await _repo.GetByOAuthAsync(dto.OAuthProvider, dto.OAuthId, ct);
+        User? existing = await _repo.GetByOAuthIdAsync(dto.OAuthProvider, dto.OAuthId, ct);
         
         if (existing != null)
-            return existing.ToOutput();
+            return existing.MapToDTO();
 
         User entity = dto.ToEntity();
         User created = await _repo.AddAsync(entity, ct);
-        return created.ToOutput();
+        return created.MapToDTO();
     }
 
     public async Task<UserOutputDTO?> UpdateAsync(int id, UserInputDTO dto, CancellationToken ct = default)
     {
         User? existing = await _repo.GetByIdAsync(id, ct);
-        if (existing is null) return null;
+        
+        if (existing is null) 
+            return null;
+        
         existing.UpdateEntity(dto);
         User updated = await _repo.UpdateAsync(existing, ct);
-        return updated.ToOutput();
+        return updated.MapToDTO();
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)

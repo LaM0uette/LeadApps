@@ -75,11 +75,8 @@ public class DeckItemService : IDeckItemService
         if (creator is null) 
             throw new InvalidOperationException($"Creator with id {dto.CreatorId} not found");
 
-        // Allow changing creator if different
         if (existing.CreatorId != dto.CreatorId)
-        {
-            existing.CreatorId = dto.CreatorId;
-        }
+            throw new InvalidOperationException("Changing the creator of a deck is not allowed.");
 
         ValidateDeckLimits(dto);
 

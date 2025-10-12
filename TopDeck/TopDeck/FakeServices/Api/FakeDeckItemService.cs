@@ -30,16 +30,16 @@ public class FakeDeckItemService : IDeckItemService
 
     public Task<Deck> CreateAsync(DeckItemInputDTO dto, CancellationToken ct = default)
     {
-        throw new NotSupportedException("Deck creation is not supported in Blazor Server fake service.");
+        throw new NotImplementedException();
     }
 
     public Task<Deck?> UpdateAsync(int id, DeckItemInputDTO dto, CancellationToken ct = default)
     {
-        throw new NotSupportedException("Deck update is not supported in Blazor Server fake service.");
+        throw new NotImplementedException();
     }
 
     public Task<bool> DeleteAsync(int id, CancellationToken ct = default)
     {
-        throw new NotSupportedException("Deck deletion is not supported in Blazor Server fake service.");
+        throw new NotImplementedException();
     }
 }

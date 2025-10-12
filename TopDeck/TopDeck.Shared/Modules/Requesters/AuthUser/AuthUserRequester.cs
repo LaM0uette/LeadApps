@@ -1,7 +1,5 @@
 ﻿using System.Security.Claims;
 using Helpers.Auth0;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
 using TopDeck.Contracts.DTO;
 using TopDeck.Domain.Models;
 using TopDeck.Shared.Services;
@@ -12,12 +10,10 @@ public class AuthUserRequester : IAuthUserRequester
 {
     #region Statements
 
-    private readonly AuthenticationStateProvider _authenticationStateProvider;
     private readonly IUserService _userService;
 
-    public AuthUserRequester(AuthenticationStateProvider authenticationStateProvider, IUserService userService)
+    public AuthUserRequester(IUserService userService)
     {
-        _authenticationStateProvider = authenticationStateProvider;
         _userService = userService;
     }
 
@@ -29,11 +25,11 @@ public class AuthUserRequester : IAuthUserRequester
     {
         string? sub = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
-        if (!Auth0SubHelper.TryParse(sub, out string provider, out string id)) 
+        if (!Auth0SubHelper.TryParse(sub, out string provider, out string oAuthId)) 
             return null;
 
-        UserOAuthInputDTO dto = new(provider, id);
-        return await _userService.GetByOAuthAsync(dto);
+        AuthUserInputDTO dto = new(provider, oAuthId);
+        return await _userService.GetByOAuthIdAsync(dto);
     }
 
     #endregion

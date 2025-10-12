@@ -13,24 +13,34 @@ public class UserService : ApiService, IUserService
     #endregion
 
     #region ApiService
-
-    public async Task<IReadOnlyList<User>> GetAllAsync(CancellationToken ct = default)
+    
+    public async Task<User?> GetByOAuthIdAsync(AuthUserInputDTO dto, CancellationToken ct = default)
     {
-        IReadOnlyList<UserOutputDTO>? result = await GetJsonAsync<IReadOnlyList<UserOutputDTO>>(_route, ct);
-        List<User> list = result?.Select(u => u.ToDomain()).ToList() ?? [];
-        return list;
-    }
-
-    public async Task<User?> GetByIdAsync(int id, CancellationToken ct = default)
-    {
-        UserOutputDTO? dto = await GetJsonAsync<UserOutputDTO>($"{_route}/{id}", ct);
-        return dto?.ToDomain();
+        UserOutputDTO? response = await PostJsonAsync<AuthUserInputDTO, UserOutputDTO>($"{_route}/oauth", dto, ct);
+        return response?.ToDomain();
     }
     
-    public async Task<User?> GetByOAuthAsync(UserOAuthInputDTO dto, CancellationToken ct = default)
+    public async Task<User?> GetByUuidAsync(Guid uuid, CancellationToken ct = default)
     {
-        UserOutputDTO? response = await PostJsonAsync<UserOAuthInputDTO, UserOutputDTO>($"{_route}/oauth", dto, ct);
+        UserOutputDTO? response = await GetJsonAsync<UserOutputDTO>($"{_route}/uuid/{uuid}", ct);
         return response?.ToDomain();
+    }
+    
+    public async Task<User> CreateAsync(UserInputDTO dto, CancellationToken ct = default)
+    {
+        UserOutputDTO? response = await PostJsonAsync<UserInputDTO, UserOutputDTO>($"{_route}", dto, ct);
+        return response?.ToDomain() ?? throw new Exception("Failed to create user");
+    }
+    
+    public async Task<User?> UpdateAsync(int id, UserInputDTO dto, CancellationToken ct = default)
+    {
+        UserOutputDTO? response = await PutJsonAsync<UserInputDTO, UserOutputDTO>($"{_route}/{id}", dto, ct);
+        return response?.ToDomain();
+    }
+    
+    public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+    {
+        return await DeleteAsync($"{_route}/{id}", ct);
     }
 
     #endregion

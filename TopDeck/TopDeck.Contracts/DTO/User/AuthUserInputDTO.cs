@@ -1,7 +1,7 @@
 ﻿namespace TopDeck.Contracts.DTO;
 
-public record UserOAuthInputDTO
+public record AuthUserInputDTO
 (
     string Provider,
-    string Id
+    string OAuthId
 );

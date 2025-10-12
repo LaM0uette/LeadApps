@@ -35,7 +35,7 @@ public static class DeckSuggestionMappings
     {
         return new DeckSuggestionOutputDTO(
             s.Id,
-            s.Suggestor is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : s.Suggestor.ToOutput(),
+            s.Suggestor is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : s.Suggestor.MapToDTO(),
             s.Deck is null ? new DeckOutputDTOold(0, new UserOutputDTO(0, "", "", "", DateTime.MinValue), "", "", new List<DeckCardOutputDTOold>(), new List<int>(), new List<TagOutputDTOold>(), new List<DeckLikeOutputDTO>(), new List<DeckDislikeOutputDTO>(), new List<DeckSuggestionOutputDTO>(), DateTime.MinValue, DateTime.MinValue) : s.Deck.ToShallowOutput(),
             s.AddedCards.Select(c => new DeckCardOutputDTOold(c.CollectionCode, c.CollectionNumber, false)).ToList(),
             s.RemovedCards.Select(c => new DeckCardOutputDTOold(c.CollectionCode, c.CollectionNumber, false)).ToList(),
@@ -53,7 +53,7 @@ public static class DeckSuggestionMappings
         DeckSuggestionOutputDTO shallow = s.ToShallowOutput();
         return new DeckSuggestionOutputDTO(
             s.Id,
-            s.Suggestor is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : s.Suggestor.ToOutput(),
+            s.Suggestor is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : s.Suggestor.MapToDTO(),
             s.Deck is null ? new DeckOutputDTOold(0, new UserOutputDTO(0, "", "", "", DateTime.MinValue), "", "", new List<DeckCardOutputDTOold>(), new List<int>(), new List<TagOutputDTOold>(), new List<DeckLikeOutputDTO>(), new List<DeckDislikeOutputDTO>(), new List<DeckSuggestionOutputDTO>(), DateTime.MinValue, DateTime.MinValue) : s.Deck.ToShallowOutput(),
             s.AddedCards.Select(c => new DeckCardOutputDTOold(c.CollectionCode, c.CollectionNumber, false)).ToList(),
             s.RemovedCards.Select(c => new DeckCardOutputDTOold(c.CollectionCode, c.CollectionNumber, false)).ToList(),
@@ -61,11 +61,11 @@ public static class DeckSuggestionMappings
             s.RemovedEnergyIds.ToList(),
             s.Likes.Select(l => new DeckSuggestionLikeOutputDTO(
                 shallow,
-                l.User is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : l.User.ToOutput()
+                l.User is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : l.User.MapToDTO()
             )).ToList(),
             s.Dislikes.Select(l => new DeckSuggestionDislikeOutputDTO(
                 shallow,
-                l.User is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : l.User.ToOutput()
+                l.User is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : l.User.MapToDTO()
             )).ToList(),
             s.CreatedAt,
             s.UpdatedAt

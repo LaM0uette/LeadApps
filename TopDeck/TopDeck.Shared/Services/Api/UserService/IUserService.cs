@@ -5,7 +5,9 @@ namespace TopDeck.Shared.Services;
 
 public interface IUserService
 {
-    Task<IReadOnlyList<User>> GetAllAsync(CancellationToken ct = default);
-    Task<User?> GetByIdAsync(int id, CancellationToken ct = default);
-    Task<User?> GetByOAuthAsync(UserOAuthInputDTO dto, CancellationToken ct = default);
+    Task<User?> GetByOAuthIdAsync(AuthUserInputDTO dto, CancellationToken ct = default);
+    Task<User?> GetByUuidAsync(Guid uuid, CancellationToken ct = default);
+    Task<User> CreateAsync(UserInputDTO dto, CancellationToken ct = default);
+    Task<User?> UpdateAsync(int id, UserInputDTO dto, CancellationToken ct = default);
+    Task<bool> DeleteAsync(int id, CancellationToken ct = default);
 }

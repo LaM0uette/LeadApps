@@ -6,8 +6,8 @@ namespace TopDeck.Api.Mappings;
 
 public static class DeckItemMapper
 {
-    public static List<DeckItemOutputDTO> MapToDTO(this IEnumerable<Deck> decks) => decks.Select(MapToDTO).ToList();
     public static DeckItemOutputDTO MapToDTO(this Deck deck) => Expression.Compile().Invoke(deck);
+    
     public static Expression<Func<Deck, DeckItemOutputDTO>> Expression => deck => new DeckItemOutputDTO(
         deck.Id,
         deck.Creator.Uuid.ToString(),
@@ -58,34 +58,41 @@ public static class DeckItemMapper
         };
     }
 
-    
-    
-    
-
     public static void UpdateEntity(this Deck entity, DeckItemInputDTO dto)
     {
-        entity.CreatorId = dto.CreatorId;
         entity.Name = dto.Name;
-        entity.Code = string.Empty; // TODO: change this
 
-        var allCards = (dto.Cards ?? Array.Empty<DeckCardInputDTO>())
-            .Select(c => new DeckCard { Deck = entity, DeckId = entity.Id, CollectionCode = c.CollectionCode, CollectionNumber = c.CollectionNumber, IsHighlighted = c.IsHighlighted })
-            .ToList();
-        entity.Cards = allCards;
+        entity.Cards = dto.Cards.Select(c => new DeckCard
+        {
+            DeckId = entity.Id,
+            Deck = entity,
+            CollectionCode = c.CollectionCode,
+            CollectionNumber = c.CollectionNumber,
+            IsHighlighted = c.IsHighlighted
+        }).ToList();
 
-        entity.EnergyIds = dto.EnergyIds?.ToList() ?? [];
+        entity.EnergyIds = dto.EnergyIds.ToList();
 
-        entity.DeckTags = (dto.TagIds ?? Array.Empty<int>())
-            .Select(id => new DeckTag { Deck = entity, DeckId = entity.Id, TagId = id, Tag = null! })
-            .ToList();
+        entity.DeckTags = dto.TagIds.Select(id => new DeckTag
+        {
+            DeckId = entity.Id,
+            Deck = entity,
+            TagId = id,
+            Tag = null!
+        }).ToList();
     }
 
+    
+    
+    
+    
+    
     // Shallow output to avoid circular references: empty Likes and Suggestions
     public static DeckOutputDTOold ToShallowOutput(this Deck entity)
     {
         return new DeckOutputDTOold(
             entity.Id,
-            entity.Creator is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : entity.Creator.ToOutput(),
+            entity.Creator is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : entity.Creator.MapToDTO(),
             entity.Name,
             entity.Code,
             entity.Cards.Select(c => new DeckCardOutputDTOold(c.CollectionCode, c.CollectionNumber, c.IsHighlighted)).ToList(),

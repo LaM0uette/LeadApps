@@ -34,7 +34,7 @@ public class UserRepository : IUserRepository
         return await _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Uuid == uuid, ct);
     }
 
-    public async Task<User?> GetByOAuthAsync(string provider, string id, CancellationToken ct = default)
+    public async Task<User?> GetByOAuthIdAsync(string provider, string id, CancellationToken ct = default)
     {
         return await _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.OAuthProvider == provider && x.OAuthId == id, ct);
     }

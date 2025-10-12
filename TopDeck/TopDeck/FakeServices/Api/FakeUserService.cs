@@ -6,19 +6,28 @@ namespace TopDeck.FakeServices;
 
 public class FakeUserService : IUserService
 {
-    public Task<IReadOnlyList<User>> GetAllAsync(CancellationToken ct = default)
-    {
-        IReadOnlyList<User> result = Array.Empty<User>();
-        return Task.FromResult(result);
-    }
-
-    public Task<User?> GetByIdAsync(int id, CancellationToken ct = default)
+    public Task<User?> GetByOAuthIdAsync(AuthUserInputDTO dto, CancellationToken ct = default)
     {
         return Task.FromResult<User?>(null);
     }
 
-    public Task<User?> GetByOAuthAsync(UserOAuthInputDTO dto, CancellationToken ct = default)
+    public Task<User?> GetByUuidAsync(Guid uuid, CancellationToken ct = default)
     {
         return Task.FromResult<User?>(null);
+    }
+
+    public Task<User> CreateAsync(UserInputDTO dto, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<User?> UpdateAsync(int id, UserInputDTO dto, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
     }
 }
