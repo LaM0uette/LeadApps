@@ -10,6 +10,7 @@ public class RedirectButtonBase : PresenterBase
     
     [Parameter] public string Width { get; set; } = "auto";
     [Parameter] public string Height { get; set; } = "36px";
+    [Parameter] public string FontSize { get; set; } = "1rem";
     [Parameter] public string? Href { get; set; }
     [Parameter] public string Target { get; set; } = "_self";
     [Parameter] public RenderFragment? ChildContent { get; set; }

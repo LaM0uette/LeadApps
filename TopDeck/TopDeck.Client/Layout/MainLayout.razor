@@ -11,12 +11,12 @@
         
         <AuthorizeView>
             <Authorized>    
-                <RedirectButton style="margin-left: auto;margin-right: 20px;" Href="/Account/Logout">
+                <RedirectButton Height="30px" FontSize="0.9rem" style="margin-left: auto;margin-right: 10px;" Href="/Account/Logout">
                     @Localizer.Localize("component.button.logout.text", "Log out")
                 </RedirectButton>
             </Authorized>
             <NotAuthorized>
-                <RedirectButton style="margin-left: auto;margin-right: 20px;" Href="/Login">
+                <RedirectButton Height="30px" FontSize="0.9rem" style="margin-left: auto;margin-right: 10px;" Href="/Login">
                     @Localizer.Localize("component.button.login.text", "Log in")
                 </RedirectButton>
             </NotAuthorized>

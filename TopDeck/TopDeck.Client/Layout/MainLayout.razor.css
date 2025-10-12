@@ -3,7 +3,7 @@
     height: 100vh;
 
     box-sizing: border-box;
-    padding-top: 75px;
+    padding-top: 50px;
 
     background: var(--color-bg);
     color: var(--color-text);
@@ -26,14 +26,14 @@
     background: var(--color-bg);
 
     width: 100%;
-    height: 75px;
+    height: 50px;
 
     z-index: 999;
 }
 
     .main-layout-header__title {
         font-family: var(--font-extra-bold), sans-serif;
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
 
     .main-layout-header__separator {
@@ -51,8 +51,8 @@
 
 
 .topdeck-logo {
-    width: 75px;
-    height: 75px;
+    width: 50px;
+    height: 50px;
 
     display: flex;
     justify-content: center;
@@ -60,15 +60,15 @@
 }
 
     .topdeck-logo__icon {
-        width: 48px;
-        height: 48px;
+        width: 65%;
+        height: auto;
         object-fit: contain;
     }
 
 
 .main-layout-body {
     position: relative;
-    height: calc(100vh - 75px);
+    height: calc(100vh - 50px);
     overflow: hidden;
 }
 
