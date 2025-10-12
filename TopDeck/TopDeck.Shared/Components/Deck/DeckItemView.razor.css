@@ -151,7 +151,7 @@
 .energy-10::before{background:var(--gradient-colorless)}
 
 
-@media (min-width: 1024px) {
+@media (min-width: 1366px) {
     .deck-item {
         width: 275px;
         height: 380px;

@@ -121,7 +121,7 @@
     }
 
 
-@media (min-width: 1024px) {
+@media (min-width: 1366px) {
     .suggestion-cards {
         grid-template-columns: repeat(auto-fill, 85px);
         gap: 8px;

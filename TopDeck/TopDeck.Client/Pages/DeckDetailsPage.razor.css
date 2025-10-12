@@ -1,4 +1,23 @@
-﻿.deck-details-page {
+﻿.deck-details-page-container {
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+
+.deck-details-left-side {
+    display: none;
+}
+
+
+.deck-details-right-side {
+    display: none;
+}
+
+
+.deck-details-page {
     position: relative;
     
     width: 100%;
@@ -90,7 +109,7 @@
     width: 100%;
 
     display: grid;
-    grid-template-columns: 3fr 2fr 3fr;
+    grid-template-columns: 5fr 2fr;
 
     z-index: 2;
 }
@@ -335,7 +354,19 @@
 .energy-10::before{background:var(--gradient-colorless)}
 
 
-@media (min-width: 1024px) {
+@media (min-width: 1366px) {
+    .deck-details-page-container {
+        grid-template-columns: 1fr 50fr 1fr;
+    }
+    
+    .deck-details-left-side {
+        display: flex;
+    }
+
+    .deck-details-right-side {
+        display: flex;
+    }
+    
     .deck-details-page {
         width: 48%;
         margin: 0 auto;
@@ -360,6 +391,10 @@
     .deck-details-vote-panel-container {
         transform: scale(1.3);
         transform-origin: top right;
+    }
+    
+    .deck-details-highlight {
+        grid-template-columns: 3fr 2fr 3fr;
     }
 
     .deck-details-energies {
