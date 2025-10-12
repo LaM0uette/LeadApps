@@ -167,7 +167,7 @@
     }
 
     .deck-item-title-panel-container {
-        transform: scale(1.4);
+        transform: scale(1.3);
         transform-origin: top left;
     }
     
@@ -196,7 +196,7 @@
     }
 
         .deck-vote-panel-container {
-            transform: scale(1.4);
+            transform: scale(1.3);
             transform-origin: bottom right;
         }
 }

@@ -31,7 +31,6 @@ else
             else { <VerticalSpacer Value="25"/> }
             
             <span class="deck-details-header__code" @onclick="CopyCode">@DeckCode</span>
-            <VerticalSpacer Value="6"/>
 
             <div class="deck-details-highlight">
                 <div class="deck-details-highlighted-cards">
@@ -113,9 +112,12 @@ else
             </div>
         }
         
-        <a class="deck-details-back-button" href="/decks">
-            <img class="deck-details-back-button__icon" src="img/arrow-back-icon.svg" alt="back button"/>
-        </a>
+        @if (IsMobile)
+        {
+            <a class="deck-details-back-button" href="/decks">
+                <img class="deck-details-back-button__icon" src="img/arrow-back-icon.svg" alt="back button"/>
+            </a>
+        }
         
         <div class="deck-details-tabs">
             <button class="deck-details-tab-button @(CurrentTab is Tab.Cards ? "active" : "")" @onclick="() => SelectTab(Tab.Cards)">

@@ -74,7 +74,7 @@ public class DeckDetailsPagePresenter : PresenterBase
             .ToList();
         
         TCGPCardsRequest deckRequest = new(tcgpCardRequests);
-        TCGPCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest, loadThumbnail:true);
+        TCGPCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest);
         
         TCGPHighlightedCards = TCGPCards
             .Where(c => DeckDetails.HighlightedCards
