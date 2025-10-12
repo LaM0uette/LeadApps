@@ -29,7 +29,6 @@ public class DeckItemPresenter : PresenterBase
         { 10, "Colorless" }
     };
     
-    [Inject] private IJSRuntime _js { get; set; } = null!;
     [Inject] private NavigationManager _navigationManager { get; set; } = null!;
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
 
@@ -60,11 +59,11 @@ public class DeckItemPresenter : PresenterBase
     
     protected async Task CopyCode()
     {
-        await _js.InvokeVoidAsync("navigator.clipboard.writeText", DeckItem.Code);
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", DeckItem.Code);
         CodeText = Localizer.Localize("feedback.text.copied");
         StateHasChanged();
 
-        await Task.Delay(1500);
+        await Task.Delay(1400);
         CodeText = DeckItem.Code;
         StateHasChanged();
     }
