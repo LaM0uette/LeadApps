@@ -164,7 +164,7 @@
 
     .deck-details-cards__card {
         width: 115px;
-        height: 160px;
+        height: auto;
         justify-self: center;
     }
 
@@ -178,7 +178,7 @@
     align-content: start;
     gap: 5px;
 
-    margin: 10px 5px;
+    padding: 10px 5px;
     box-sizing: border-box;
 
     overflow-y: auto;
@@ -186,7 +186,7 @@
 
     .deck-details-overview__card {
         width: 65px;
-        height: 90px;
+        height: auto;
         justify-self: center;
     }
 
@@ -334,19 +334,36 @@
         }
 
     .deck-details-cards {
-        grid-template-columns: repeat(auto-fill, 230px);
+        grid-template-columns: repeat(auto-fill, 200px);
         gap: 25px;
-        padding: 25px 12px;
+        padding: 12px;
     }
         .deck-details-cards__card {
-            width: auto;
-            height: 320px;
-            object-fit: contain;
+            width: 192px;
         }
+
+    .deck-details-overview {
+        grid-template-columns: repeat(auto-fill, 110px);
+        gap: 6px;
+        padding: 12px;
+    }
+        .deck-details-overview__card {
+        width: 110px;
+    }
 }
 
 @media (min-width: 2048px) {
-    .deck-details-page {
-        width: 32%;
+    .deck-details-cards {
+        grid-template-columns: repeat(auto-fill, 230px);
+    }
+    .deck-details-cards__card {
+        width: 230px;
+    }
+
+    .deck-details-overview {
+        grid-template-columns: repeat(auto-fill, 160px);
+    }
+    .deck-details-overview__card {
+        width: 160px;
     }
 }

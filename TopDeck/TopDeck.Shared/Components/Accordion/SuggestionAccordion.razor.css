@@ -86,7 +86,7 @@
         position: relative;
     
         width: 65px;
-        height: 90px;
+        height: auto;
         justify-self: center;
     }
     
@@ -119,3 +119,14 @@
         height: 70%;
         justify-self: center;
     }
+
+
+@media (min-width: 1024px) {
+    .suggestion-cards {
+        grid-template-columns: repeat(auto-fill, 85px);
+        gap: 8px;
+    }
+        .suggestion-card {
+            width: 85px;
+        }
+}
