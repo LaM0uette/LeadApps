@@ -66,20 +66,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDeckItemRepository, DeckItemRepository>();
 builder.Services.AddScoped<IDeckSuggestionRepository, DeckSuggestionRepository>();
-builder.Services.AddScoped<IDeckLikeRepository, DeckLikeRepository>();
-builder.Services.AddScoped<IDeckSuggestionLikeRepository, DeckSuggestionLikeRepository>();
-builder.Services.AddScoped<IDeckDislikeRepository, DeckDislikeRepository>();
-builder.Services.AddScoped<IDeckSuggestionDislikeRepository, DeckSuggestionDislikeRepository>();
 builder.Services.AddScoped<IDeckDetailsRepository, DeckDetailsRepository>();
+builder.Services.AddScoped<IVoteRepository, VoteRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDeckItemService, DeckItemService>();
 builder.Services.AddScoped<IDeckSuggestionService, DeckSuggestionService>();
-builder.Services.AddScoped<IDeckLikeService, DeckLikeService>();
-builder.Services.AddScoped<IDeckSuggestionLikeService, DeckSuggestionLikeService>();
-builder.Services.AddScoped<IDeckDislikeService, DeckDislikeService>();
-builder.Services.AddScoped<IDeckSuggestionDislikeService, DeckSuggestionDislikeService>();
 builder.Services.AddScoped<IDeckDetailsService, DeckDetailsService>();
+builder.Services.AddScoped<IVoteService, VoteService>();
 
 WebApplication app = builder.Build();
 
@@ -103,10 +97,7 @@ app.UseResponseCompression();
 app.MapUserEndpoints();
 app.MapDeckItemEndpoints();
 app.MapDeckSuggestionsEndpoints();
-app.MapDeckLikesEndpoints();
-app.MapDeckSuggestionLikesEndpoints();
-app.MapDeckDislikesEndpoints();
-app.MapDeckSuggestionDislikesEndpoints();
+app.MapVoteEndpoints();
 app.MapDeckDetailsEndpoints();
 
 app.Run();

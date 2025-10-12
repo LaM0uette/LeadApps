@@ -1,0 +1,52 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using TopDeck.Api.Services;
+using TopDeck.Contracts.DTO;
+
+namespace TopDeck.Api.Endpoints;
+
+public static class VoteEndpoints
+{
+    #region Statements
+
+    public static IEndpointRouteBuilder MapVoteEndpoints(this IEndpointRouteBuilder app)
+    {
+        RouteGroupBuilder group = app.MapGroup("/api/vote");
+
+        group.MapPost("deck", VoteDeckAsync);
+        group.MapPost("deckSuggestion", VoteDeckSuggestionAsync);
+
+        return app;
+    }
+
+    #endregion
+
+    #region Endpoints
+
+    private static async Task<IResult> VoteDeckAsync([FromServices] IVoteService service, [FromBody] DeckVoteInputDTO dto, CancellationToken ct)
+    {
+        try
+        {
+            bool succes = await service.VoteDeckAsync(dto, ct);
+            return Results.Ok(succes);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Results.BadRequest(new { message = ex.Message });
+        }
+    }
+    
+    private static async Task<IResult> VoteDeckSuggestionAsync([FromServices] IVoteService service, [FromBody] DeckSuggestionVoteInputDTO dto, CancellationToken ct)
+    {
+        try
+        {
+            bool success = await service.VoteDeckSuggestionAsync(dto, ct);
+            return Results.Ok(success);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Results.BadRequest(new { message = ex.Message });
+        }
+    }
+
+    #endregion
+}

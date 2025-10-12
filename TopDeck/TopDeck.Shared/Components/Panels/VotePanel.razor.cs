@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using TopDeck.Domain.Models;
+using TopDeck.Contracts.DTO;
 using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore.States.AuthenticatedUser;
 
@@ -24,7 +24,9 @@ public class VotePanelBase : ComponentBase
     protected bool IsDisliked;
     
     [Inject] private UIStore.UIStore _uiStore { get; set; } = null!;
-    [Inject] private IDeckReactionService _deckReactionService { get; set; } = null!;
+    [Inject] private IVoteService _voteService { get; set; } = null!;
+    
+    private string _userUuid = string.Empty;
 
     protected override void OnAfterRender(bool firstRender)
         {
@@ -32,6 +34,7 @@ public class VotePanelBase : ComponentBase
                 return;
             
             AuthenticatedUserState currentUserState = _uiStore.GetState<AuthenticatedUserState>();
+            _userUuid = currentUserState.Uuid;
             
             IsLiked = LikeUserUuids.Any(s => s == currentUserState.Uuid);
             IsDisliked = DislikeUserUuids.Any(s => s == currentUserState.Uuid);
@@ -48,23 +51,21 @@ public class VotePanelBase : ComponentBase
 
     protected async Task OnLikeClicked()
     {
-        string? userUuid = _uiStore.GetState<AuthenticatedUserState>().Uuid;
-        
-        if (userUuid == null)
+        if (IsLiked)
             return;
         
-        IsLiked = !IsLiked;
+        IsLiked = true;
         IsDisliked = false;
-
-        int userId = _uiStore.GetState<AuthenticatedUserState>().Id;
 
         if (DeckId is not null && SuggestionId is null)
         {
-            await _deckReactionService.LikeDeckAsync(DeckId.Value, userId, IsLiked);
+            DeckVoteInputDTO dto = new(DeckId.Value, _userUuid, true);
+            await _voteService.VoteDeckAsync(dto);
         }
         else if (SuggestionId is not null && DeckId is null)
         {
-            await _deckReactionService.LikeSuggestionAsync(SuggestionId.Value, userId, IsLiked);
+            DeckSuggestionVoteInputDTO dto = new(SuggestionId.Value, _userUuid, true);
+            await _voteService.VoteDeckSuggestionAsync(dto);
         }
         else
         {
@@ -73,12 +74,12 @@ public class VotePanelBase : ComponentBase
         
         if (IsLiked)
         {
-            LikeUserUuids = LikeUserUuids.Append(userUuid).ToList();
-            DislikeUserUuids = DislikeUserUuids.Where(s => s != userUuid).ToList();
+            LikeUserUuids = LikeUserUuids.Append(_userUuid).ToList();
+            DislikeUserUuids = DislikeUserUuids.Where(s => s != _userUuid).ToList();
         }
         else
         {
-            LikeUserUuids = LikeUserUuids.Where(s => s != userUuid).ToList();
+            LikeUserUuids = LikeUserUuids.Where(s => s != _userUuid).ToList();
         }
         
         StateHasChanged();
@@ -86,23 +87,21 @@ public class VotePanelBase : ComponentBase
     
     protected async Task OnDislikeClicked()
     {
-        string? userUuid = _uiStore.GetState<AuthenticatedUserState>().Uuid;
-        
-        if (userUuid == null)
+        if (IsDisliked)
             return;
         
-        IsDisliked = !IsDisliked;
+        IsDisliked = true;
         IsLiked = false;
-        
-        int userId = _uiStore.GetState<AuthenticatedUserState>().Id;
         
         if (DeckId is not null && SuggestionId is null)
         {
-            await _deckReactionService.DislikeDeckAsync(DeckId.Value, userId, IsDisliked);
+            DeckVoteInputDTO dto = new(DeckId.Value, _userUuid, false);
+            await _voteService.VoteDeckAsync(dto);
         }
         else if (SuggestionId is not null && DeckId is null)
         {
-            await _deckReactionService.DislikeSuggestionAsync(SuggestionId.Value, userId, IsDisliked);
+            DeckSuggestionVoteInputDTO dto = new(SuggestionId.Value, _userUuid, false);
+            await _voteService.VoteDeckSuggestionAsync(dto);
         }
         else
         {
@@ -111,12 +110,12 @@ public class VotePanelBase : ComponentBase
         
         if (IsDisliked)
         {
-            DislikeUserUuids = DislikeUserUuids.Append(userUuid).ToList();
-            LikeUserUuids = LikeUserUuids.Where(s => s != userUuid).ToList();
+            DislikeUserUuids = DislikeUserUuids.Append(_userUuid).ToList();
+            LikeUserUuids = LikeUserUuids.Where(s => s != _userUuid).ToList();
         }
         else
         {
-            DislikeUserUuids = DislikeUserUuids.Where(s => s != userUuid).ToList();
+            DislikeUserUuids = DislikeUserUuids.Where(s => s != _userUuid).ToList();
         }
         
         StateHasChanged();
