@@ -94,13 +94,13 @@ else
         else if (CurrentTab is Tab.Suggestions)
         {
             <div class="deck-details-suggestions">
-                @*@if (Deck.Suggestions.Count <= 0)
+                @if (DeckDetails.Suggestions.Count <= 0)
                 {
                     <p class="deck-details-suggestions__no-suggestions-text">@Localizer.Localize("page.deckDetail.noSuggestions.text", "No suggestions available for this deck.")</p>
                 }
                 else
                 {
-                    foreach (DeckSuggestion suggestion in Deck.Suggestions)
+                    foreach (DeckDetailsSuggestion suggestion in DeckDetails.Suggestions)
                     {
                         if (suggestion.AddedCards.Count == 0 && suggestion.RemovedCards.Count == 0)
                             continue;
@@ -109,7 +109,7 @@ else
                     }
                     
                     <VerticalSpacer Value="80"/>
-                }*@
+                }
             </div>
         }
         

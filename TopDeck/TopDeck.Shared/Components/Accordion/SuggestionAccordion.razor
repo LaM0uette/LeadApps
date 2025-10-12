@@ -6,13 +6,13 @@
     <button class="suggestion-button" 
             style="width: @Width; height: @Height; font-size: @FontSize;"
             @onclick="Toggle">
-        <p class="suggestion-button__suggestor">@Suggestion.Suggestor.UserName</p>
+        <p class="suggestion-button__suggestor">@Suggestion.SuggestorUsername</p>
                             
         <div class="suggestion-vote-panel-container">
             <VotePanel Width="108px" Height="28px" FontSize="0.88em"
                        SuggestionId="Suggestion.Id"
-                       @* UserLikes="Suggestion.Likes.Select(l => l.User).ToList()" *@
-                       @* UserDislikes="Suggestion.Dislikes.Select(l => l.User).ToList()" *@/>
+                       LikeUserUuids="Suggestion.LikeUserUuids.ToList()"
+                       DislikeUserUuids="Suggestion.DislikeUserUuids.ToList()"/>
         </div>
         
         <img class="suggestion-button__arrow @(IsOpen ? "suggestion-button__arrow--expanded" : "")" src="img/arrow-right.svg" alt="arrow"/>

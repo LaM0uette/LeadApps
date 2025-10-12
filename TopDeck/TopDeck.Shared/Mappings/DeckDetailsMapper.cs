@@ -23,6 +23,7 @@ public static class DeckDetailsMapper
             dto.Suggestions.Select(s => new DeckDetailsSuggestion(
                 s.Id,
                 s.SuggestorUuid,
+                s.SuggestorUsername,
                 s.AddedCards.Select(ac => new DeckDetailsCard(ac.CollectionCode, ac.CollectionNumber)).ToList(),
                 s.RemovedCards.Select(rc => new DeckDetailsCard(rc.CollectionCode, rc.CollectionNumber)).ToList(),
                 s.AddedEnergyIds.ToList(),

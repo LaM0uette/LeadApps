@@ -9,7 +9,7 @@ public class SuggestionAccordionBase : PresenterBase
 {
     #region Statements
 
-    [Parameter, EditorRequired] public required DeckSuggestion Suggestion { get; set; }
+    [Parameter, EditorRequired] public required DeckDetailsSuggestion Suggestion { get; set; }
     [Parameter, EditorRequired] public required string Width { get; set; } = "100%";
     [Parameter, EditorRequired] public required string Height { get; set; } = "45px";
     [Parameter, EditorRequired] public required string FontSize { get; set; } = "1em";

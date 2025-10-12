@@ -3,6 +3,7 @@
 public record DeckDetailsSuggestionOutputDTO(
     int Id,
     string SuggestorUuid,
+    string SuggestorUsername,
     IEnumerable<DeckDetailsCardOutputDTO> AddedCards,
     IEnumerable<DeckDetailsCardOutputDTO> RemovedCards,
     IEnumerable<int> AddedEnergyIds,

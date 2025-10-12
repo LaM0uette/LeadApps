@@ -3,6 +3,7 @@
 public record DeckDetailsSuggestion(
     int Id,
     string SuggestorUuid,
+    string SuggestorUsername,
     ICollection<DeckDetailsCard> AddedCards,
     ICollection<DeckDetailsCard> RemovedCards,
     ICollection<int> AddedEnergyIds,
