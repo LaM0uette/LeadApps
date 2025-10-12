@@ -24,6 +24,9 @@ public static class VoteEndpoints
 
     private static async Task<IResult> VoteDeckAsync([FromServices] IVoteService service, [FromBody] DeckVoteInputDTO dto, CancellationToken ct)
     {
+        if (dto.Id == -1 || string.IsNullOrWhiteSpace(dto.UserUuid))
+            return Results.Unauthorized();
+        
         try
         {
             bool succes = await service.VoteDeckAsync(dto, ct);
@@ -37,6 +40,9 @@ public static class VoteEndpoints
     
     private static async Task<IResult> VoteDeckSuggestionAsync([FromServices] IVoteService service, [FromBody] DeckSuggestionVoteInputDTO dto, CancellationToken ct)
     {
+        if (dto.Id == -1 || string.IsNullOrWhiteSpace(dto.UserUuid))
+            return Results.Unauthorized();
+        
         try
         {
             bool success = await service.VoteDeckSuggestionAsync(dto, ct);

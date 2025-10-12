@@ -20,6 +20,6 @@ public class DeckDetailsRepository : IDeckDetailsRepository
     #region IRepository
 
     public DbSet<Deck> DbSet => _db.Decks;
-
+    
     #endregion
 }

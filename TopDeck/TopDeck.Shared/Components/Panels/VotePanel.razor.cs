@@ -26,18 +26,33 @@ public class VotePanelBase : ComponentBase
     [Inject] private UIStore.UIStore _uiStore { get; set; } = null!;
     [Inject] private IVoteService _voteService { get; set; } = null!;
     
+    private bool _userAuthenticated;
     private string _userUuid = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        AuthenticatedUserState currentUserState = _uiStore.GetState<AuthenticatedUserState>();
+            
+        int userId = currentUserState.Id;
+        string userUuid = currentUserState.Uuid;
+            
+        if (userId == -1 || string.IsNullOrWhiteSpace(userUuid))
+        {
+            _userAuthenticated = false;
+            return;
+        }
+        
+        _userUuid = userUuid;
+        _userAuthenticated = true;
+    }
 
     protected override void OnAfterRender(bool firstRender)
         {
             if (!firstRender) 
                 return;
             
-            AuthenticatedUserState currentUserState = _uiStore.GetState<AuthenticatedUserState>();
-            _userUuid = currentUserState.Uuid;
-            
-            IsLiked = LikeUserUuids.Any(s => s == currentUserState.Uuid);
-            IsDisliked = DislikeUserUuids.Any(s => s == currentUserState.Uuid);
+            IsLiked = LikeUserUuids.Any(s => s == _userUuid);
+            IsDisliked = DislikeUserUuids.Any(s => s == _userUuid);
             
             if (IsLiked && IsDisliked)
                 throw new InvalidOperationException("A user cannot both like and dislike at the same time."); // TODO: Log this instead of throwing
@@ -51,7 +66,7 @@ public class VotePanelBase : ComponentBase
 
     protected async Task OnLikeClicked()
     {
-        if (IsLiked)
+        if (!_userAuthenticated || IsLiked)
             return;
         
         IsLiked = true;
@@ -87,7 +102,7 @@ public class VotePanelBase : ComponentBase
     
     protected async Task OnDislikeClicked()
     {
-        if (IsDisliked)
+        if (!_userAuthenticated || IsDisliked)
             return;
         
         IsDisliked = true;

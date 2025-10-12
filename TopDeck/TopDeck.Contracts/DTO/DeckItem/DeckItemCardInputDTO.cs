@@ -1,6 +1,6 @@
 namespace TopDeck.Contracts.DTO;
 
-public record DeckCardInputDTO(
+public record DeckItemCardInputDTO(
     string CollectionCode,
     int CollectionNumber,
     bool IsHighlighted

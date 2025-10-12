@@ -35,4 +35,73 @@ public static class DeckDetailsMapper
         deck.CreatedAt,
         deck.UpdatedAt
     );
+    
+    
+    public static DeckDetailsSuggestionOutputDTO MapToDTO(this DeckSuggestion suggestion) => ToSuggestionDTO(suggestion);
+
+    public static DeckSuggestion ToSuggestionEntity(DeckSuggestionInputDTO dto)
+    {
+        return new DeckSuggestion
+        {
+            SuggestorId = dto.SuggestorId,
+            Suggestor = null!,
+            DeckId = dto.DeckId,
+            Deck = null!,
+
+            AddedCards = dto.AddedCards.Select(c => new DeckSuggestionAddedCard
+            {
+                Suggestion = null!,
+                CollectionCode = c.CollectionCode,
+                CollectionNumber = c.CollectionNumber
+            }).ToList(),
+
+            RemovedCards = dto.RemovedCards.Select(c => new DeckSuggestionRemovedCard
+            {
+                Suggestion = null!,
+                CollectionCode = c.CollectionCode,
+                CollectionNumber = c.CollectionNumber
+            }).ToList(),
+
+            AddedEnergyIds = dto.AddedEnergyIds.ToList(),
+        };
+    }
+    
+    public static DeckDetailsSuggestionOutputDTO ToSuggestionDTO(this DeckSuggestion entity)
+    {
+        return new DeckDetailsSuggestionOutputDTO(
+            entity.Id,
+            entity.Suggestor.Uuid.ToString(),
+            entity.Suggestor.UserName,
+            entity.AddedCards.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)),
+            entity.RemovedCards.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)),
+            entity.AddedEnergyIds,
+            entity.RemovedEnergyIds,
+            entity.Likes.Select(l => l.User.Uuid.ToString()),
+            entity.Dislikes.Select(dl => dl.User.Uuid.ToString()),
+            entity.CreatedAt,
+            entity.UpdatedAt
+        );
+    }
+    
+    public static void UpdateEntity(this DeckSuggestion entity, DeckSuggestionInputDTO dto)
+    {
+        entity.AddedCards = dto.AddedCards.Select(c => new DeckSuggestionAddedCard
+        {
+            Suggestion = entity,
+            DeckSuggestionId = entity.Id,
+            CollectionCode = c.CollectionCode,
+            CollectionNumber = c.CollectionNumber
+        }).ToList();
+
+        entity.RemovedCards = dto.RemovedCards.Select(c => new DeckSuggestionRemovedCard
+        {
+            Suggestion = entity,
+            DeckSuggestionId = entity.Id,
+            CollectionCode = c.CollectionCode,
+            CollectionNumber = c.CollectionNumber
+        }).ToList();
+        
+        entity.AddedEnergyIds = dto.AddedEnergyIds.ToList();
+        entity.RemovedEnergyIds = dto.RemovedEnergyIds.ToList();
+    }
 }

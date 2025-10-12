@@ -71,7 +71,6 @@ builder.Services.AddScoped<IVoteRepository, VoteRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDeckItemService, DeckItemService>();
-builder.Services.AddScoped<IDeckSuggestionService, DeckSuggestionService>();
 builder.Services.AddScoped<IDeckDetailsService, DeckDetailsService>();
 builder.Services.AddScoped<IVoteService, VoteService>();
 
@@ -96,7 +95,6 @@ app.UseResponseCompression();
 // map endpoints
 app.MapUserEndpoints();
 app.MapDeckItemEndpoints();
-app.MapDeckSuggestionsEndpoints();
 app.MapVoteEndpoints();
 app.MapDeckDetailsEndpoints();
 

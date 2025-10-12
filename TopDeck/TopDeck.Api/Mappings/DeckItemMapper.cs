@@ -81,28 +81,4 @@ public static class DeckItemMapper
             Tag = null!
         }).ToList();
     }
-
-    
-    
-    
-    
-    
-    // Shallow output to avoid circular references: empty Likes and Suggestions
-    public static DeckOutputDTOold ToShallowOutput(this Deck entity)
-    {
-        return new DeckOutputDTOold(
-            entity.Id,
-            entity.Creator is null ? new UserOutputDTO(0, "", "", "", DateTime.MinValue) : entity.Creator.MapToDTO(),
-            entity.Name,
-            entity.Code,
-            entity.Cards.Select(c => new DeckCardOutputDTOold(c.CollectionCode, c.CollectionNumber, c.IsHighlighted)).ToList(),
-            entity.EnergyIds.ToList(),
-            entity.DeckTags.Select(dt => new TagOutputDTOold(dt.TagId, dt.Tag?.Name ?? string.Empty, dt.Tag?.ColorHex ?? string.Empty)).ToList(),
-            new List<DeckLikeOutputDTO>(),
-            new List<DeckDislikeOutputDTO>(),
-            new List<DeckSuggestionOutputDTO>(),
-            entity.CreatedAt,
-            entity.UpdatedAt
-        );
-    }
 }
