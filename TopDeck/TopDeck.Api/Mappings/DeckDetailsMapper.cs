@@ -63,6 +63,7 @@ public static class DeckDetailsMapper
             }).ToList(),
 
             AddedEnergyIds = dto.AddedEnergyIds.ToList(),
+            RemovedEnergyIds = dto.RemovedEnergyIds.ToList(),
         };
     }
     
@@ -70,18 +71,19 @@ public static class DeckDetailsMapper
     {
         return new DeckDetailsSuggestionOutputDTO(
             entity.Id,
-            entity.Suggestor.Uuid.ToString(),
-            entity.Suggestor.UserName,
-            entity.AddedCards.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)),
-            entity.RemovedCards.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)),
-            entity.AddedEnergyIds,
-            entity.RemovedEnergyIds,
-            entity.Likes.Select(l => l.User.Uuid.ToString()),
-            entity.Dislikes.Select(dl => dl.User.Uuid.ToString()),
+            entity.Suggestor?.Uuid.ToString() ?? string.Empty,
+            entity.Suggestor?.UserName ?? string.Empty,
+            entity.AddedCards?.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)) ?? [],
+            entity.RemovedCards?.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)) ?? [],
+            entity.AddedEnergyIds ?? Enumerable.Empty<int>(),
+            entity.RemovedEnergyIds ?? Enumerable.Empty<int>(),
+            entity.Likes?.Select(l => l.User?.Uuid.ToString() ?? string.Empty) ?? [],
+            entity.Dislikes?.Select(dl => dl.User?.Uuid.ToString() ?? string.Empty) ?? [],
             entity.CreatedAt,
             entity.UpdatedAt
         );
     }
+    
     
     public static void UpdateEntity(this DeckSuggestion entity, DeckSuggestionInputDTO dto)
     {
