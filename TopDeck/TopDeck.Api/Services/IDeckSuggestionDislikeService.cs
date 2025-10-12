@@ -1,6 +1,6 @@
 ﻿using TopDeck.Contracts.DTO;
 
-namespace TopDeck.Api.Services.Interfaces;
+namespace TopDeck.Api.Services;
 
 public interface IDeckSuggestionDislikeService
 {

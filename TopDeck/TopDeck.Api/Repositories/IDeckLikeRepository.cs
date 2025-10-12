@@ -1,6 +1,6 @@
 ﻿using TopDeck.Api.Entities;
 
-namespace TopDeck.Api.Repositories.Interfaces;
+namespace TopDeck.Api.Repositories;
 
 public interface IDeckLikeRepository
 {

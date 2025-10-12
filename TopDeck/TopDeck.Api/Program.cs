@@ -4,9 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TopDeck.Api.Data;
 using TopDeck.Api.Endpoints;
 using TopDeck.Api.Repositories;
-using TopDeck.Api.Repositories.Interfaces;
 using TopDeck.Api.Services;
-using TopDeck.Api.Services.Interfaces;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
