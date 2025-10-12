@@ -4,13 +4,13 @@ using TopDeck.Api.Entities;
 
 namespace TopDeck.Api.Repositories;
 
-public class DeckRepository : IDeckRepository
+public class DeckItemRepository : IDeckItemRepository
 {
     #region Statements
 
     private readonly ApplicationDbContext _db;
 
-    public DeckRepository(ApplicationDbContext db)
+    public DeckItemRepository(ApplicationDbContext db)
     {
         _db = db;
     }
@@ -19,10 +19,7 @@ public class DeckRepository : IDeckRepository
 
     #region Repository
     
-    public DbSet<Deck> GetDbSet()
-    {
-        return _db.Decks;
-    }
+    public DbSet<Deck> DbSet => _db.Decks;
     
     public async Task<IReadOnlyList<Deck>> GetAllAsync(bool includeAll, CancellationToken ct = default)
     {

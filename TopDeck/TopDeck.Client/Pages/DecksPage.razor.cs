@@ -1,12 +1,12 @@
-﻿using LocalizedComponent;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TopDeck.Domain.Models;
+using TopDeck.Shared.Components;
 using TopDeck.Shared.Services;
 
 namespace TopDeck.Client.Pages;
 
-public class DecksViewBase : AppComponentBase
+public class DecksPagePresenter : PresenterBase
 {
     #region Statements
     
@@ -22,9 +22,9 @@ public class DecksViewBase : AppComponentBase
     private bool _pendingBottomTrigger;
     private readonly SemaphoreSlim _loadLock = new(1, 1);
     
-    [Inject] private IDeckService _deckService { get; set; } = null!;
+    [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
     
-    private DotNetObjectReference<DecksViewBase>? _objRef;
+    private DotNetObjectReference<DecksPagePresenter>? _objRef;
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -123,7 +123,7 @@ public class DecksViewBase : AppComponentBase
             // Ensure the UI has a chance to render the loader before starting the network call
             await Task.Yield();
             
-            IReadOnlyList<Deck> page = await _deckService.GetPageAsync(_skip, _take);
+            IReadOnlyList<Deck> page = await _deckItemService.GetPageAsync(_skip, _take);
             
             if (page.Count > 0)
             {

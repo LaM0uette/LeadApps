@@ -1,23 +1,22 @@
 ﻿@page "/decks"
-@using DeckCard = TopDeck.Shared.Components.DeckCard
-@inherits DecksViewBase
+@inherits DecksPagePresenter
 @attribute [AllowAnonymous]
 
 
 <PageTitle>TOPDECK - Decks</PageTitle>
 
 
-<div class="decks-view-page">
-    <div id="deck-scroll" class="deck-cards">
+<div class="decks-page-page">
+    <div id="deck-scroll" class="deck-items">
         @if (Decks.Count <= 0 && !HasMore)
         {
-            <p class="deck-cards__no-cards-text">@Localizer.Localize("page.decksView.noCards.text", "No cards found.")</p>
+            <p class="deck-items__no-cards-text">@Localizer.Localize("page.decksView.noCards.text", "No cards found.")</p>
         }
         else
         {
             foreach (Deck deck in Decks)
             {
-                <DeckCard Deck="deck"/>
+                <DeckItem Deck="deck"/>
             }
         }
         

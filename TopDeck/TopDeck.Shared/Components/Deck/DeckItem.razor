@@ -1,15 +1,15 @@
 ﻿@namespace TopDeck.Shared.Components
-@inherits DeckCardBase
+@inherits DeckItemPresenter
 
 
-<div class="deck-card @GetEnergyClass(Deck.EnergyIds)"
+<div class="deck-item @GetEnergyClass(Deck.EnergyIds)"
      @onclick="OpenDeckDetails">
-    <div class="deck-card-header">
-        <div class="deck-card-title-panel-container">
+    <div class="deck-item-header">
+        <div class="deck-item-title-panel-container">
             <TitlePanel Name="@Deck.Name"/>
         </div>
         
-        <span class="deck-card-code"
+        <span class="deck-item-code"
               @onclick:preventDefault 
               @onclick:stopPropagation
               @onclick="CopyCode">
@@ -17,7 +17,7 @@
         </span>
     </div>
     
-    <div class="deck-card-body">
+    <div class="deck-item-body">
         @if (IsMobile) { <VerticalSpacer Value="18"/> }
         else { <VerticalSpacer Value="38"/> }
         
@@ -47,7 +47,7 @@
         </div>
     </div>
     
-    <div class="deck-card-footer">
+    <div class="deck-item-footer">
         <div class="deck-vote-panel-container">
             <VotePanel DeckId="Deck.Id"
                        UserLikes="Deck.Likes.Select(l => l.User).ToList()"

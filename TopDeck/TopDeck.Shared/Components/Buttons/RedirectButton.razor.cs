@@ -1,9 +1,8 @@
-﻿using LocalizedComponent;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace TopDeck.Shared.Components;
 
-public class RedirectButtonBase : AppComponentBase
+public class RedirectButtonBase : PresenterBase
 {
     #region Statements
 

@@ -13,13 +13,13 @@ public class DeckSuggestionService : IDeckSuggestionService
 
     private readonly IDeckSuggestionRepository _suggestions;
     private readonly IUserRepository _users;
-    private readonly IDeckRepository _decks;
+    private readonly IDeckItemRepository _deckItems;
 
-    public DeckSuggestionService(IDeckSuggestionRepository suggestions, IUserRepository users, IDeckRepository decks)
+    public DeckSuggestionService(IDeckSuggestionRepository suggestions, IUserRepository users, IDeckItemRepository deckItems)
     {
         _suggestions = suggestions;
         _users = users;
-        _decks = decks;
+        _deckItems = deckItems;
     }
 
     #endregion
@@ -43,7 +43,7 @@ public class DeckSuggestionService : IDeckSuggestionService
         // Validate FKs
         if (await _users.GetByIdAsync(dto.SuggestorId, ct) is null)
             throw new InvalidOperationException($"Suggestor with id {dto.SuggestorId} not found");
-        if (await _decks.GetByIdAsync(dto.DeckId, false, ct) is null)
+        if (await _deckItems.GetByIdAsync(dto.DeckId, false, ct) is null)
             throw new InvalidOperationException($"Deck with id {dto.DeckId} not found");
 
         DeckSuggestion entity = dto.ToEntity();
@@ -59,7 +59,7 @@ public class DeckSuggestionService : IDeckSuggestionService
 
         if (await _users.GetByIdAsync(dto.SuggestorId, ct) is null)
             throw new InvalidOperationException($"Suggestor with id {dto.SuggestorId} not found");
-        if (await _decks.GetByIdAsync(dto.DeckId, false, ct) is null)
+        if (await _deckItems.GetByIdAsync(dto.DeckId, false, ct) is null)
             throw new InvalidOperationException($"Deck with id {dto.DeckId} not found");
 
         existing.UpdateEntity(dto);

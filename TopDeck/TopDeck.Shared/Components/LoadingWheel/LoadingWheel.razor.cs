@@ -1,7 +1,5 @@
-﻿using LocalizedComponent;
+﻿namespace TopDeck.Shared.Components;
 
-namespace TopDeck.Shared.Components;
-
-public class LoadingWheelBase : AppComponentBase
+public class LoadingWheelBase : PresenterBase
 {
 }

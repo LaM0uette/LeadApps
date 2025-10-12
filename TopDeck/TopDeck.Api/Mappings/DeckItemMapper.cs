@@ -5,7 +5,7 @@ using TopDeck.Contracts.DTO;
 
 namespace TopDeck.Api.Mappings;
 
-public static class DeckMapper
+public static class DeckItemMapper
 {
     public static List<DeckOutputDTO> MapToDTO(this IEnumerable<Deck> decks) => decks.Select(MapToDTO).ToList();
     public static DeckOutputDTO MapToDTO(this Deck deck) => Expression.Compile().Invoke(deck);

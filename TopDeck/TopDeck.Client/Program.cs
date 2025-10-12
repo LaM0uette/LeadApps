@@ -22,7 +22,7 @@ builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 builder.Services.AddScoped<IAuthUserRequester, AuthUserRequester>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddScoped<IDeckService, DeckService>();
+builder.Services.AddScoped<IDeckItemService, DeckItemService>();
 builder.Services.AddScoped<IDeckReactionService, DeckReactionService>();
 
 builder.Services.AddScoped<ITCGPCardRequester, TCGPCardRequester.TCGPCardRequester>();

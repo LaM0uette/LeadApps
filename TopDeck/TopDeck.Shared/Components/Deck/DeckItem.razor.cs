@@ -1,5 +1,4 @@
-﻿using LocalizedComponent;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TCGPCardRequester;
 using TopDeck.Domain.Models;
@@ -7,7 +6,7 @@ using TopDeck.Shared.Models.TCGP;
 
 namespace TopDeck.Shared.Components;
 
-public class DeckCardBase : AppComponentBase
+public class DeckItemPresenter : PresenterBase
 {
     #region Statements
 

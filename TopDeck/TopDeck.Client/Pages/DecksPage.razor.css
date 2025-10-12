@@ -1,4 +1,4 @@
-﻿.decks-view-page {
+﻿.decks-page-page {
     width: 100%;
     height: 100%;
 
@@ -11,7 +11,7 @@
 }
 
 
-.deck-cards {
+.deck-items {
     width: 100%;
     height: 100%;
     
@@ -28,21 +28,21 @@
     overflow-y: auto;
 }
 
-    .deck-cards__no-cards-text {
+    .deck-items__no-cards-text {
         font-family: var(--font-bold), sans-serif;
         font-size: 1.2rem;
     }
     
     
 @media (min-width: 1024px) {
-    .deck-cards {
+    .deck-items {
         padding: 40px 20% 0 20%;
         gap: 40px;
     }
 }
 
 @media (min-width: 2048px) {
-    .deck-cards {
+    .deck-items {
         padding: 40px 28% 0 28%;
     }
 }

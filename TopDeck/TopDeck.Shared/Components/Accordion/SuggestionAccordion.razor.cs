@@ -1,12 +1,11 @@
-﻿using LocalizedComponent;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using TCGPCardRequester;
 using TopDeck.Domain.Models;
 using TopDeck.Shared.Models.TCGP;
 
 namespace TopDeck.Shared.Components;
 
-public class SuggestionAccordionBase : AppComponentBase
+public class SuggestionAccordionBase : PresenterBase
 {
     #region Statements
 

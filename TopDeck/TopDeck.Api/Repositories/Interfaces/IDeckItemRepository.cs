@@ -3,9 +3,9 @@ using TopDeck.Api.Entities;
 
 namespace TopDeck.Api.Repositories;
 
-public interface IDeckRepository
+public interface IDeckItemRepository
 {
-    DbSet<Deck> GetDbSet();
+    DbSet<Deck> DbSet { get; }
     
     Task<IReadOnlyList<Deck>> GetAllAsync(bool includeAll = true, CancellationToken ct = default);
     Task<Deck?> GetByIdAsync(int id, bool includeAll = true, CancellationToken ct = default);

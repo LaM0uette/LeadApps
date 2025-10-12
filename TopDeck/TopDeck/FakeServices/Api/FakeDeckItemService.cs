@@ -4,7 +4,7 @@ using TopDeck.Shared.Services;
 
 namespace TopDeck.FakeServices;
 
-public class FakeDeckService : IDeckService
+public class FakeDeckItemService : IDeckItemService
 {
     public Task<IReadOnlyList<Deck>> GetAllAsync(CancellationToken ct = default)
     {

@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TopDeck.Shared.Models;
 
-namespace LocalizedComponent;
+namespace TopDeck.Shared.Components;
 
-public class AppComponentBase : ComponentBase, IAsyncDisposable
+public class PresenterBase : ComponentBase, IAsyncDisposable
 {
     #region Statements
 
@@ -14,7 +14,7 @@ public class AppComponentBase : ComponentBase, IAsyncDisposable
     
     protected bool IsMobile => _windowWidth < 768;
 
-    private DotNetObjectReference<AppComponentBase>? _objRef;
+    private DotNetObjectReference<PresenterBase>? _objRef;
     private int _windowWidth { get; set; }
     private int _windowHeight { get; set; }
 

@@ -1,14 +1,14 @@
-﻿using LocalizedComponent;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TCGPCardRequester;
 using TopDeck.Domain.Models;
+using TopDeck.Shared.Components;
 using TopDeck.Shared.Models.TCGP;
 using TopDeck.Shared.Services;
 
 namespace TopDeck.Client.Pages;
 
-public class DeckDetailsBase : AppComponentBase
+public class DeckDetailsBase : PresenterBase
 {
     #region Enums
 
@@ -54,12 +54,12 @@ public class DeckDetailsBase : AppComponentBase
     
     [Inject] private IJSRuntime _js { get; set; } = null!;
     [Inject] private NavigationManager _navigationManager { get; set; } = null!;
-    [Inject] private IDeckService _deckService { get; set; } = null!;
+    [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
 
     protected override async Task OnParametersSetAsync()
     {
-        Deck? deck = await _deckService.GetByCodeAsync(DeckCode);
+        Deck? deck = await _deckItemService.GetByCodeAsync(DeckCode);
         
         if (deck == null)
         {

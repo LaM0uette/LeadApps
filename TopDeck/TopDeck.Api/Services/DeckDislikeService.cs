@@ -11,21 +11,21 @@ public class DeckDislikeService : IDeckDislikeService
 {
     private readonly IDeckDislikeRepository _dislikes;
     private readonly IDeckLikeRepository _likes;
-    private readonly IDeckRepository _decks;
+    private readonly IDeckItemRepository _deckItems;
     private readonly IUserRepository _users;
 
-    public DeckDislikeService(IDeckDislikeRepository dislikes, IDeckLikeRepository likes, IDeckRepository decks, IUserRepository users)
+    public DeckDislikeService(IDeckDislikeRepository dislikes, IDeckLikeRepository likes, IDeckItemRepository deckItems, IUserRepository users)
     {
         _dislikes = dislikes;
         _likes = likes;
-        _decks = decks;
+        _deckItems = deckItems;
         _users = users;
     }
 
     public async Task<DeckDislikeOutputDTO?> CreateAsync(DeckDislikeInputDTO dto, CancellationToken ct = default)
     {
         // Validate FKs
-        if (await _decks.GetByIdAsync(dto.DeckId, true, ct) is not Deck deck)
+        if (await _deckItems.GetByIdAsync(dto.DeckId, true, ct) is not Deck deck)
             throw new InvalidOperationException($"Deck with id {dto.DeckId} not found");
         if (await _users.GetByIdAsync(dto.UserId, ct) is not User user)
             throw new InvalidOperationException($"User with id {dto.UserId} not found");

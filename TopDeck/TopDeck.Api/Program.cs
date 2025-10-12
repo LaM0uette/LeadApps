@@ -66,7 +66,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // DI registrations
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IDeckRepository, DeckRepository>();
+builder.Services.AddScoped<IDeckItemRepository, DeckItemRepository>();
 builder.Services.AddScoped<IDeckSuggestionRepository, DeckSuggestionRepository>();
 builder.Services.AddScoped<IDeckLikeRepository, DeckLikeRepository>();
 builder.Services.AddScoped<IDeckSuggestionLikeRepository, DeckSuggestionLikeRepository>();
@@ -74,7 +74,7 @@ builder.Services.AddScoped<IDeckDislikeRepository, DeckDislikeRepository>();
 builder.Services.AddScoped<IDeckSuggestionDislikeRepository, DeckSuggestionDislikeRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IDeckService, DeckService>();
+builder.Services.AddScoped<IDeckItemService, DeckItemService>();
 builder.Services.AddScoped<IDeckSuggestionService, DeckSuggestionService>();
 builder.Services.AddScoped<IDeckLikeService, DeckLikeService>();
 builder.Services.AddScoped<IDeckSuggestionLikeService, DeckSuggestionLikeService>();
@@ -101,7 +101,7 @@ app.UseResponseCompression();
 
 // map endpoints
 app.MapUsersEndpoints();
-app.MapDecksEndpoints();
+app.MapDeckItemEndpoints();
 app.MapDeckSuggestionsEndpoints();
 app.MapDeckLikesEndpoints();
 app.MapDeckSuggestionLikesEndpoints();
