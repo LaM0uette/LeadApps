@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TopDeck.Api.Services.Interfaces;
+using TopDeck.Api.Services;
 using TopDeck.Contracts.DTO;
 
 namespace TopDeck.Api.Endpoints;

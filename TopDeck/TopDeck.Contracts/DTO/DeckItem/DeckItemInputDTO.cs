@@ -1,6 +1,6 @@
 ﻿namespace TopDeck.Contracts.DTO;
 
-public record DeckInputDTO(
+public record DeckItemInputDTO(
     int CreatorId,
     string Name,
     ICollection<DeckCardInputDTO> Cards,

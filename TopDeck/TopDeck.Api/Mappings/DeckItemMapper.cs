@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using TopDeck.Api.DTO;
 using TopDeck.Api.Entities;
 using TopDeck.Contracts.DTO;
 
@@ -7,48 +6,63 @@ namespace TopDeck.Api.Mappings;
 
 public static class DeckItemMapper
 {
-    public static List<DeckOutputDTO> MapToDTO(this IEnumerable<Deck> decks) => decks.Select(MapToDTO).ToList();
-    public static DeckOutputDTO MapToDTO(this Deck deck) => Expression.Compile().Invoke(deck);
-    public static Expression<Func<Deck, DeckOutputDTO>> Expression => deck => new DeckOutputDTO(
+    public static List<DeckItemOutputDTO> MapToDTO(this IEnumerable<Deck> decks) => decks.Select(MapToDTO).ToList();
+    public static DeckItemOutputDTO MapToDTO(this Deck deck) => Expression.Compile().Invoke(deck);
+    public static Expression<Func<Deck, DeckItemOutputDTO>> Expression => deck => new DeckItemOutputDTO(
         deck.Id,
-        deck.Creator.OAuthId,
+        deck.Creator.Uuid.ToString(),
         deck.Name,
         deck.Code,
         deck.Cards
             .Where(card => card.IsHighlighted)
-            .Select(card => new DeckCardOutputDTO(card.CollectionCode, card.CollectionNumber)),
+            .Select(card => new DeckItemCardOutputDTO(card.CollectionCode, card.CollectionNumber)),
         deck.EnergyIds,
-        deck.DeckTags.Select(tag => tag.Tag.Id),
-        deck.Likes.Select(like => like.User.OAuthId),
-        deck.Dislikes.Select(dislike => dislike.User.OAuthId),
+        deck.DeckTags.Select(tag => tag.TagId),
+        deck.Likes.Select(like => like.User.Uuid.ToString()),
+        deck.Dislikes.Select(dislike => dislike.User.Uuid.ToString()),
         deck.CreatedAt
     );
-
     
-    
-    
-    
-    
-    
-    public static Deck ToEntity(this DeckInputDTO dto)
+    public static Deck ToEntity(this DeckItemInputDTO dto)
     {
-        var allCards = (dto.Cards ?? Array.Empty<DeckCardInputDTO>())
-            .Select(c => new DeckCard { Deck = null!, DeckId = 0, CollectionCode = c.CollectionCode, CollectionNumber = c.CollectionNumber, IsHighlighted = c.IsHighlighted })
-            .ToList();
+        ArgumentNullException.ThrowIfNull(dto);
 
         return new Deck
         {
             CreatorId = dto.CreatorId,
-            Creator = null!, // set by EF from CreatorId
+            Creator = null!,
             Name = dto.Name,
-            Code = string.Empty, // TODO: change this
-            Cards = allCards,
-            EnergyIds = dto.EnergyIds?.ToList() ?? [],
-            DeckTags = (dto.TagIds ?? Array.Empty<int>()).Select(id => new DeckTag { Deck = null!, DeckId = 0, TagId = id, Tag = null! }).ToList()
+            Code = string.Empty,
+
+            Cards = dto.Cards.Select(c => new DeckCard
+            {
+                DeckId = 0,
+                Deck = null!,
+                CollectionCode = c.CollectionCode,
+                CollectionNumber = c.CollectionNumber,
+                IsHighlighted = c.IsHighlighted
+            }).ToList(),
+
+            EnergyIds = dto.EnergyIds.ToList(),
+
+            DeckTags = dto.TagIds.Select(tagId => new DeckTag
+            {
+                DeckId = 0,
+                Deck = null!,
+                TagId = tagId,
+                Tag = null!
+            }).ToList(),
+
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
     }
 
-    public static void UpdateEntity(this Deck entity, DeckInputDTO dto)
+    
+    
+    
+
+    public static void UpdateEntity(this Deck entity, DeckItemInputDTO dto)
     {
         entity.CreatorId = dto.CreatorId;
         entity.Name = dto.Name;

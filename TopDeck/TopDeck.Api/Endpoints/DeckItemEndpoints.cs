@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TopDeck.Api.DTO;
-using TopDeck.Api.Services.Interfaces;
+using TopDeck.Api.Services;
 using TopDeck.Contracts.DTO;
 
 namespace TopDeck.Api.Endpoints;
@@ -34,21 +33,21 @@ public static class DeckItemEndpoints
         if (skip < 0) 
             skip = 0;
         
-        IReadOnlyList<DeckOutputDTO> items = await service.GetDeckCardPageAsync(skip, take, ct);
+        IReadOnlyList<DeckItemOutputDTO> items = await service.GetDeckCardPageAsync(skip, take, ct);
         return Results.Ok(items);
     }
     
     private static async Task<IResult> GetByCodeAsync([FromServices] IDeckItemService service, string code, CancellationToken ct)
     {
-        DeckOutputDTO? item = await service.GetDeckCardByCodeAsync(code, ct);
+        DeckItemOutputDTO? item = await service.GetDeckCardByCodeAsync(code, ct);
         return item is null ? Results.NotFound() : Results.Ok(item);
     }
 
-    private static async Task<IResult> CreateAsync([FromServices] IDeckItemService service, [FromBody] DeckInputDTO dto, CancellationToken ct)
+    private static async Task<IResult> CreateAsync([FromServices] IDeckItemService service, [FromBody] DeckItemInputDTO dto, CancellationToken ct)
     {
         try
         {
-            DeckOutputDTO created = await service.CreateAsync(dto, ct);
+            DeckItemOutputDTO created = await service.CreateAsync(dto, ct);
             return Results.Created($"/api/decks/{created.Id}", created);
         }
         catch (InvalidOperationException ex)
@@ -57,11 +56,11 @@ public static class DeckItemEndpoints
         }
     }
 
-    private static async Task<IResult> UpdateAsync([FromServices] IDeckItemService service, int id, [FromBody] DeckInputDTO dto, CancellationToken ct)
+    private static async Task<IResult> UpdateAsync([FromServices] IDeckItemService service, int id, [FromBody] DeckItemInputDTO dto, CancellationToken ct)
     {
         try
         {
-            DeckOutputDTO? updated = await service.UpdateAsync(id, dto, ct);
+            DeckItemOutputDTO? updated = await service.UpdateAsync(id, dto, ct);
             return updated is null ? Results.NotFound() : Results.Ok(updated);
         }
         catch (InvalidOperationException ex)

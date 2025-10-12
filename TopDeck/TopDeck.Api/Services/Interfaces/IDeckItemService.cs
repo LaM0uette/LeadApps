@@ -1,13 +1,12 @@
-using TopDeck.Api.DTO;
 using TopDeck.Contracts.DTO;
 
-namespace TopDeck.Api.Services.Interfaces;
+namespace TopDeck.Api.Services;
 
 public interface IDeckItemService
 {
-    Task<IReadOnlyList<DeckOutputDTO>> GetDeckCardPageAsync(int skip, int take, CancellationToken ct = default);
-    Task<DeckOutputDTO?> GetDeckCardByCodeAsync(string code, CancellationToken ct = default);
-    Task<DeckOutputDTO> CreateAsync(DeckInputDTO dto, CancellationToken ct = default);
-    Task<DeckOutputDTO?> UpdateAsync(int id, DeckInputDTO dto, CancellationToken ct = default);
+    Task<IReadOnlyList<DeckItemOutputDTO>> GetDeckCardPageAsync(int skip, int take, CancellationToken ct = default);
+    Task<DeckItemOutputDTO?> GetDeckCardByCodeAsync(string code, CancellationToken ct = default);
+    Task<DeckItemOutputDTO> CreateAsync(DeckItemInputDTO dto, CancellationToken ct = default);
+    Task<DeckItemOutputDTO?> UpdateAsync(int id, DeckItemInputDTO dto, CancellationToken ct = default);
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);
 }

@@ -16,7 +16,7 @@ public static class DtoToDomainMappings
         return new User(
             dto.Id,
             dto.OAuthProvider,
-            dto.OAuthId,
+            dto.Uuid,
             dto.UserName,
             dto.CreatedAt
         );

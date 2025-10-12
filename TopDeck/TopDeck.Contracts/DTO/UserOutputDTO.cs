@@ -5,7 +5,7 @@ namespace TopDeck.Contracts.DTO;
 public record UserOutputDTO(
     [property: JsonPropertyName("id")] int Id,
     [property: JsonPropertyName("oAuthProvider")] string OAuthProvider,
-    [property: JsonPropertyName("oAuthId")] string OAuthId,
+    [property: JsonPropertyName("uuid")] string Uuid,
     [property: JsonPropertyName("userName")] string UserName,
     [property: JsonPropertyName("createdAt")] DateTime CreatedAt
 );

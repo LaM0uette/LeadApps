@@ -1,7 +1,6 @@
 using TopDeck.Api.Entities;
 using TopDeck.Api.Mappings;
-using TopDeck.Api.Repositories.Interfaces;
-using TopDeck.Api.Services.Interfaces;
+using TopDeck.Api.Repositories;
 using TopDeck.Contracts.DTO;
 
 namespace TopDeck.Api.Services;

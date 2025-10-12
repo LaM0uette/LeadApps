@@ -3,7 +3,7 @@
 public record User(
     int Id,
     string OAuthProvider,
-    string OAuthId,
+    string Uuid,
     string UserName,
     DateTime CreatedAt
 );

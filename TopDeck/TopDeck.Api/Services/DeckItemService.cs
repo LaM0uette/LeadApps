@@ -1,11 +1,8 @@
 using Helpers.Generators;
 using Microsoft.EntityFrameworkCore;
-using TopDeck.Api.DTO;
 using TopDeck.Api.Entities;
 using TopDeck.Api.Mappings;
 using TopDeck.Api.Repositories;
-using TopDeck.Api.Repositories.Interfaces;
-using TopDeck.Api.Services.Interfaces;
 using TopDeck.Contracts.DTO;
 
 namespace TopDeck.Api.Services;
@@ -27,7 +24,7 @@ public class DeckItemService : IDeckItemService
 
     #region IService
     
-    public async Task<IReadOnlyList<DeckOutputDTO>> GetDeckCardPageAsync(int skip, int take, CancellationToken ct = default)
+    public async Task<IReadOnlyList<DeckItemOutputDTO>> GetDeckCardPageAsync(int skip, int take, CancellationToken ct = default)
     {
         return await _repo.DbSet
             .AsNoTracking().AsSplitQuery()
@@ -37,7 +34,7 @@ public class DeckItemService : IDeckItemService
             .ToListAsync(ct);
     }
     
-    public async Task<DeckOutputDTO?> GetDeckCardByCodeAsync(string code, CancellationToken ct = default)
+    public async Task<DeckItemOutputDTO?> GetDeckCardByCodeAsync(string code, CancellationToken ct = default)
     {
         return await _repo.DbSet
             .AsNoTracking()
@@ -46,7 +43,7 @@ public class DeckItemService : IDeckItemService
             .FirstOrDefaultAsync(ct);
     }
 
-    public async Task<DeckOutputDTO> CreateAsync(DeckInputDTO dto, CancellationToken ct = default)
+    public async Task<DeckItemOutputDTO> CreateAsync(DeckItemInputDTO dto, CancellationToken ct = default)
     {
         User? creator = await _users.GetByIdAsync(dto.CreatorId, ct);
         
@@ -62,22 +59,26 @@ public class DeckItemService : IDeckItemService
             throw new InvalidOperationException("Failed to generate unique deck code");
         
         Deck created = await _repo.AddAsync(entity, ct);
+        created.Creator = creator; // Set the navigation property for mapping
         return created.MapToDTO();
     }
 
-    public async Task<DeckOutputDTO?> UpdateAsync(int id, DeckInputDTO dto, CancellationToken ct = default)
+    public async Task<DeckItemOutputDTO?> UpdateAsync(int id, DeckItemInputDTO dto, CancellationToken ct = default)
     {
         Deck? existing = await _repo.GetByIdAsync(id, false, ct);
         
         if (existing is null) 
             return null;
 
+        User? creator = await _users.GetByIdAsync(dto.CreatorId, ct);
+        
+        if (creator is null) 
+            throw new InvalidOperationException($"Creator with id {dto.CreatorId} not found");
+
+        // Allow changing creator if different
         if (existing.CreatorId != dto.CreatorId)
         {
-            User? creator = await _users.GetByIdAsync(dto.CreatorId, ct);
-            
-            if (creator is null) 
-                throw new InvalidOperationException($"Creator with id {dto.CreatorId} not found");
+            existing.CreatorId = dto.CreatorId;
         }
 
         ValidateDeckLimits(dto);
@@ -108,7 +109,7 @@ public class DeckItemService : IDeckItemService
         return code;
     }
 
-    private static void ValidateDeckLimits(DeckInputDTO dto)
+    private static void ValidateDeckLimits(DeckItemInputDTO dto)
     {
         int cardCount = dto.Cards.Count;
         int highlightedCount = dto.Cards.Count(c => c.IsHighlighted);

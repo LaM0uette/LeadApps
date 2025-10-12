@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TopDeck.Api.Data;
 using TopDeck.Api.Entities;
-using TopDeck.Api.Repositories.Interfaces;
 
 namespace TopDeck.Api.Repositories;
 
@@ -28,6 +27,11 @@ public class UserRepository : IUserRepository
     public async Task<User?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         return await _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, ct);
+    }
+
+    public async Task<User?> GetByUuidAsync(Guid uuid, CancellationToken ct = default)
+    {
+        return await _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Uuid == uuid, ct);
     }
 
     public async Task<User?> GetByOAuthAsync(string provider, string id, CancellationToken ct = default)

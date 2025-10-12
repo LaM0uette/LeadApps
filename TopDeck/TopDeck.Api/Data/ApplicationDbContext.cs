@@ -38,10 +38,12 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(u => u.Id);
+            entity.Property(u => u.Uuid).IsRequired();
             entity.Property(u => u.OAuthProvider).IsRequired();
             entity.Property(u => u.OAuthId).IsRequired();
             entity.Property(u => u.UserName).IsRequired();
 
+            entity.HasIndex(u => u.Uuid).IsUnique();
             entity.HasIndex(u => new { u.OAuthProvider, u.OAuthId }).IsUnique();
 
             entity.Property(u => u.CreatedAt)

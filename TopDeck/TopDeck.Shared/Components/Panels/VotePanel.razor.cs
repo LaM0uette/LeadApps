@@ -32,8 +32,8 @@ public class VotePanelBase : ComponentBase
             
             AuthenticatedUserState currentUserState = _uiStore.GetState<AuthenticatedUserState>();
             
-            IsLiked = UserLikes.Any(u => u.OAuthId == currentUserState.OAuthId);
-            IsDisliked = UserDislikes.Any(u => u.OAuthId == currentUserState.OAuthId);
+            IsLiked = UserLikes.Any(u => u.Uuid == currentUserState.Uuid);
+            IsDisliked = UserDislikes.Any(u => u.Uuid == currentUserState.Uuid);
             
             if (IsLiked && IsDisliked)
                 throw new InvalidOperationException("A user cannot both like and dislike at the same time."); // TODO: Log this instead of throwing
@@ -47,9 +47,9 @@ public class VotePanelBase : ComponentBase
 
     protected async Task OnLikeClicked()
     {
-        string? userOAuthId = _uiStore.GetState<AuthenticatedUserState>().OAuthId;
+        string? userUuid = _uiStore.GetState<AuthenticatedUserState>().Uuid;
         
-        if (userOAuthId == null)
+        if (userUuid == null)
             return;
         
         IsLiked = !IsLiked;
@@ -72,7 +72,7 @@ public class VotePanelBase : ComponentBase
         
         if (IsLiked)
         {
-            UserLikes = UserLikes.Append(new User(userId, "fakeUser", userOAuthId, "fakeUser", DateTime.Now)).ToList();
+            UserLikes = UserLikes.Append(new User(userId, "fakeUser", userUuid, "fakeUser", DateTime.Now)).ToList();
             UserDislikes = UserDislikes.Where(u => u.Id != userId).ToList();
         }
         else
@@ -85,9 +85,9 @@ public class VotePanelBase : ComponentBase
     
     protected async Task OnDislikeClicked()
     {
-        string? userOAuthId = _uiStore.GetState<AuthenticatedUserState>().OAuthId;
+        string? userUuid = _uiStore.GetState<AuthenticatedUserState>().Uuid;
         
-        if (userOAuthId == null)
+        if (userUuid == null)
             return;
         
         IsDisliked = !IsDisliked;
@@ -110,7 +110,7 @@ public class VotePanelBase : ComponentBase
         
         if (IsDisliked)
         {
-            UserDislikes = UserDislikes.Append(new User(userId, "fakeUser", userOAuthId, "fakeUser", DateTime.Now)).ToList();
+            UserDislikes = UserDislikes.Append(new User(userId, "fakeUser", userUuid, "fakeUser", DateTime.Now)).ToList();
             UserLikes = UserLikes.Where(u => u.Id != userId).ToList();
         }
         else

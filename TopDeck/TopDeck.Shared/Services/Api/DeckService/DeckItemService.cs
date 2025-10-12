@@ -28,16 +28,16 @@ public class DeckItemService : ApiService, IDeckItemService
         return dto?.ToDomain();
     }
 
-    public async Task<Deck> CreateAsync(DeckInputDTO dto, CancellationToken ct = default)
+    public async Task<Deck> CreateAsync(DeckItemInputDTO dto, CancellationToken ct = default)
     {
-        DeckOutputDTOold? created = await PostJsonAsync<DeckInputDTO, DeckOutputDTOold>(_route, dto, ct);
+        DeckOutputDTOold? created = await PostJsonAsync<DeckItemInputDTO, DeckOutputDTOold>(_route, dto, ct);
         Deck? deck = created?.ToDomain();
         return deck ?? throw new InvalidOperationException("Unexpected null response when creating deck.");
     }
 
-    public async Task<Deck?> UpdateAsync(int id, DeckInputDTO dto, CancellationToken ct = default)
+    public async Task<Deck?> UpdateAsync(int id, DeckItemInputDTO dto, CancellationToken ct = default)
     {
-        DeckOutputDTOold? updated = await PutJsonAsync<DeckInputDTO, DeckOutputDTOold>($"{_route}/{id}", dto, ct);
+        DeckOutputDTOold? updated = await PutJsonAsync<DeckItemInputDTO, DeckOutputDTOold>($"{_route}/{id}", dto, ct);
         return updated?.ToDomain();
     }
 

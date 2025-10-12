@@ -9,6 +9,7 @@ public static class UserMappings
     {
         return new User
         {
+            Uuid = Guid.NewGuid(),
             OAuthProvider = dto.OAuthProvider,
             OAuthId = dto.OAuthId,
             UserName = dto.UserName
@@ -24,7 +25,7 @@ public static class UserMappings
 
     public static UserOutputDTO ToOutput(this User entity)
     {
-        return new UserOutputDTO(entity.Id, entity.OAuthProvider, entity.OAuthId, entity.UserName, entity.CreatedAt);
+        return new UserOutputDTO(entity.Id, entity.OAuthProvider, entity.Uuid.ToString(), entity.UserName, entity.CreatedAt);
     }
 
     public static UserInputDTO ToInput(this User entity)

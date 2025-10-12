@@ -35,7 +35,7 @@ public class MainLayoutBase : LayoutComponentBase
 
                 if (user is not null)
                 {
-                    _uiStore.Dispatch(new SetCurrentAuthenticatedUserAction(user.Id, user.OAuthId));
+                    _uiStore.Dispatch(new SetCurrentAuthenticatedUserAction(user.Id, user.Uuid));
                     
                     IsReady = true;
                     StateHasChanged();
