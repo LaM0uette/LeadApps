@@ -56,6 +56,18 @@ public class VotePanelBase : ComponentBase
         
         IsLiked = true;
         IsDisliked = false;
+        
+        if (IsLiked)
+        {
+            LikeUserUuids = LikeUserUuids.Append(_userUuid).ToList();
+            DislikeUserUuids = DislikeUserUuids.Where(s => s != _userUuid).ToList();
+        }
+        else
+        {
+            LikeUserUuids = LikeUserUuids.Where(s => s != _userUuid).ToList();
+        }
+        
+        StateHasChanged();
 
         if (DeckId is not null && SuggestionId is null)
         {
@@ -71,18 +83,6 @@ public class VotePanelBase : ComponentBase
         {
             throw new InvalidOperationException("Either DeckId or SuggestionId must be set, but not both.");
         }
-        
-        if (IsLiked)
-        {
-            LikeUserUuids = LikeUserUuids.Append(_userUuid).ToList();
-            DislikeUserUuids = DislikeUserUuids.Where(s => s != _userUuid).ToList();
-        }
-        else
-        {
-            LikeUserUuids = LikeUserUuids.Where(s => s != _userUuid).ToList();
-        }
-        
-        StateHasChanged();
     }
     
     protected async Task OnDislikeClicked()
@@ -92,6 +92,18 @@ public class VotePanelBase : ComponentBase
         
         IsDisliked = true;
         IsLiked = false;
+        
+        if (IsDisliked)
+        {
+            DislikeUserUuids = DislikeUserUuids.Append(_userUuid).ToList();
+            LikeUserUuids = LikeUserUuids.Where(s => s != _userUuid).ToList();
+        }
+        else
+        {
+            DislikeUserUuids = DislikeUserUuids.Where(s => s != _userUuid).ToList();
+        }
+        
+        StateHasChanged();
         
         if (DeckId is not null && SuggestionId is null)
         {
@@ -107,18 +119,6 @@ public class VotePanelBase : ComponentBase
         {
             throw new InvalidOperationException("Either DeckId or SuggestionId must be set, but not both.");
         }
-        
-        if (IsDisliked)
-        {
-            DislikeUserUuids = DislikeUserUuids.Append(_userUuid).ToList();
-            LikeUserUuids = LikeUserUuids.Where(s => s != _userUuid).ToList();
-        }
-        else
-        {
-            DislikeUserUuids = DislikeUserUuids.Where(s => s != _userUuid).ToList();
-        }
-        
-        StateHasChanged();
     }
     
     
