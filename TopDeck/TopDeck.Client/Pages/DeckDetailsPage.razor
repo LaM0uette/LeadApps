@@ -52,6 +52,16 @@ else
                         <img class="deck-details-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
                     }
                 </div>
+                
+                @if (!IsMobile)
+                {
+                    <div class="deck-details-pc-overview">
+                        <button class="deck-details-pc-overview-button @(CurrentTab is Tab.Overview ? "active" : "")" @onclick="SwitchTab">
+                            <p class="deck-details-pc-overview-button__text">@Localizer.Localize("page.deckDetail.showAll.text", "View All")</p>
+                            <img class="deck-details-pc-overview-button__icon" src="img/overview-tab-icon@(CurrentTab is Tab.Overview ? "-active" : "").svg" alt="overview button"/>
+                        </button>
+                    </div>
+                }
             </div>
             
             <VerticalSpacer Value="8"/>
@@ -117,21 +127,21 @@ else
             <a class="deck-details-back-button" href="/decks">
                 <img class="deck-details-back-button__icon" src="img/arrow-back-icon.svg" alt="back button"/>
             </a>
-        }
         
-        <div class="deck-details-tabs">
-            <button class="deck-details-tab-button @(CurrentTab is Tab.Cards ? "active" : "")" @onclick="() => SelectTab(Tab.Cards)">
-                <img class="deck-details-tab-button__icon" src="img/card-tab-icon@(CurrentTab is Tab.Cards ? "-active" : "").svg" alt="card tab button"/>
-            </button>
+            <div class="deck-details-tabs">
+                <button class="deck-details-tab-button @(CurrentTab is Tab.Cards ? "active" : "")" @onclick="() => SelectTab(Tab.Cards)">
+                    <img class="deck-details-tab-button__icon" src="img/card-tab-icon@(CurrentTab is Tab.Cards ? "-active" : "").svg" alt="card tab button"/>
+                </button>
 
-            <button class="deck-details-tab-button @(CurrentTab is Tab.Overview ? "active" : "")" @onclick="() => SelectTab(Tab.Overview)">
-                <img class="deck-details-tab-button__icon" src="img/overview-tab-icon@(CurrentTab is Tab.Overview ? "-active" : "").svg" alt="overview tab button"/>
-            </button>
+                <button class="deck-details-tab-button @(CurrentTab is Tab.Overview ? "active" : "")" @onclick="() => SelectTab(Tab.Overview)">
+                    <img class="deck-details-tab-button__icon" src="img/overview-tab-icon@(CurrentTab is Tab.Overview ? "-active" : "").svg" alt="overview tab button"/>
+                </button>
 
-            <button class="deck-details-tab-button @(CurrentTab is Tab.Suggestions ? "active" : "")" @onclick="() => SelectTab(Tab.Suggestions)">
-                <img class="deck-details-tab-button__icon" src="img/suggestions-tab-icon@(CurrentTab is Tab.Suggestions ? "-active" : "").svg" alt="suggestion tab button"/>
-            </button>
-        </div>
+                <button class="deck-details-tab-button @(CurrentTab is Tab.Suggestions ? "active" : "")" @onclick="() => SelectTab(Tab.Suggestions)">
+                    <img class="deck-details-tab-button__icon" src="img/suggestions-tab-icon@(CurrentTab is Tab.Suggestions ? "-active" : "").svg" alt="suggestion tab button"/>
+                </button>
+            </div>
+        }
     </div>
 }
 

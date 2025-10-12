@@ -12,5 +12,6 @@
   "feedback.text.copied": "Copied",
   "feedback.text.notFound": "Not found",
   "page.deckDetail.noSuggestions.text": "No suggestions available for this deck.",
+  "page.deckDetail.showAll.text": "View All",
   "page.decksView.noCards.text": "No cards found."
 }

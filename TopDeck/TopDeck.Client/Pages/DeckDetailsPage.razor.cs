@@ -110,6 +110,16 @@ public class DeckDetailsPagePresenter : PresenterBase
     {
         CurrentTab = tab;
     }
+    
+    protected void SwitchTab()
+    {
+        CurrentTab = CurrentTab switch
+        {
+            Tab.Cards => Tab.Overview,
+            Tab.Overview => Tab.Cards,
+            _ => CurrentTab
+        };
+    }
 
     #endregion
 }
