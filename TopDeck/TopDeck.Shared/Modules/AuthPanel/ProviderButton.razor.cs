@@ -1,9 +1,9 @@
-﻿using LocalizedComponent;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using TopDeck.Shared.Components;
 
 namespace AuthPanel;
 
-public class ProviderButtonBase : LocalizedComponentBase
+public class ProviderButtonBase : PresenterBase
 {
     #region Statements
 

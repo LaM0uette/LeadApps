@@ -1,0 +1,179 @@
+﻿@page "/decks/{DeckCode}"
+@inherits DeckDetailsPagePresenter
+@attribute [AllowAnonymous]
+
+<PageTitle>@(DeckDetails?.Name ?? "Deck")</PageTitle>
+
+
+@if (DeckDetails is null)
+{
+    <VerticalSpacer Value="40"/>
+    <LoadingWheel/>
+}
+else
+{
+    <div class="deck-details-page-container">
+        <div class="deck-details-left-side"></div>
+    
+        <div class="deck-details-page @GetEnergyClass(DeckDetails.EnergyIds)">
+            <div class="deck-details-header">
+                <div class="deck-details-header-top">
+                    <div class="deck-details-title-panel-container">
+                        <TitlePanel Name="@DeckDetails.Name" Width="200px" Height="35px" FontSize="1.1em"/>
+                    </div>
+
+                    <div class="deck-details-vote-panel-container">
+                        <VotePanel Width="130px" Height="35px" FontSize="1.1em"
+                                   DeckId="DeckDetails.Id"
+                                   LikeUserUuids="DeckDetails.LikeUserUuids.ToList()"
+                                   DislikeUserUuids="DeckDetails.DislikeUserUuids.ToList()"/>
+                    </div>
+                </div>
+
+                @if (IsMobile) { <VerticalSpacer Value="10"/> }
+                else { <VerticalSpacer Value="25"/> }
+                
+                <span class="deck-details-header__code" @onclick="CopyCode">@DeckCode</span>
+
+                <div class="deck-details-highlight">
+                    <div class="deck-details-highlighted-cards">
+                        @if (TCGPHighlightedCards.Count < 3)
+                        {
+                            <LoadingWheel/> /* TODO: replace this by placeholder img or two first img in deck */
+                        }
+                        else
+                        {
+                            <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                            <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
+                            <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>
+                        }
+                    </div>
+
+                    <div class="deck-details-energies">
+                        @foreach (int energyId in DeckDetails.EnergyIds)
+                        {
+                            <img class="deck-details-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
+                        }
+                    </div>
+                    
+                    @if (!IsMobile)
+                    {
+                        <div class="deck-details-pc-overview">
+                            <button class="deck-details-pc-overview-button @(CurrentTab is Tab.Overview ? "active" : "")" @onclick="SwitchTab">
+                                <p class="deck-details-pc-overview-button__text">@Localizer.Localize("page.deckDetail.showAll.text", "View All")</p>
+                                <img class="deck-details-pc-overview-button__icon" src="img/overview-tab-icon@(CurrentTab is Tab.Overview ? "-active" : "").svg" alt="overview button"/>
+                            </button>
+                        </div>
+                    }
+                </div>
+                
+                <VerticalSpacer Value="8"/>
+                <hr class="deck-details-header__separator">
+            </div>
+            
+            @if (CurrentTab is Tab.Cards)
+            {
+                <div class="deck-details-cards">
+                    @if (TCGPCards.Count <= 0)
+                    {
+                        <LoadingWheel/>
+                    }
+                    else
+                    {
+                        foreach (TCGPCard card in TCGPCards)
+                        {
+                            <img class="deck-details-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        }
+                    }
+                </div>
+            }
+            else if (CurrentTab is Tab.Overview)
+            {
+                <div class="deck-details-overview">
+                    @if (TCGPCards.Count <= 0)
+                    {
+                        <LoadingWheel/>
+                    }
+                    else
+                    {
+                        foreach (TCGPCard card in TCGPCards)
+                        {
+                            <img class="deck-details-overview__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        }
+                    }
+                </div>
+            }
+            else if (CurrentTab is Tab.Suggestions && IsMobile)
+            {
+                <div class="deck-details-suggestions">
+                    @if (DeckDetails.Suggestions.Count <= 0)
+                    {
+                        <p class="deck-details-suggestions__no-suggestions-text">@Localizer.Localize("page.deckDetail.noSuggestions.text", "No suggestions available for this deck.")</p>
+                    }
+                    else
+                    {
+                        foreach (DeckDetailsSuggestion suggestion in DeckDetails.Suggestions)
+                        {
+                            if (suggestion.AddedCards.Count == 0 && suggestion.RemovedCards.Count == 0)
+                                continue;
+                            
+                            <SuggestionAccordion Suggestion="suggestion"/>
+                        }
+                        
+                        <VerticalSpacer Value="80"/>
+                    }
+                </div>
+            }
+            
+            @if (IsMobile)
+            {
+                <a class="deck-details-back-button" href="/decks">
+                    <img class="deck-details-back-button__icon" src="img/arrow-back-icon.svg" alt="back button"/>
+                </a>
+            
+                <div class="deck-details-tabs">
+                    <button class="deck-details-tab-button @(CurrentTab is Tab.Cards ? "active" : "")" @onclick="() => SelectTab(Tab.Cards)">
+                        <img class="deck-details-tab-button__icon" src="img/card-tab-icon@(CurrentTab is Tab.Cards ? "-active" : "").svg" alt="card tab button"/>
+                    </button>
+
+                    <button class="deck-details-tab-button @(CurrentTab is Tab.Overview ? "active" : "")" @onclick="() => SelectTab(Tab.Overview)">
+                        <img class="deck-details-tab-button__icon" src="img/overview-tab-icon@(CurrentTab is Tab.Overview ? "-active" : "").svg" alt="overview tab button"/>
+                    </button>
+
+                    <button class="deck-details-tab-button @(CurrentTab is Tab.Suggestions ? "active" : "")" @onclick="() => SelectTab(Tab.Suggestions)">
+                        <img class="deck-details-tab-button__icon" src="img/suggestions-tab-icon@(CurrentTab is Tab.Suggestions ? "-active" : "").svg" alt="suggestion tab button"/>
+                    </button>
+                </div>
+            }
+        </div>
+        
+        <div class="deck-details-right-side">
+            @if (!IsMobile)
+            {
+                <h3 class="deck-details-right-side__title">@Localizer.Localize("page.deckDetail.suggestion.title", "Suggestions")</h3>
+                <VerticalSpacer Value="25"/>
+                
+                <div class="deck-details-suggestions">
+                    @if (DeckDetails.Suggestions.Count <= 0)
+                    {
+                        <p class="deck-details-suggestions__no-suggestions-text">@Localizer.Localize("page.deckDetail.noSuggestions.text", "No suggestions available for this deck.")</p>
+                    }
+                    else
+                    {
+                        foreach (DeckDetailsSuggestion suggestion in DeckDetails.Suggestions)
+                        {
+                            if (suggestion.AddedCards.Count == 0 && suggestion.RemovedCards.Count == 0)
+                                continue;
+                            
+                            <SuggestionAccordion Suggestion="suggestion"/>
+                        }
+                        
+                        <VerticalSpacer Value="80"/>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+
+

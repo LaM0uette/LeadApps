@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TopDeck.Api.Data;
 using TopDeck.Api.Entities;
-using TopDeck.Api.Repositories.Interfaces;
 
 namespace TopDeck.Api.Repositories;
 

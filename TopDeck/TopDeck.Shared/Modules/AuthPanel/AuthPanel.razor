@@ -4,29 +4,20 @@
 
 
 <div class="auth-panel" style="width: @Width; height: @Height">
-    
-    <div class="header">
-        
+    <div class="auth-panel-header">
         <VerticalSpacer Value="25"/>
-
-        <img src="img/logo.svg" alt="topdeck logo" class="logo">
-
+        <img class="auth-panel-header__logo" src="img/logo.svg" alt="topdeck logo">
         <VerticalSpacer Value="20"/>
-        
-        <p class="subtitle">@Localizer.Localize("authPanel.header.subtitle", "Sign up to")</p>
+        <p class="auth-panel-header__subtitle">@Localizer.Localize("authPanel.header.subtitle", "Sign up to")</p>
         <VerticalSpacer Value="5"/>
-        <h2 class="title">TOPDECK</h2>
-
+        <h2 class="auth-panel-header__title">TOPDECK</h2>
     </div>
     
-    <div class="footer">
-        
+    <div class="auth-panel-footer">
         <ProviderButton IconPath="img/icon-google.svg" TextKey="authPanel.providerButton.text.google" Provider="@Provider.Google"/>
         <ProviderButton IconPath="img/icon-microsoft.svg" TextKey="authPanel.providerButton.text.microsoft" Provider="@Provider.Microsoft"/>
         <ProviderButton IconPath="img/icon-apple.svg" TextKey="authPanel.providerButton.text.apple" Provider="@Provider.Apple"/>
         <ProviderButton IconPath="img/icon-twitch.svg" TextKey="authPanel.providerButton.text.twitch" Provider="@Provider.Twitch"/>
         <ProviderButton IconPath="img/icon-twitter.svg" TextKey="authPanel.providerButton.text.twitter" Provider="@Provider.Twitter"/>
-
     </div>
-    
 </div>

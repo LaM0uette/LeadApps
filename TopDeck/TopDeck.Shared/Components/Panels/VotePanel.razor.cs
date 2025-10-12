@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using TopDeck.Domain.Models;
+using TopDeck.Contracts.DTO;
 using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore.States.AuthenticatedUser;
 
@@ -9,27 +9,50 @@ public class VotePanelBase : ComponentBase
 {
     #region Statements
 
-    [Parameter, EditorRequired] public required int DeckId { get; set; }
-    [Parameter] public IReadOnlyCollection<User> UserLikes { get; set; } = [];
-    [Parameter] public IReadOnlyCollection<User> UserDislikes { get; set; } = [];
+    [Parameter, EditorRequired] public required string Width { get; set; } = "100px";
+    [Parameter, EditorRequired] public required string Height { get; set; } = "26px";
+    [Parameter, EditorRequired] public required string FontSize { get; set; } = "0.63em";
     
-    protected string LikeCountFormatted => Format(UserLikes.Count);
+    [Parameter] public int? DeckId { get; set; }
+    [Parameter] public int? SuggestionId { get; set; }
+    [Parameter] public IReadOnlyList<string> LikeUserUuids { get; set; } = [];
+    [Parameter] public IReadOnlyList<string> DislikeUserUuids { get; set; } = [];
+    
+    protected string LikeCountFormatted => Format(LikeUserUuids.Count);
     
     protected bool IsLiked;
     protected bool IsDisliked;
     
     [Inject] private UIStore.UIStore _uiStore { get; set; } = null!;
-    [Inject] private IDeckReactionService _deckReactionService { get; set; } = null!;
+    [Inject] private IVoteService _voteService { get; set; } = null!;
+    
+    private bool _userAuthenticated;
+    private string _userUuid = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        AuthenticatedUserState currentUserState = _uiStore.GetState<AuthenticatedUserState>();
+            
+        int userId = currentUserState.Id;
+        string userUuid = currentUserState.Uuid;
+            
+        if (userId == -1 || string.IsNullOrWhiteSpace(userUuid))
+        {
+            _userAuthenticated = false;
+            return;
+        }
+        
+        _userUuid = userUuid;
+        _userAuthenticated = true;
+    }
 
     protected override void OnAfterRender(bool firstRender)
         {
             if (!firstRender) 
                 return;
             
-            AuthenticatedUserState currentUserState = _uiStore.GetState<AuthenticatedUserState>();
-            
-            IsLiked = UserLikes.Any(u => u.OAuthId == currentUserState.OAuthId);
-            IsDisliked = UserDislikes.Any(u => u.OAuthId == currentUserState.OAuthId);
+            IsLiked = LikeUserUuids.Any(s => s == _userUuid);
+            IsDisliked = DislikeUserUuids.Any(s => s == _userUuid);
             
             if (IsLiked && IsDisliked)
                 throw new InvalidOperationException("A user cannot both like and dislike at the same time."); // TODO: Log this instead of throwing
@@ -43,55 +66,74 @@ public class VotePanelBase : ComponentBase
 
     protected async Task OnLikeClicked()
     {
-        string? userOAuthId = _uiStore.GetState<AuthenticatedUserState>().OAuthId;
-        
-        if (userOAuthId == null)
+        if (!_userAuthenticated || IsLiked)
             return;
         
-        IsLiked = !IsLiked;
+        IsLiked = true;
         IsDisliked = false;
-
-        int userId = _uiStore.GetState<AuthenticatedUserState>().Id;
-        
-        await _deckReactionService.LikeAsync(DeckId, userId, IsLiked);
         
         if (IsLiked)
         {
-            UserLikes = UserLikes.Append(new User(userId, "fakeUser", userOAuthId, "fakeUser", DateTime.Now)).ToList();
-            UserDislikes = UserDislikes.Where(u => u.Id != userId).ToList();
+            LikeUserUuids = LikeUserUuids.Append(_userUuid).ToList();
+            DislikeUserUuids = DislikeUserUuids.Where(s => s != _userUuid).ToList();
         }
         else
         {
-            UserLikes = UserLikes.Where(u => u.Id != userId).ToList();
+            LikeUserUuids = LikeUserUuids.Where(s => s != _userUuid).ToList();
         }
         
         StateHasChanged();
+
+        if (DeckId is not null && SuggestionId is null)
+        {
+            DeckVoteInputDTO dto = new(DeckId.Value, _userUuid, true);
+            await _voteService.VoteDeckAsync(dto);
+        }
+        else if (SuggestionId is not null && DeckId is null)
+        {
+            DeckSuggestionVoteInputDTO dto = new(SuggestionId.Value, _userUuid, true);
+            await _voteService.VoteDeckSuggestionAsync(dto);
+        }
+        else
+        {
+            throw new InvalidOperationException("Either DeckId or SuggestionId must be set, but not both.");
+        }
     }
     
     protected async Task OnDislikeClicked()
     {
-        string? userOAuthId = _uiStore.GetState<AuthenticatedUserState>().OAuthId;
-        
-        if (userOAuthId == null)
+        if (!_userAuthenticated || IsDisliked)
             return;
         
-        IsDisliked = !IsDisliked;
+        IsDisliked = true;
         IsLiked = false;
-        
-        int userId = _uiStore.GetState<AuthenticatedUserState>().Id;
-        await _deckReactionService.DislikeAsync(DeckId, userId, IsDisliked);
         
         if (IsDisliked)
         {
-            UserDislikes = UserDislikes.Append(new User(userId, "fakeUser", userOAuthId, "fakeUser", DateTime.Now)).ToList();
-            UserLikes = UserLikes.Where(u => u.Id != userId).ToList();
+            DislikeUserUuids = DislikeUserUuids.Append(_userUuid).ToList();
+            LikeUserUuids = LikeUserUuids.Where(s => s != _userUuid).ToList();
         }
         else
         {
-            UserDislikes = UserDislikes.Where(u => u.Id != userId).ToList();
+            DislikeUserUuids = DislikeUserUuids.Where(s => s != _userUuid).ToList();
         }
         
         StateHasChanged();
+        
+        if (DeckId is not null && SuggestionId is null)
+        {
+            DeckVoteInputDTO dto = new(DeckId.Value, _userUuid, false);
+            await _voteService.VoteDeckAsync(dto);
+        }
+        else if (SuggestionId is not null && DeckId is null)
+        {
+            DeckSuggestionVoteInputDTO dto = new(SuggestionId.Value, _userUuid, false);
+            await _voteService.VoteDeckSuggestionAsync(dto);
+        }
+        else
+        {
+            throw new InvalidOperationException("Either DeckId or SuggestionId must be set, but not both.");
+        }
     }
     
     

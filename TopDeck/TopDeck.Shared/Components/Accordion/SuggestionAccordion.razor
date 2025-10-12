@@ -1,0 +1,44 @@
+﻿@namespace TopDeck.Shared.Components
+@inherits SuggestionAccordionBase
+
+
+<div class="suggestion-accordion">
+    <button class="suggestion-button" 
+            style="width: @Width; height: @Height; font-size: @FontSize;"
+            @onclick="Toggle">
+        <p class="suggestion-button__suggestor">@Suggestion.SuggestorUsername</p>
+                            
+        <div class="suggestion-vote-panel-container">
+            <VotePanel Width="108px" Height="28px" FontSize="0.88em"
+                       SuggestionId="Suggestion.Id"
+                       LikeUserUuids="Suggestion.LikeUserUuids.ToList()"
+                       DislikeUserUuids="Suggestion.DislikeUserUuids.ToList()"/>
+        </div>
+        
+        <img class="suggestion-button__arrow @(IsOpen ? "suggestion-button__arrow--expanded" : "")" src="img/arrow-right.svg" alt="arrow"/>
+    </button>
+
+    @if (IsOpen)
+    {
+        <div class="suggestion-cards">
+            @foreach (TCGPCard card in RemovedCards)
+            {
+                <div class="suggestion-card">
+                    <img class="suggestion-card__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                    <div class="suggestion-card-state">
+                        <img class="suggestion-card-state__icon" src="img/minus-icon.svg" alt="minus icon"/>
+                    </div>
+                </div>
+            }
+            @foreach (TCGPCard card in AddedCards)
+            {
+                <div class="suggestion-card">
+                    <img class="suggestion-card__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                    <div class="suggestion-card-state">
+                        <img class="suggestion-card-state__icon" src="img/plus-icon.svg" alt="plus icon"/>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

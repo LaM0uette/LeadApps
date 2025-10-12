@@ -6,42 +6,42 @@
     
     border: 1px solid var(--color-border);
     border-radius: var(--radius-l);
+}
 
 
-    & > .header {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+.auth-panel-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-
-        & > .logo {
-            max-width: 65%;
-            max-height: 65%;
-            object-fit: contain;
-        }
-        
-        & > .subtitle {
-            font-size: 1.3em;
-        }
-
-        & > .title {
-            font-family: var(--font-extra-bold), sans-serif;
-            font-size: 2em;
-        }
+    .auth-panel-header__logo {
+        max-width: 65%;
+        max-height: 65%;
+        object-fit: contain;
     }
 
-    & > .footer {
-        position: absolute;
-        bottom: 15px;
-
-        width: 100%;
-        box-sizing: border-box;
-        
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-
-        padding: 0 15px;
+    .auth-panel-header__subtitle {
+        font-size: 1.3em;
     }
+    
+    .auth-panel-header__title {
+        font-family: var(--font-extra-bold), sans-serif;
+        font-size: 2em;
+    }
+
+
+.auth-panel-footer {
+    position: absolute;
+    bottom: 15px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    padding: 0 15px;
 }

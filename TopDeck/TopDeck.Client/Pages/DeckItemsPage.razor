@@ -1,0 +1,28 @@
+﻿@page "/decks"
+@inherits DeckItemsPagePresenter
+@attribute [AllowAnonymous]
+
+
+<PageTitle>TOPDECK - Decks</PageTitle>
+
+
+<div class="decks-page-page">
+    <div id="deck-scroll" class="deck-items">
+        @if (DeckItems.Count <= 0 && !HasMore)
+        {
+            <p class="deck-items__no-cards-text">@Localizer.Localize("page.decksView.noCards.text", "No cards found.")</p>
+        }
+        else
+        {
+            foreach (DeckItem deckItem in DeckItems)
+            {
+                <DeckItemView DeckItem="@deckItem"/>
+            }
+        }
+        
+        @if (IsLoading && HasMore)
+        {
+            <LoadingWheel/>
+        }
+    </div>
+</div>

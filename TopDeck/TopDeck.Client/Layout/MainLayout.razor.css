@@ -1,78 +1,88 @@
-.page {
+.main-layout {
     width: 100vw;
     height: 100vh;
+
+    box-sizing: border-box;
+    padding-top: 50px;
 
     background: var(--color-bg);
     color: var(--color-text);
 
     user-select: none;
-
-
-    & > header {
-        position: fixed;
-        
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: center;
-        
-        background: var(--color-bg);
-
-        width: 100%;
-        height: 75px;
-
-        z-index: 999;
-
-
-        & > .logo-container {
-            width: 75px;
-            height: 75px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-
-            & > img {
-                width: 48px;
-                height: 48px;
-                object-fit: contain;
-            }
-        }
-
-        & > .title {
-            font-family: var(--font-extra-bold), sans-serif;
-            font-size: 2rem;
-        }
-        
-        & > .header-separator {
-            position: absolute;
-            bottom: 0;
-
-            width: 100%;
-            
-            border: none;
-            border-top: 1px solid var(--color-border);
-            
-            margin: 0;
-            box-shadow: var(--shadow-s);
-        }
-    }
-    
-    & > footer {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 30px;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+    overflow: hidden;
 }
 
 
+.main-layout-header {
+    position: fixed;
+    top: 0;
+    left: 0;
 
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    background: var(--color-bg);
+
+    width: 100%;
+    height: 50px;
+
+    z-index: 999;
+}
+
+    .main-layout-header__title {
+        font-family: var(--font-extra-bold), sans-serif;
+        font-size: 1.5rem;
+    }
+
+    .main-layout-header__separator {
+        position: absolute;
+        bottom: 0;
+    
+        width: 100%;
+    
+        border: none;
+        border-top: 1px solid var(--color-border);
+    
+        margin: 0;
+        box-shadow: var(--shadow-s);
+    }
+
+
+.topdeck-logo {
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .topdeck-logo__icon {
+        width: 65%;
+        height: auto;
+        object-fit: contain;
+    }
+
+
+.main-layout-body {
+    position: relative;
+    height: calc(100vh - 50px);
+    overflow: hidden;
+}
+
+
+.main-layout-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 
 #blazor-error-ui {

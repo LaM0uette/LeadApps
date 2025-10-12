@@ -1,42 +1,49 @@
 ﻿@inherits MainLayoutBase
 
 
-<div class="page">
-    
-    <header>
-        
-        <div class="logo-container">
-            <img src="img/logo.svg" alt="topdeck logo"> 
+<div class="main-layout">
+    <header class="main-layout-header">
+        <div class="topdeck-logo">
+            <img class="topdeck-logo__icon" src="img/logo.svg" alt="topdeck logo"> 
         </div>
         
-        <h1 class="title">TOPDECK</h1>
+        <h1 class="main-layout-header__title">TOPDECK</h1>
         
-        <hr class="header-separator">
-
+        <AuthorizeView>
+            <Authorized>    
+                <RedirectButton Height="30px" FontSize="0.9rem" style="margin-left: auto;margin-right: 10px;" Href="/Account/Logout">
+                    @Localizer.Localize("component.button.logout.text", "Log out")
+                </RedirectButton>
+            </Authorized>
+            <NotAuthorized>
+                <RedirectButton Height="30px" FontSize="0.9rem" style="margin-left: auto;margin-right: 10px;" Href="/Login">
+                    @Localizer.Localize("component.button.login.text", "Log in")
+                </RedirectButton>
+            </NotAuthorized>
+        </AuthorizeView>
+        
+        <hr class="main-layout-header__separator">
     </header>
     
-    <VerticalSpacer Value="75"/> <!-- header is fixed, so we need to add some space -->
-    
-    <main>
+    <main class="main-layout-body">
         @if (!IsReady)
         {
-            <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p>
+            <VerticalSpacer Value="40"/>
+            <LoadingWheel/>
         }
         else
         {
             @Body
         }
     </main>
-
-    @*<footer>
+    
+    @*<footer class="main-layout-footer">
         © 2025 LaM0uette
     </footer>*@
-    
     
     <div id="blazor-error-ui" data-nosnippet>
         An unhandled error has occurred.
         <a href="." class="reload">Reload</a>
         <span class="dismiss">🗙</span>
     </div>
-    
 </div>

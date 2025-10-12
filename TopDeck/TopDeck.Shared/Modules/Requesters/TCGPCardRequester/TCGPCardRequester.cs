@@ -23,12 +23,13 @@ public class TCGPCardRequester : ITCGPCardRequester
 
     #region Methods
 
-    public async Task<List<TCGPCard>> GetTCGPCardsByRequestAsync(TCGPCardsRequest deck, string? cultureOverride = null, CancellationToken ct = default)
+    public async Task<List<TCGPCard>> GetTCGPCardsByRequestAsync(TCGPCardsRequest deck, string? cultureOverride = null, bool loadThumbnail = false, CancellationToken ct = default)
     {
         string culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
         string urlParams = $"?lng={cultureOverride ?? culture}";
+        string loadThumbnailParam = $"&thumbnail={(loadThumbnail ? "true" : "false")}";
         
-        List<TCGPCard> cards = await PostAsync<List<TCGPCard>>($"/cards/cards{urlParams}", deck, ct);
+        List<TCGPCard> cards = await PostAsync<List<TCGPCard>>($"/cards/cards{urlParams}{loadThumbnailParam}", deck, ct);
         
         /*foreach (Card card in cards)
             _cache[card.Id] = card;*/

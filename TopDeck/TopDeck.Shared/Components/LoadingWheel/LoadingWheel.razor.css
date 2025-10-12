@@ -1,0 +1,31 @@
+﻿.loading-wheel {
+    flex-basis: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    padding: 16px 0 24px 0;
+    box-sizing: border-box;
+}
+
+
+    .loading-wheel__wheel {
+        width: 22px;
+        height: 22px;
+        border: 3px solid rgba(0,0,0,0.15);
+        border-top-color: rgba(0,0,0,0.6);
+        border-radius: 50%;
+        animation: td-spin 0.8s linear infinite;
+    }
+
+
+    .loading-wheel__text {
+        font-size: 0.95rem;
+        opacity: 0.8;
+    }
+
+
+@keyframes td-spin {
+    to { transform: rotate(360deg); }
+}

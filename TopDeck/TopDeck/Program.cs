@@ -75,7 +75,8 @@ builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 builder.Services.AddScoped<IAuthUserRequester, FakeAuthUserRequester>();
 builder.Services.AddScoped<IUserService, FakeUserService>();
 
-builder.Services.AddSingleton<IDeckService, FakeDeckService>();
+builder.Services.AddSingleton<IDeckItemService, FakeDeckItemService>();
+builder.Services.AddSingleton<IDeckDetailsService, FakeDeckDetailsService>();
 
 builder.Services.AddScoped<ITCGPCardRequester, TCGPCardRequester.TCGPCardRequester>();
 

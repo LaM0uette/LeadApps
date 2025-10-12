@@ -24,8 +24,6 @@ public class MainLayoutBase : LayoutComponentBase
     
     protected override async Task OnInitializedAsync()
     {
-        await Localizer.InitializeAsync();
-
         if (_authenticationStateTask is not null)
         {
             AuthenticationState state = await _authenticationStateTask;
@@ -37,7 +35,7 @@ public class MainLayoutBase : LayoutComponentBase
 
                 if (user is not null)
                 {
-                    _uiStore.Dispatch(new SetCurrentAuthenticatedUserAction(user.Id, user.OAuthId));
+                    _uiStore.Dispatch(new SetCurrentAuthenticatedUserAction(user.Id, user.Uuid));
                     
                     IsReady = true;
                     StateHasChanged();

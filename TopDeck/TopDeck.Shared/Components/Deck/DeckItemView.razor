@@ -1,0 +1,57 @@
+﻿@namespace TopDeck.Shared.Components
+@inherits DeckItemPresenter
+
+
+<div class="deck-item @GetEnergyClass(DeckItem.EnergyIds)"
+     @onclick="OpenDeckDetails">
+    <div class="deck-item-header">
+        <div class="deck-item-title-panel-container">
+            <TitlePanel Name="@DeckItem.Name"/>
+        </div>
+        
+        <span class="deck-item-code"
+              @onclick:preventDefault 
+              @onclick:stopPropagation
+              @onclick="CopyCode">
+            @CodeText
+        </span>
+    </div>
+    
+    <div class="deck-item-body">
+        @if (IsMobile) { <VerticalSpacer Value="16"/> }
+        else { <VerticalSpacer Value="38"/> }
+        
+        <div class="deck-highlight-cards">
+
+            @if (HighlightedTCGPCards.Count < 2)
+            {
+                <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p> /* TODO: replace this by placeholder img or two first img in deck */
+            }
+            else
+            {
+                <img class="deck-highlight-cards__card" src="@HighlightedTCGPCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                <img class="deck-highlight-cards__card" src="@HighlightedTCGPCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
+            }
+            
+        </div>
+        
+        <VerticalSpacer Value="14"/>
+        
+        <div class="deck-highlight-energies">
+            
+            @foreach (int energyId in DeckItem.EnergyIds)
+            { 
+                <img class="deck-highlight-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
+            }
+            
+        </div>
+    </div>
+    
+    <div class="deck-item-footer">
+        <div class="deck-vote-panel-container">
+            <VotePanel DeckId="DeckItem.Id"
+                       LikeUserUuids="DeckItem.LikeUserUuids.ToList()"
+                       DislikeUserUuids="DeckItem.DislikeUserUuids.ToList()"/>
+        </div>
+    </div>
+</div>
