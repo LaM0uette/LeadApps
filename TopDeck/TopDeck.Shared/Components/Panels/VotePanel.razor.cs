@@ -9,15 +9,16 @@ public class VotePanelBase : ComponentBase
 {
     #region Statements
 
-    [Parameter] public int? DeckId { get; set; }
-    [Parameter] public int? SuggestionId { get; set; }
-    [Parameter] public IReadOnlyCollection<User> UserLikes { get; set; } = [];
-    [Parameter] public IReadOnlyCollection<User> UserDislikes { get; set; } = [];
     [Parameter, EditorRequired] public required string Width { get; set; } = "100px";
     [Parameter, EditorRequired] public required string Height { get; set; } = "26px";
     [Parameter, EditorRequired] public required string FontSize { get; set; } = "0.63em";
     
-    protected string LikeCountFormatted => Format(UserLikes.Count);
+    [Parameter] public int? DeckId { get; set; }
+    [Parameter] public int? SuggestionId { get; set; }
+    [Parameter] public IReadOnlyList<string> LikeUserUuids { get; set; } = [];
+    [Parameter] public IReadOnlyList<string> DislikeUserUuids { get; set; } = [];
+    
+    protected string LikeCountFormatted => Format(LikeUserUuids.Count);
     
     protected bool IsLiked;
     protected bool IsDisliked;
@@ -32,8 +33,8 @@ public class VotePanelBase : ComponentBase
             
             AuthenticatedUserState currentUserState = _uiStore.GetState<AuthenticatedUserState>();
             
-            IsLiked = UserLikes.Any(u => u.Uuid == currentUserState.Uuid);
-            IsDisliked = UserDislikes.Any(u => u.Uuid == currentUserState.Uuid);
+            IsLiked = LikeUserUuids.Any(s => s == currentUserState.Uuid);
+            IsDisliked = DislikeUserUuids.Any(s => s == currentUserState.Uuid);
             
             if (IsLiked && IsDisliked)
                 throw new InvalidOperationException("A user cannot both like and dislike at the same time."); // TODO: Log this instead of throwing
@@ -72,12 +73,12 @@ public class VotePanelBase : ComponentBase
         
         if (IsLiked)
         {
-            UserLikes = UserLikes.Append(new User(userId, "fakeUser", userUuid, "fakeUser", DateTime.Now)).ToList();
-            UserDislikes = UserDislikes.Where(u => u.Id != userId).ToList();
+            LikeUserUuids = LikeUserUuids.Append(userUuid).ToList();
+            DislikeUserUuids = DislikeUserUuids.Where(s => s != userUuid).ToList();
         }
         else
         {
-            UserLikes = UserLikes.Where(u => u.Id != userId).ToList();
+            LikeUserUuids = LikeUserUuids.Where(s => s != userUuid).ToList();
         }
         
         StateHasChanged();
@@ -110,12 +111,12 @@ public class VotePanelBase : ComponentBase
         
         if (IsDisliked)
         {
-            UserDislikes = UserDislikes.Append(new User(userId, "fakeUser", userUuid, "fakeUser", DateTime.Now)).ToList();
-            UserLikes = UserLikes.Where(u => u.Id != userId).ToList();
+            DislikeUserUuids = DislikeUserUuids.Append(userUuid).ToList();
+            LikeUserUuids = LikeUserUuids.Where(s => s != userUuid).ToList();
         }
         else
         {
-            UserDislikes = UserDislikes.Where(u => u.Id != userId).ToList();
+            DislikeUserUuids = DislikeUserUuids.Where(s => s != userUuid).ToList();
         }
         
         StateHasChanged();

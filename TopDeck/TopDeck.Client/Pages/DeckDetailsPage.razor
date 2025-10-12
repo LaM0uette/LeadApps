@@ -20,10 +20,10 @@ else
                 </div>
 
                 <div class="deck-details-vote-panel-container">
-                    <VotePanel DeckId="DeckDetails.Id"
-                               @* UserLikes="Deck.Likes.Select(l => l.User).ToList()" *@
-                               @* UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()" *@
-                               Width="130px" Height="35px" FontSize="1.1em"/>
+                    <VotePanel Width="130px" Height="35px" FontSize="1.1em"
+                               DeckId="DeckDetails.Id"
+                               LikeUserUuids="DeckDetails.LikeUserUuids.ToList()"
+                               DislikeUserUuids="DeckDetails.DislikeUserUuids.ToList()"/>
                 </div>
             </div>
 

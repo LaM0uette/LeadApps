@@ -9,10 +9,10 @@
         <p class="suggestion-button__suggestor">@Suggestion.Suggestor.UserName</p>
                             
         <div class="suggestion-vote-panel-container">
-            <VotePanel SuggestionId="Suggestion.Id"
-                       UserLikes="Suggestion.Likes.Select(l => l.User).ToList()"
-                       UserDislikes="Suggestion.Dislikes.Select(l => l.User).ToList()"
-                       Width="108px" Height="28px" FontSize="0.88em"/>
+            <VotePanel Width="108px" Height="28px" FontSize="0.88em"
+                       SuggestionId="Suggestion.Id"
+                       @* UserLikes="Suggestion.Likes.Select(l => l.User).ToList()" *@
+                       @* UserDislikes="Suggestion.Dislikes.Select(l => l.User).ToList()" *@/>
         </div>
         
         <img class="suggestion-button__arrow @(IsOpen ? "suggestion-button__arrow--expanded" : "")" src="img/arrow-right.svg" alt="arrow"/>

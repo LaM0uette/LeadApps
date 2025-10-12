@@ -50,9 +50,8 @@
     <div class="deck-item-footer">
         <div class="deck-vote-panel-container">
             <VotePanel DeckId="DeckItem.Id"
-                       @* UserLikes="DeckItem.LikeUserUuids.Select(l => l.User).ToList()" *@
-                       @* UserDislikes="DeckItem.DislikeUserUuids.Select(l => l.User).ToList()" *@
-                       />
+                       LikeUserUuids="DeckItem.LikeUserUuids.ToList()"
+                       DislikeUserUuids="DeckItem.DislikeUserUuids.ToList()"/>
         </div>
     </div>
 </div>
