@@ -1,26 +1,26 @@
 ﻿@page "/decks/{DeckCode}"
-@inherits DeckDetailsBase
+@inherits DeckDetailsPagePresenter
 @attribute [AllowAnonymous]
 
-<PageTitle>@(Deck?.Name ?? "Deck")</PageTitle>
+<PageTitle>@(DeckDetails?.Name ?? "Deck")</PageTitle>
 
 
-@if (Deck is null)
+@if (DeckDetails is null)
 {
     <VerticalSpacer Value="40"/>
     <LoadingWheel/>
 }
 else
 {
-    <div class="deck-details-page @GetEnergyClass(Deck.EnergyIds)">
+    <div class="deck-details-page @GetEnergyClass(DeckDetails.EnergyIds)">
         <div class="deck-details-header">
             <div class="deck-details-header-top">
                 <div class="deck-details-title-panel-container">
-                    <TitlePanel Name="@Deck.Name" Width="200px" Height="35px" FontSize="1.1em"/>
+                    <TitlePanel Name="@DeckDetails.Name" Width="200px" Height="35px" FontSize="1.1em"/>
                 </div>
 
                 <div class="deck-details-vote-panel-container">
-                    <VotePanel DeckId="Deck.Id"
+                    <VotePanel DeckId="DeckDetails.Id"
                                @* UserLikes="Deck.Likes.Select(l => l.User).ToList()" *@
                                @* UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()" *@
                                Width="130px" Height="35px" FontSize="1.1em"/>
@@ -48,7 +48,7 @@ else
                 </div>
 
                 <div class="deck-details-energies">
-                    @foreach (int energyId in Deck.EnergyIds)
+                    @foreach (int energyId in DeckDetails.EnergyIds)
                     {
                         <img class="deck-details-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
                     }

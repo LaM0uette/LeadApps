@@ -17,7 +17,7 @@ public class DeckItemRepository : IDeckItemRepository
 
     #endregion
 
-    #region Repository
+    #region IRepository
     
     public DbSet<Deck> DbSet => _db.Decks;
     

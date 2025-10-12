@@ -6,7 +6,7 @@ using TopDeck.Shared.Services;
 
 namespace TopDeck.Client.Pages;
 
-public class DecksPagePresenter : PresenterBase
+public class DeckItemsPagePresenter : PresenterBase
 {
     #region Statements
     
@@ -24,7 +24,7 @@ public class DecksPagePresenter : PresenterBase
     
     [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
     
-    private DotNetObjectReference<DecksPagePresenter>? _objRef;
+    private DotNetObjectReference<DeckItemsPagePresenter>? _objRef;
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

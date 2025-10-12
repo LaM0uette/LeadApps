@@ -17,7 +17,7 @@ public class UserRepository : IUserRepository
 
     #endregion
 
-    #region Repository
+    #region IRepository
     
     public async Task<IReadOnlyList<User>> GetAllAsync(CancellationToken ct = default)
     {

@@ -33,13 +33,13 @@ public static class DeckItemEndpoints
         if (skip < 0) 
             skip = 0;
         
-        IReadOnlyList<DeckItemOutputDTO> items = await service.GetDeckCardPageAsync(skip, take, ct);
+        IReadOnlyList<DeckItemOutputDTO> items = await service.GetPageAsync(skip, take, ct);
         return Results.Ok(items);
     }
     
     private static async Task<IResult> GetByCodeAsync([FromServices] IDeckItemService service, string code, CancellationToken ct)
     {
-        DeckItemOutputDTO? item = await service.GetDeckCardByCodeAsync(code, ct);
+        DeckItemOutputDTO? item = await service.GetByCodeAsync(code, ct);
         return item is null ? Results.NotFound() : Results.Ok(item);
     }
 

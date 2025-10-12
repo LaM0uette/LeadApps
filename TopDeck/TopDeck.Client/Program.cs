@@ -23,6 +23,7 @@ builder.Services.AddScoped<IAuthUserRequester, AuthUserRequester>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IDeckItemService, DeckItemService>();
+builder.Services.AddScoped<IDeckDetailsService, DeckDetailsService>();
 builder.Services.AddScoped<IDeckReactionService, DeckReactionService>();
 
 builder.Services.AddScoped<ITCGPCardRequester, TCGPCardRequester.TCGPCardRequester>();

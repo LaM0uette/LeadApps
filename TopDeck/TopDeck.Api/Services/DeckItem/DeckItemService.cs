@@ -24,7 +24,7 @@ public class DeckItemService : IDeckItemService
 
     #region IService
     
-    public async Task<IReadOnlyList<DeckItemOutputDTO>> GetDeckCardPageAsync(int skip, int take, CancellationToken ct = default)
+    public async Task<IReadOnlyList<DeckItemOutputDTO>> GetPageAsync(int skip, int take, CancellationToken ct = default)
     {
         return await _repo.DbSet
             .AsNoTracking().AsSplitQuery()
@@ -34,7 +34,7 @@ public class DeckItemService : IDeckItemService
             .ToListAsync(ct);
     }
     
-    public async Task<DeckItemOutputDTO?> GetDeckCardByCodeAsync(string code, CancellationToken ct = default)
+    public async Task<DeckItemOutputDTO?> GetByCodeAsync(string code, CancellationToken ct = default)
     {
         return await _repo.DbSet
             .AsNoTracking()
@@ -60,7 +60,7 @@ public class DeckItemService : IDeckItemService
         
         Deck created = await _repo.AddAsync(entity, ct);
         created.Creator = creator; // Set the navigation property for mapping
-        return created.MapToDTO();
+        return DeckItemMapper.MapToDTO(created);
     }
 
     public async Task<DeckItemOutputDTO?> UpdateAsync(int id, DeckItemInputDTO dto, CancellationToken ct = default)
@@ -82,7 +82,7 @@ public class DeckItemService : IDeckItemService
 
         existing.UpdateEntity(dto);
         Deck updated = await _repo.UpdateAsync(existing, ct);
-        return updated.MapToDTO();
+        return DeckItemMapper.MapToDTO(updated);
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)

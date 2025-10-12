@@ -8,7 +8,7 @@ using TopDeck.Shared.Services;
 
 namespace TopDeck.Client.Pages;
 
-public class DeckDetailsBase : PresenterBase
+public class DeckDetailsPagePresenter : PresenterBase
 {
     #region Enums
 
@@ -31,7 +31,7 @@ public class DeckDetailsBase : PresenterBase
 
     [Parameter, EditorRequired] public required string DeckCode { get; set; }
 
-    protected DeckItem? Deck;
+    protected DeckDetails? DeckDetails;
     protected IReadOnlyList<TCGPCard> TCGPCards { get; set; } = [];
     protected IReadOnlyList<TCGPCard> TCGPHighlightedCards { get; set; } = [];
     
@@ -54,30 +54,32 @@ public class DeckDetailsBase : PresenterBase
     
     [Inject] private IJSRuntime _js { get; set; } = null!;
     [Inject] private NavigationManager _navigationManager { get; set; } = null!;
-    [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
+    [Inject] private IDeckDetailsService _deckDetailsService { get; set; } = null!;
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
 
     protected override async Task OnParametersSetAsync()
     {
-        DeckItem? deck = await _deckItemService.GetByCodeAsync(DeckCode);
+        DeckDetails? deckDetails = await _deckDetailsService.GetByCodeAsync(DeckCode);
         
-        if (deck == null)
+        if (deckDetails == null)
         {
             //_navigationManager.NavigateTo("/", true);
             return;
         }
         
-        Deck = deck;
+        DeckDetails = deckDetails;
         
-        // TODO: creer un service DeckDetails
-        // List<TCGPCardRequest> tcgpCardRequests = [];
-        // tcgpCardRequests.AddRange(Deck.Cards
-        //     .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
-        // );
-        //
-        // TCGPCardsRequest deckRequest = new(tcgpCardRequests);
-        // TCGPCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest, loadThumbnail:true);
-        // TCGPHighlightedCards = TCGPCards.Where(c => Deck.Cards.Any(dc => dc.IsHighlighted && dc.CollectionCode == c.Collection.Code && dc.CollectionNumber == c.CollectionNumber)).ToList();
+        List<TCGPCardRequest> tcgpCardRequests = DeckDetails.Cards
+            .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
+            .ToList();
+        
+        TCGPCardsRequest deckRequest = new(tcgpCardRequests);
+        TCGPCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest, loadThumbnail:true);
+        
+        TCGPHighlightedCards = TCGPCards
+            .Where(c => DeckDetails.HighlightedCards
+                .Any(dc => dc.CollectionCode == c.Collection.Code && dc.CollectionNumber == c.CollectionNumber))
+            .ToList();
     }
 
     #endregion
@@ -92,15 +94,15 @@ public class DeckDetailsBase : PresenterBase
     
     protected async Task CopyCode()
     {
-        if (Deck == null) 
+        if (DeckDetails == null) 
             return;
         
-        await _js.InvokeVoidAsync("navigator.clipboard.writeText", Deck.Code);
+        await _js.InvokeVoidAsync("navigator.clipboard.writeText", DeckDetails.Code);
         DeckCode = Localizer.Localize("feedback.text.copied");
         StateHasChanged();
 
         await Task.Delay(1500);
-        DeckCode = Deck.Code;
+        DeckCode = DeckDetails.Code;
         StateHasChanged();
     }
     

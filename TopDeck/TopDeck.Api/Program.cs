@@ -70,6 +70,7 @@ builder.Services.AddScoped<IDeckLikeRepository, DeckLikeRepository>();
 builder.Services.AddScoped<IDeckSuggestionLikeRepository, DeckSuggestionLikeRepository>();
 builder.Services.AddScoped<IDeckDislikeRepository, DeckDislikeRepository>();
 builder.Services.AddScoped<IDeckSuggestionDislikeRepository, DeckSuggestionDislikeRepository>();
+builder.Services.AddScoped<IDeckDetailsRepository, DeckDetailsRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDeckItemService, DeckItemService>();
@@ -78,6 +79,7 @@ builder.Services.AddScoped<IDeckLikeService, DeckLikeService>();
 builder.Services.AddScoped<IDeckSuggestionLikeService, DeckSuggestionLikeService>();
 builder.Services.AddScoped<IDeckDislikeService, DeckDislikeService>();
 builder.Services.AddScoped<IDeckSuggestionDislikeService, DeckSuggestionDislikeService>();
+builder.Services.AddScoped<IDeckDetailsService, DeckDetailsService>();
 
 WebApplication app = builder.Build();
 
@@ -105,5 +107,6 @@ app.MapDeckLikesEndpoints();
 app.MapDeckSuggestionLikesEndpoints();
 app.MapDeckDislikesEndpoints();
 app.MapDeckSuggestionDislikesEndpoints();
+app.MapDeckDetailsEndpoints();
 
 app.Run();
