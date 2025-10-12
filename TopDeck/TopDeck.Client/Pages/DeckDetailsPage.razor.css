@@ -14,7 +14,21 @@
 
 .deck-details-right-side {
     display: none;
+
+    width: 95%;
+
+    padding: 140px 0 65px 0;
+    box-sizing: border-box;
+
+    overflow: hidden;
 }
+
+    .deck-details-right-side__title {
+        width: 100%;
+        font-family: var(--font-extra-bold), sans-serif;
+        font-size: 2em;
+        text-align: center;
+    }
 
 
 .deck-details-page {
@@ -356,20 +370,19 @@
 
 @media (min-width: 1366px) {
     .deck-details-page-container {
-        grid-template-columns: 1fr 50fr 1fr;
+        grid-template-columns: 0.9fr 2fr 0.9fr;
+        gap: 25px;
     }
     
     .deck-details-left-side {
-        display: flex;
+        display: inline;
     }
 
     .deck-details-right-side {
-        display: flex;
+        display: inline;
     }
     
     .deck-details-page {
-        width: 48%;
-        margin: 0 auto;
         outline: 1px solid var(--color-outline);
     }
         .deck-details-page::before {

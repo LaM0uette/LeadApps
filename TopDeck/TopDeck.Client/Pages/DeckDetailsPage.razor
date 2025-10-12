@@ -147,7 +147,32 @@ else
             }
         </div>
         
-        <div class="deck-details-right-side"></div>
+        <div class="deck-details-right-side">
+            @if (!IsMobile)
+            {
+                <h3 class="deck-details-right-side__title">@Localizer.Localize("page.deckDetail.suggestion.title", "Suggestions")</h3>
+                <VerticalSpacer Value="25"/>
+                
+                <div class="deck-details-suggestions">
+                    @if (DeckDetails.Suggestions.Count <= 0)
+                    {
+                        <p class="deck-details-suggestions__no-suggestions-text">@Localizer.Localize("page.deckDetail.noSuggestions.text", "No suggestions available for this deck.")</p>
+                    }
+                    else
+                    {
+                        foreach (DeckDetailsSuggestion suggestion in DeckDetails.Suggestions)
+                        {
+                            if (suggestion.AddedCards.Count == 0 && suggestion.RemovedCards.Count == 0)
+                                continue;
+                            
+                            <SuggestionAccordion Suggestion="suggestion"/>
+                        }
+                        
+                        <VerticalSpacer Value="80"/>
+                    }
+                </div>
+            }
+        </div>
     </div>
 }
 

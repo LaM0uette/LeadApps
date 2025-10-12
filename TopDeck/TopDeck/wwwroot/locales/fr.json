@@ -13,5 +13,6 @@
   "feedback.text.notFound": "Introuvable",
   "page.deckDetail.noSuggestions.text": "Aucune suggestion disponible pour ce deck.",
   "page.deckDetail.showAll.text": "Voir tout",
+  "page.deckDetail.suggestion.title": "Suggestions :",
   "page.decksView.noCards.text": "Aucune carte trouvée."
 }
