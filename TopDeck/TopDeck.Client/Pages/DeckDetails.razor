@@ -21,8 +21,8 @@ else
 
                 <div class="deck-details-vote-panel-container">
                     <VotePanel DeckId="Deck.Id"
-                               UserLikes="Deck.Likes.Select(l => l.User).ToList()"
-                               UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"
+                               @* UserLikes="Deck.Likes.Select(l => l.User).ToList()" *@
+                               @* UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()" *@
                                Width="130px" Height="35px" FontSize="1.1em"/>
                 </div>
             </div>
@@ -35,15 +35,15 @@ else
 
             <div class="deck-details-highlight">
                 <div class="deck-details-highlighted-cards">
-                    @if (HighlightedCards.Count < 3)
+                    @if (TCGPHighlightedCards.Count < 3)
                     {
                         <LoadingWheel/> /* TODO: replace this by placeholder img or two first img in deck */
                     }
                     else
                     {
-                        <img class="deck-details-highlighted-cards__card" src="@HighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
-                        <img class="deck-details-highlighted-cards__card" src="@HighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
-                        <img class="deck-details-highlighted-cards__card" src="@HighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>
                     }
                 </div>
 
@@ -62,13 +62,13 @@ else
         @if (CurrentTab is Tab.Cards)
         {
             <div class="deck-details-cards">
-                @if (Cards.Count <= 0)
+                @if (TCGPCards.Count <= 0)
                 {
                     <LoadingWheel/>
                 }
                 else
                 {
-                    foreach (TCGPCard card in Cards)
+                    foreach (TCGPCard card in TCGPCards)
                     {
                         <img class="deck-details-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
                     }
@@ -78,13 +78,13 @@ else
         else if (CurrentTab is Tab.Overview)
         {
             <div class="deck-details-overview">
-                @if (Cards.Count <= 0)
+                @if (TCGPCards.Count <= 0)
                 {
                     <LoadingWheel/>
                 }
                 else
                 {
-                    foreach (TCGPCard card in Cards)
+                    foreach (TCGPCard card in TCGPCards)
                     {
                         <img class="deck-details-overview__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
                     }
@@ -94,7 +94,7 @@ else
         else if (CurrentTab is Tab.Suggestions)
         {
             <div class="deck-details-suggestions">
-                @if (Deck.Suggestions.Count <= 0)
+                @*@if (Deck.Suggestions.Count <= 0)
                 {
                     <p class="deck-details-suggestions__no-suggestions-text">@Localizer.Localize("page.deckDetail.noSuggestions.text", "No suggestions available for this deck.")</p>
                 }
@@ -109,7 +109,7 @@ else
                     }
                     
                     <VerticalSpacer Value="80"/>
-                }
+                }*@
             </div>
         }
         

@@ -10,11 +10,10 @@ public class DeckItemPresenter : PresenterBase
 {
     #region Statements
 
-    [Parameter, EditorRequired] public required Deck Deck { get; set; }
+    [Parameter, EditorRequired] public required DeckItem DeckItem { get; set; }
     
-    protected IReadOnlyList<TCGPCard> HighlightedCards { get; set; } = [];
-
-    protected string DeckCode = string.Empty;
+    protected string CodeText = string.Empty;
+    protected IReadOnlyList<TCGPCard> HighlightedTCGPCards { get; private set; } = [];
     
     protected readonly Dictionary<int, string> EnergyTypes = new()
     {
@@ -33,23 +32,20 @@ public class DeckItemPresenter : PresenterBase
     [Inject] private IJSRuntime _js { get; set; } = null!;
     [Inject] private NavigationManager _navigationManager { get; set; } = null!;
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
-    
 
     protected override void OnParametersSet()
     {
-        DeckCode = Deck.Code;
+        CodeText = DeckItem.Code;
     }
     
     protected override async Task OnInitializedAsync()
     {
-        List<TCGPCardRequest> cardRequests = [];
-        cardRequests.AddRange(Deck.Cards
-            .Where(c => c.IsHighlighted)
-            .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
-        );
+        List<TCGPCardRequest> tcgpCardRequests = DeckItem.HighlightedCards
+            .Select(c => new TCGPCardRequest(c.CollectionCode, c.CollectionNumber))
+            .ToList();
 
-        TCGPCardsRequest deckRequest = new(cardRequests);
-        HighlightedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest, loadThumbnail:true);
+        TCGPCardsRequest tcgpCardsRequest = new(tcgpCardRequests);
+        HighlightedTCGPCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(tcgpCardsRequest, loadThumbnail:true);
     }
 
     #endregion
@@ -64,18 +60,18 @@ public class DeckItemPresenter : PresenterBase
     
     protected async Task CopyCode()
     {
-        await _js.InvokeVoidAsync("navigator.clipboard.writeText", Deck.Code);
-        DeckCode = Localizer.Localize("feedback.text.copied");
+        await _js.InvokeVoidAsync("navigator.clipboard.writeText", DeckItem.Code);
+        CodeText = Localizer.Localize("feedback.text.copied");
         StateHasChanged();
 
         await Task.Delay(1500);
-        DeckCode = Deck.Code;
+        CodeText = DeckItem.Code;
         StateHasChanged();
     }
     
     protected void OpenDeckDetails()
     {
-        string url = $"/decks/{Deck.Code}";
+        string url = $"/decks/{DeckItem.Code}";
         _navigationManager.NavigateTo(url);
     }
 

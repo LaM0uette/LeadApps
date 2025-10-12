@@ -31,9 +31,9 @@ public class DeckDetailsBase : PresenterBase
 
     [Parameter, EditorRequired] public required string DeckCode { get; set; }
 
-    protected Deck? Deck;
-    protected IReadOnlyList<TCGPCard> Cards { get; set; } = [];
-    protected IReadOnlyList<TCGPCard> HighlightedCards { get; set; } = [];
+    protected DeckItem? Deck;
+    protected IReadOnlyList<TCGPCard> TCGPCards { get; set; } = [];
+    protected IReadOnlyList<TCGPCard> TCGPHighlightedCards { get; set; } = [];
     
     protected readonly Dictionary<int, string> EnergyTypes = new()
     {
@@ -59,7 +59,7 @@ public class DeckDetailsBase : PresenterBase
 
     protected override async Task OnParametersSetAsync()
     {
-        Deck? deck = await _deckItemService.GetByCodeAsync(DeckCode);
+        DeckItem? deck = await _deckItemService.GetByCodeAsync(DeckCode);
         
         if (deck == null)
         {
@@ -69,14 +69,15 @@ public class DeckDetailsBase : PresenterBase
         
         Deck = deck;
         
-        List<TCGPCardRequest> cardRequests = [];
-        cardRequests.AddRange(Deck.Cards
-            .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
-        );
-
-        TCGPCardsRequest deckRequest = new(cardRequests);
-        Cards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest, loadThumbnail:true);
-        HighlightedCards = Cards.Where(c => Deck.Cards.Any(dc => dc.IsHighlighted && dc.CollectionCode == c.Collection.Code && dc.CollectionNumber == c.CollectionNumber)).ToList();
+        // TODO: creer un service DeckDetails
+        // List<TCGPCardRequest> tcgpCardRequests = [];
+        // tcgpCardRequests.AddRange(Deck.Cards
+        //     .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
+        // );
+        //
+        // TCGPCardsRequest deckRequest = new(tcgpCardRequests);
+        // TCGPCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest, loadThumbnail:true);
+        // TCGPHighlightedCards = TCGPCards.Where(c => Deck.Cards.Any(dc => dc.IsHighlighted && dc.CollectionCode == c.Collection.Code && dc.CollectionNumber == c.CollectionNumber)).ToList();
     }
 
     #endregion

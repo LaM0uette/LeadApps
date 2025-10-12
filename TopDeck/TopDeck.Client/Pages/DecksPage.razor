@@ -8,15 +8,15 @@
 
 <div class="decks-page-page">
     <div id="deck-scroll" class="deck-items">
-        @if (Decks.Count <= 0 && !HasMore)
+        @if (DeckItems.Count <= 0 && !HasMore)
         {
             <p class="deck-items__no-cards-text">@Localizer.Localize("page.decksView.noCards.text", "No cards found.")</p>
         }
         else
         {
-            foreach (Deck deck in Decks)
+            foreach (DeckItem deckItem in DeckItems)
             {
-                <DeckItem Deck="deck"/>
+                <DeckItemView DeckItem="@deckItem"/>
             }
         }
         

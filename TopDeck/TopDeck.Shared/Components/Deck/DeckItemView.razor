@@ -2,18 +2,18 @@
 @inherits DeckItemPresenter
 
 
-<div class="deck-item @GetEnergyClass(Deck.EnergyIds)"
+<div class="deck-item @GetEnergyClass(DeckItem.EnergyIds)"
      @onclick="OpenDeckDetails">
     <div class="deck-item-header">
         <div class="deck-item-title-panel-container">
-            <TitlePanel Name="@Deck.Name"/>
+            <TitlePanel Name="@DeckItem.Name"/>
         </div>
         
         <span class="deck-item-code"
               @onclick:preventDefault 
               @onclick:stopPropagation
               @onclick="CopyCode">
-            @DeckCode
+            @CodeText
         </span>
     </div>
     
@@ -23,14 +23,14 @@
         
         <div class="deck-highlight-cards">
 
-            @if (HighlightedCards.Count < 2)
+            @if (HighlightedTCGPCards.Count < 2)
             {
                 <p>@Localizer.Localize("feedback.text.loading", "Loading...")</p> /* TODO: replace this by placeholder img or two first img in deck */
             }
             else
             {
-                <img class="deck-highlight-cards__card" src="@HighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
-                <img class="deck-highlight-cards__card" src="@HighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
+                <img class="deck-highlight-cards__card" src="@HighlightedTCGPCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                <img class="deck-highlight-cards__card" src="@HighlightedTCGPCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
             }
             
         </div>
@@ -39,7 +39,7 @@
         
         <div class="deck-highlight-energies">
             
-            @foreach (int energyId in Deck.EnergyIds)
+            @foreach (int energyId in DeckItem.EnergyIds)
             { 
                 <img class="deck-highlight-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
             }
@@ -49,9 +49,10 @@
     
     <div class="deck-item-footer">
         <div class="deck-vote-panel-container">
-            <VotePanel DeckId="Deck.Id"
-                       UserLikes="Deck.Likes.Select(l => l.User).ToList()"
-                       UserDislikes="Deck.Dislikes.Select(l => l.User).ToList()"/>
+            <VotePanel DeckId="DeckItem.Id"
+                       @* UserLikes="DeckItem.LikeUserUuids.Select(l => l.User).ToList()" *@
+                       @* UserDislikes="DeckItem.DislikeUserUuids.Select(l => l.User).ToList()" *@
+                       />
         </div>
     </div>
 </div>

@@ -10,7 +10,7 @@ public class DecksPagePresenter : PresenterBase
 {
     #region Statements
     
-    protected List<Deck> Decks { get; } = [];
+    protected List<DeckItem> DeckItems { get; } = [];
     protected bool IsLoading { get; private set; }
     protected bool HasMore { get; private set; } = true;
 
@@ -83,7 +83,7 @@ public class DecksPagePresenter : PresenterBase
                 int iterations = 0;
                 const int maxIterations = 5;
                 
-                while (Decks.Count < targetCount && HasMore && iterations < maxIterations)
+                while (DeckItems.Count < targetCount && HasMore && iterations < maxIterations)
                 {
                     await LoadMoreAsync();
                     await InvokeAsync(StateHasChanged);
@@ -123,11 +123,11 @@ public class DecksPagePresenter : PresenterBase
             // Ensure the UI has a chance to render the loader before starting the network call
             await Task.Yield();
             
-            IReadOnlyList<Deck> page = await _deckItemService.GetPageAsync(_skip, _take);
+            IReadOnlyList<DeckItem> page = await _deckItemService.GetPageAsync(_skip, _take);
             
             if (page.Count > 0)
             {
-                Decks.AddRange(page);
+                DeckItems.AddRange(page);
                 
                 _skip += page.Count;
                 

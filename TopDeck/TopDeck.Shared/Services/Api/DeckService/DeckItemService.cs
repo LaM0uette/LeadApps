@@ -14,30 +14,28 @@ public class DeckItemService : ApiService, IDeckItemService
 
     #region ApiService
 
-    public async Task<IReadOnlyList<Deck>> GetPageAsync(int skip, int take, CancellationToken ct = default)
+    public async Task<IReadOnlyList<DeckItem>> GetPageAsync(int skip, int take, CancellationToken ct = default)
     {
         string url = $"{_route}/page?skip={skip}&take={take}";
-        IReadOnlyList<DeckOutputDTOold>? result = await GetJsonAsync<IReadOnlyList<DeckOutputDTOold>>(url, ct);
-        List<Deck> list = result?.Select(d => d.ToDomain()).ToList() ?? [];
-        return list;
+        IReadOnlyList<DeckItemOutputDTO>? result = await GetJsonAsync<IReadOnlyList<DeckItemOutputDTO>>(url, ct);
+        return result?.ToDomain() ?? [];
     }
     
-    public async Task<Deck?> GetByCodeAsync(string code, CancellationToken ct = default)
+    public async Task<DeckItem?> GetByCodeAsync(string code, CancellationToken ct = default)
     {
-        DeckOutputDTOold? dto = await GetJsonAsync<DeckOutputDTOold>($"{_route}/deckItem/{code}", ct);
+        DeckItemOutputDTO? dto = await GetJsonAsync<DeckItemOutputDTO>($"{_route}/deckItem/{code}", ct);
         return dto?.ToDomain();
     }
 
-    public async Task<Deck> CreateAsync(DeckItemInputDTO dto, CancellationToken ct = default)
+    public async Task<DeckItem> CreateAsync(DeckItemInputDTO dto, CancellationToken ct = default)
     {
-        DeckOutputDTOold? created = await PostJsonAsync<DeckItemInputDTO, DeckOutputDTOold>(_route, dto, ct);
-        Deck? deck = created?.ToDomain();
-        return deck ?? throw new InvalidOperationException("Unexpected null response when creating deck.");
+        DeckItemOutputDTO? created = await PostJsonAsync<DeckItemInputDTO, DeckItemOutputDTO>(_route, dto, ct);
+        return created?.ToDomain() ?? throw new InvalidOperationException("Unexpected null response when creating deck.");
     }
 
-    public async Task<Deck?> UpdateAsync(int id, DeckItemInputDTO dto, CancellationToken ct = default)
+    public async Task<DeckItem?> UpdateAsync(int id, DeckItemInputDTO dto, CancellationToken ct = default)
     {
-        DeckOutputDTOold? updated = await PutJsonAsync<DeckItemInputDTO, DeckOutputDTOold>($"{_route}/{id}", dto, ct);
+        DeckItemOutputDTO? updated = await PutJsonAsync<DeckItemInputDTO, DeckItemOutputDTO>($"{_route}/{id}", dto, ct);
         return updated?.ToDomain();
     }
 
