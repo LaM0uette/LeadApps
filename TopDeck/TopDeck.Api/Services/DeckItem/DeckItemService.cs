@@ -28,7 +28,7 @@ public class DeckItemService : IDeckItemService
     {
         return await _repo.DbSet
             .AsNoTracking().AsSplitQuery()
-            .OrderBy(d => d.CreatedAt).ThenBy(d => d.Id)
+            .OrderByDescending(d => d.UpdatedAt).ThenByDescending(d => d.CreatedAt)
             .Skip(skip).Take(take)
             .Select(DeckItemMapper.Expression)
             .ToListAsync(ct);
