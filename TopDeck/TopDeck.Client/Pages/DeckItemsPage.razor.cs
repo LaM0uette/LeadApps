@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.JSInterop;
 using TopDeck.Domain.Models;
 using TopDeck.Shared.Components;
@@ -11,72 +10,57 @@ public class DeckItemsPagePresenter : PresenterBase
 {
     #region Statements
     
+    private const int MAX_PAGE_SIZE = 100;
+    private const int DEFAULT_PAGE_SIZE = 40;
+    
+    [SupplyParameterFromQuery] public int Page { get; set; } = 1;
+    [SupplyParameterFromQuery] public int Size { get; set; } = DEFAULT_PAGE_SIZE;
+     
     protected List<DeckItem> DeckItems { get; } = [];
-    protected bool IsLoading { get; private set; }
-
-    // Pagination state
-    protected int CurrentPage { get; private set; } = 1; // 1-based
-    protected int PageSize { get; private set; } = 30;
     protected bool HasNextPage { get; private set; }
+    protected bool IsLoading { get; private set; }
 
     [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
     [Inject] private NavigationManager _nav { get; set; } = null!;
 
+    private DotNetObjectReference<DeckItemsPagePresenter>? _presenterRef;
     private bool _restoreScrollPending;
-    private bool _suppressSaveOnNavigation;
-    private string ScrollKey => $"decks:p{CurrentPage}:s{PageSize}";
-
-    private DotNetObjectReference<DeckItemsPagePresenter>? _objRef;
-
-    // Legacy fields kept to avoid breaking references while migrating away from infinite scroll
-    private bool _jsReady;
-    private bool _prefillInProgress;
-    private long _lastLoadTicks;
-    private bool _pendingBottomTrigger;
-    private int _activeLoads;
-    private int _skip;
-    private const int _take = 30;
+    private string _scrollKey => $"decks:p{Page}:s{Size}";
     
     protected override async Task OnParametersSetAsync()
     {
-        await LoadFromUriAsync(_nav.Uri);
-        _restoreScrollPending = true;
-    }
-    
-    protected override Task OnInitializedAsync()
-    {
-        _nav.LocationChanged += OnLocationChanged;
-        return base.OnInitializedAsync();
-    }
-    
-    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
-    {
-        _ = InvokeAsync(async () =>
+        if (Page <= 0)
         {
-            await LoadFromUriAsync(e.Location);
-            _restoreScrollPending = true;
-            StateHasChanged();
-        });
-    }
-    
-    private Task LoadFromUriAsync(string location)
-    {
-        Uri uri = new(location);
-        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-        if (int.TryParse(query.Get("page"), out int p) && p > 0) CurrentPage = p; else CurrentPage = 1;
-        if (int.TryParse(query.Get("size"), out int s) && s > 0 && s <= 100) PageSize = s; else PageSize = 30;
-        return LoadPageAsync();
+            Page = 1;
+        }
+        
+        if (Size is <= 0 or > MAX_PAGE_SIZE)
+        {
+            Size = DEFAULT_PAGE_SIZE;
+        }
+
+        await LoadPageAsync();
+        _restoreScrollPending = true;
     }
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _objRef = DotNetObjectReference.Create(this);
+            _presenterRef = DotNetObjectReference.Create(this);
         }
+        
         if (_restoreScrollPending && JS is IJSInProcessRuntime)
         {
-            try{ await JS.InvokeVoidAsync("TopDeck.restoreScroll", ScrollKey, "#deck-scroll"); } catch {}
+            try
+            {
+                await JS.InvokeVoidAsync("TopDeck.restoreScroll", _scrollKey, "#deck-scroll");
+            }
+            catch
+            {
+                // ignored
+            }
+            
             _restoreScrollPending = false;
         }
     }
@@ -84,40 +68,36 @@ public class DeckItemsPagePresenter : PresenterBase
     #endregion
 
     #region Methods
-
-    [JSInvokable]
-    public Task OnNearBottom()
+    
+    protected void PrevPage()
     {
-        // Infinite scroll disabled in favor of pagination
-        return Task.CompletedTask;
+        if (Page <= 1) return;
+        NavigateToPage(Page - 1);
+    }
+
+    protected void NextPage()
+    {
+        if (!HasNextPage) return;
+        NavigateToPage(Page + 1);
     }
     
 
-    private Task EnsureInitialScrollAsync()
-    {
-        // Infinite scroll removed; nothing to ensure
-        return Task.CompletedTask;
-    }
-    
-    private Task LoadMoreAsync()
-    {
-        // Infinite scroll removed
-        return Task.CompletedTask;
-    }
-
-    // Pagination helpers
     private async Task LoadPageAsync()
     {
         IsLoading = true;
         DeckItems.Clear();
         StateHasChanged();
+        
         try
         {
-            int skip = (CurrentPage - 1) * PageSize;
-            if (skip < 0) skip = 0;
-            IReadOnlyList<DeckItem> items = await _deckItemService.GetPageAsync(skip, PageSize);
+            int skip = (Page - 1) * Size;
+            
+            if (skip < 0) 
+                skip = 0;
+            
+            IReadOnlyList<DeckItem> items = await _deckItemService.GetPageAsync(skip, Size);
             DeckItems.AddRange(items);
-            HasNextPage = items.Count == PageSize;
+            HasNextPage = items.Count == Size;
         }
         finally
         {
@@ -126,45 +106,27 @@ public class DeckItemsPagePresenter : PresenterBase
         }
     }
 
-    protected void PrevPage()
-    {
-        if (CurrentPage <= 1) return;
-        NavigateToPage(CurrentPage - 1);
-    }
-
-    protected void NextPage()
-    {
-        if (!HasNextPage) return;
-        NavigateToPage(CurrentPage + 1);
-    }
-
-    protected void GoToPage(int page)
-    {
-        if (page < 1) page = 1;
-        NavigateToPage(page);
-    }
-
     private void NavigateToPage(int page)
     {
-        var uri = new Uri(_nav.Uri);
-        var basePath = uri.GetLeftPart(UriPartial.Path);
-        var target = $"{basePath}?page={page}&size={PageSize}";
+        Uri uri = new(_nav.Uri);
+        string basePath = uri.GetLeftPart(UriPartial.Path);
+        string target = $"{basePath}?page={page}&size={Size}";
+        
         _nav.NavigateTo(target);
     }
 
-    private void SaveScroll()
+    private async Task SaveScroll()
     {
-        if (JS is IJSInProcessRuntime)
+        if (JS is not IJSInProcessRuntime) 
+            return;
+        
+        try
         {
-            try { JS.InvokeVoidAsync("TopDeck.saveScroll", ScrollKey, "#deck-scroll"); } catch {}
+            await JS.InvokeVoidAsync("TopDeck.saveScroll", _scrollKey, "#deck-scroll");
         }
-    }
-
-    private void ClearScroll()
-    {
-        if (JS is IJSInProcessRuntime)
+        catch
         {
-            try { JS.InvokeVoidAsync("TopDeck.clearScroll", ScrollKey); } catch {}
+            // ignored
         }
     }
     
@@ -174,36 +136,27 @@ public class DeckItemsPagePresenter : PresenterBase
 
     public override async ValueTask DisposeAsync()
     {
-        // Save scroll position if we navigate away (but not during page change where we reset)
         try
         {
-            // Always save the current page's scroll position on navigation
-            SaveScroll();
-        }
-        catch { }
-
-        await base.DisposeAsync();
-        
-        try
-        {
-            _nav.LocationChanged -= OnLocationChanged;
-        }
-        catch { }
-        
-        try
-        {
-            if (_jsReady)
-            {
-                await JS.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll"); 
-                
-            }
+            await SaveScroll();
         }
         catch
         {
             // ignored
         }
 
-        _objRef?.Dispose();
+        await base.DisposeAsync();
+        
+        try
+        {
+            await JS.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll"); 
+        }
+        catch
+        {
+            // ignored
+        }
+
+        _presenterRef?.Dispose();
         GC.SuppressFinalize(this);
     }
 
