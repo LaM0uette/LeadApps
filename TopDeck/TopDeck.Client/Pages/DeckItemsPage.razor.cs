@@ -26,6 +26,9 @@ public class DeckItemsPagePresenter : PresenterBase
     private DotNetObjectReference<DeckItemsPagePresenter>? _presenterRef;
     private bool _restoreScrollPending;
     private string _scrollKey => $"decks:p{Page}:s{Size}";
+
+    private int _totalCount;
+    private int MaxPage => Math.Max(1, (int)Math.Ceiling(_totalCount / (double)Size));
     
     protected override async Task OnParametersSetAsync()
     {
@@ -37,6 +40,16 @@ public class DeckItemsPagePresenter : PresenterBase
         if (Size is <= 0 or > MAX_PAGE_SIZE)
         {
             Size = DEFAULT_PAGE_SIZE;
+        }
+
+        // Get total count to compute max page, then clamp
+        _totalCount = await _deckItemService.GetTotalCountAsync();
+        int maxPage = MaxPage;
+        if (Page > maxPage)
+        {
+            Page = maxPage;
+            NavigateToPage(Page);
+            return;
         }
 
         await LoadPageAsync();
@@ -71,12 +84,15 @@ public class DeckItemsPagePresenter : PresenterBase
     
     protected void PrevPage()
     {
+        if (IsLoading) return;
         if (Page <= 1) return;
         NavigateToPage(Page - 1);
     }
 
     protected void NextPage()
     {
+        if (IsLoading) return;
+        if (Page >= MaxPage) return;
         if (!HasNextPage) return;
         NavigateToPage(Page + 1);
     }
@@ -97,7 +113,7 @@ public class DeckItemsPagePresenter : PresenterBase
             
             IReadOnlyList<DeckItem> items = await _deckItemService.GetPageAsync(skip, Size);
             DeckItems.AddRange(items);
-            HasNextPage = items.Count == Size;
+            HasNextPage = Page < MaxPage;
         }
         finally
         {

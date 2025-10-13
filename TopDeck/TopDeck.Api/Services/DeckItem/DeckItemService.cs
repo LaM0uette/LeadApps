@@ -90,6 +90,11 @@ public class DeckItemService : IDeckItemService
         return await _repo.DeleteAsync(id, ct);
     }
 
+    public async Task<int> GetTotalCountAsync(CancellationToken ct = default)
+    {
+        return await _repo.CountAsync(ct);
+    }
+
     #endregion
 
     #region Methods
