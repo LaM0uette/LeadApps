@@ -76,9 +76,8 @@ builder.Services.AddScoped<IAuthUserRequester, FakeAuthUserRequester>();
 builder.Services.AddScoped<IUserService, FakeUserService>();
 
 // Use real API-backed services for prerendering/SSR
-builder.Services.AddScoped<IDeckItemService, DeckItemService>();
-builder.Services.AddScoped<IDeckDetailsService, DeckDetailsService>();
-builder.Services.AddScoped<IVoteService, VoteService>();
+builder.Services.AddSingleton<IDeckItemService, FakeDeckItemService>();
+builder.Services.AddSingleton<IDeckDetailsService, FakeDeckDetailsService>();
 
 builder.Services.AddScoped<ITCGPCardRequester, TCGPCardRequester.TCGPCardRequester>();
 
