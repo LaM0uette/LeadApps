@@ -12,7 +12,7 @@ public class FakeDeckItemService : IDeckItemService
         return Task.FromResult(result);
     }
 
-    public Task<int> GetTotalCountAsync(CancellationToken ct = default)
+    public Task<int> GetDeckItemCountAsync(CancellationToken ct = default)
     {
         return Task.FromResult(0);
     }

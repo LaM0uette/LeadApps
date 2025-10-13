@@ -20,12 +20,6 @@ public class DeckItemService : ApiService, IDeckItemService
         IReadOnlyList<DeckItemOutputDTO>? result = await GetJsonAsync<IReadOnlyList<DeckItemOutputDTO>>(url, ct);
         return result?.ToDomain() ?? [];
     }
-
-    public async Task<int> GetTotalCountAsync(CancellationToken ct = default)
-    {
-        int? count = await GetJsonAsync<int>($"{_route}/count", ct);
-        return count ?? 0;
-    }
     
     public async Task<DeckItem?> GetByCodeAsync(string code, CancellationToken ct = default)
     {
@@ -48,6 +42,12 @@ public class DeckItemService : ApiService, IDeckItemService
     public Task<bool> DeleteAsync(int id, CancellationToken ct = default)
     {
         return base.DeleteAsync($"{_route}/{id}", ct);
+    }
+    
+    public async Task<int> GetDeckItemCountAsync(CancellationToken ct = default)
+    {
+        int? count = await GetJsonAsync<int>($"{_route}/count", ct);
+        return count ?? 0;
     }
 
     #endregion
