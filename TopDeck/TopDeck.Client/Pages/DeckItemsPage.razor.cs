@@ -24,7 +24,7 @@ public class DeckItemsPagePresenter : PresenterBase
 
     private bool _restoreScrollPending;
     private bool _suppressSaveOnNavigation;
-    private string ScrollKey => "decks";
+    private string ScrollKey => $"decks:p{CurrentPage}:s{PageSize}";
 
     private DotNetObjectReference<DeckItemsPagePresenter>? _objRef;
 
@@ -129,24 +129,18 @@ public class DeckItemsPagePresenter : PresenterBase
     protected void PrevPage()
     {
         if (CurrentPage <= 1) return;
-        _suppressSaveOnNavigation = true;
-        ClearScroll();
         NavigateToPage(CurrentPage - 1);
     }
 
     protected void NextPage()
     {
         if (!HasNextPage) return;
-        _suppressSaveOnNavigation = true;
-        ClearScroll();
         NavigateToPage(CurrentPage + 1);
     }
 
     protected void GoToPage(int page)
     {
         if (page < 1) page = 1;
-        _suppressSaveOnNavigation = true;
-        ClearScroll();
         NavigateToPage(page);
     }
 
@@ -183,10 +177,8 @@ public class DeckItemsPagePresenter : PresenterBase
         // Save scroll position if we navigate away (but not during page change where we reset)
         try
         {
-            if (!_suppressSaveOnNavigation)
-            {
-                SaveScroll();
-            }
+            // Always save the current page's scroll position on navigation
+            SaveScroll();
         }
         catch { }
 
