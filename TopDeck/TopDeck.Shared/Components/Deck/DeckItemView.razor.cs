@@ -29,7 +29,7 @@ public class DeckItemPresenter : PresenterBase
         { 10, "Colorless" }
     };
     
-    [Inject] private NavigationManager _navigationManager { get; set; } = null!;
+    [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
 
     protected override void OnParametersSet()
@@ -66,12 +66,6 @@ public class DeckItemPresenter : PresenterBase
         await Task.Delay(1400);
         CodeText = DeckItem.Code;
         StateHasChanged();
-    }
-    
-    protected void OpenDeckDetails()
-    {
-        string url = $"/decks/{DeckItem.Code}";
-        _navigationManager.NavigateTo(url);
     }
 
     #endregion

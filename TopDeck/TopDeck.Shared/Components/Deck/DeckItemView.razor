@@ -2,8 +2,8 @@
 @inherits DeckItemPresenter
 
 
-<div class="deck-item @GetEnergyClass(DeckItem.EnergyIds)"
-     @onclick="OpenDeckDetails">
+<a class="deck-item @GetEnergyClass(DeckItem.EnergyIds)"
+   href="@NavigationManager.ToAbsoluteUri($"/decks/{DeckItem.Code}")">
     <div class="deck-item-header">
         <div class="deck-item-title-panel-container">
             <TitlePanel Name="@DeckItem.Name"/>
@@ -54,4 +54,4 @@
                        DislikeUserUuids="DeckItem.DislikeUserUuids.ToList()"/>
         </div>
     </div>
-</div>
+</a>
