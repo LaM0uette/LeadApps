@@ -20,7 +20,7 @@ public class DeckItemsPagePresenter : PresenterBase
     private bool _prefillInProgress;
     private long _lastLoadTicks;
     private bool _pendingBottomTrigger;
-    private readonly SemaphoreSlim _loadLock = new(1, 1);
+    private int _activeLoads; // number of in-flight background loads
     
     [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
     
@@ -53,7 +53,7 @@ public class DeckItemsPagePresenter : PresenterBase
             _pendingBottomTrigger = true;
             return;
         }
-        if (IsLoading || !HasMore)
+        if (!HasMore)
             return;
         
         long now = DateTime.UtcNow.Ticks;
@@ -114,52 +114,102 @@ public class DeckItemsPagePresenter : PresenterBase
     
     private async Task LoadMoreAsync()
     {
-        await _loadLock.WaitAsync();
-        try
+        if (!HasMore) return;
+        
+        // Capture the skip value for this request and immediately allocate placeholders
+        int requestSkip = _skip;
+        int count = _take;
+        int startIndex = DeckItems.Count;
+        
+        // Add placeholders to avoid blocking scroll
+        for (int i = 0; i < count; i++)
         {
-            IsLoading = true;
-            await InvokeAsync(StateHasChanged);
-            
-            // Ensure the UI has a chance to render the loader before starting the network call
-            await Task.Yield();
-            
-            IReadOnlyList<DeckItem> page = await _deckItemService.GetPageAsync(_skip, _take);
-            
-            if (page.Count > 0)
+            DeckItems.Add(new DeckItem(
+                Id: 0,
+                CreatorUui: string.Empty,
+                Name: string.Empty,
+                Code: string.Empty,
+                HighlightedCards: new List<DeckItemCard>(),
+                EnergyIds: new List<int>(),
+                TagIds: new List<int>(),
+                LikeUserUuids: new List<string>(),
+                DislikeUserUuids: new List<string>(),
+                CreatedAt: DateTime.UtcNow
+            ));
+        }
+        _skip += count; // reserve the range for subsequent loads
+        
+        _activeLoads++;
+        IsLoading = _activeLoads > 0;
+        await InvokeAsync(StateHasChanged);
+        
+        // Fire-and-forget the actual data load; fill placeholders when ready
+        _ = Task.Run(async () =>
+        {
+            try
             {
-                DeckItems.AddRange(page);
+                IReadOnlyList<DeckItem> page = await _deckItemService.GetPageAsync(requestSkip, count);
+                //await Task.Delay(2000); // debug slow network simulation
                 
-                _skip += page.Count;
-                
-                if (page.Count < _take)
+                await InvokeAsync(async () =>
                 {
-                    HasMore = false;
-                    
-                    if (_jsReady)
+                    int received = page.Count;
+                    if (received > 0)
                     {
-                        await JS.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll");
+                        // Replace placeholders with real items
+                        for (int i = 0; i < received; i++)
+                        {
+                            int idx = startIndex + i;
+                            if (idx < DeckItems.Count)
+                                DeckItems[idx] = page[i];
+                            else
+                                DeckItems.Add(page[i]);
+                        }
+                        
+                        if (received < count)
+                        {
+                            // Remove extra placeholders and mark end
+                            int extra = count - received;
+                            int removeAt = Math.Min(startIndex + received, DeckItems.Count);
+                            int canRemove = Math.Min(extra, DeckItems.Count - removeAt);
+                            if (canRemove > 0)
+                            {
+                                DeckItems.RemoveRange(removeAt, canRemove);
+                            }
+                            HasMore = false;
+                            if (_jsReady)
+                            {
+                                await JS.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll");
+                            }
+                        }
                     }
-                }
+                    else
+                    {
+                        // No results: remove all placeholders and stop
+                        int removeAt = Math.Min(startIndex, DeckItems.Count);
+                        int canRemove = Math.Min(count, DeckItems.Count - removeAt);
+                        if (canRemove > 0)
+                            DeckItems.RemoveRange(removeAt, canRemove);
+                        
+                        HasMore = false;
+                        if (_jsReady)
+                        {
+                            await JS.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll");
+                        }
+                    }
+                    
+                    StateHasChanged();
+                });
             }
-            else
+            finally
             {
-                HasMore = false;
-                
-                if (_jsReady)
-                {
-                    await JS.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll");
-                }
+                _lastLoadTicks = DateTime.UtcNow.Ticks;
+                _activeLoads--;
+                if (_activeLoads < 0) _activeLoads = 0;
+                IsLoading = _activeLoads > 0;
+                await InvokeAsync(StateHasChanged);
             }
-        }
-        finally
-        {
-            _lastLoadTicks = DateTime.UtcNow.Ticks;
-            IsLoading = false;
-            _loadLock.Release();
-            
-            // Ensure the loader disappears promptly after the load completes
-            await InvokeAsync(StateHasChanged);
-        }
+        });
     }
     
     #endregion

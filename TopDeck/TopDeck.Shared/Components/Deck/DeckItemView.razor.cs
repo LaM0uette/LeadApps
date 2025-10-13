@@ -37,14 +37,30 @@ public class DeckItemPresenter : PresenterBase
         CodeText = DeckItem.Code;
     }
     
-    protected override async Task OnInitializedAsync()
+    private string? _cardsLoadedForCode;
+    
+    protected override async Task OnParametersSetAsync()
     {
+        // Skip fetching for placeholders or when no highlighted cards are available yet
+        if (string.IsNullOrWhiteSpace(DeckItem.Code) || DeckItem.HighlightedCards == null || DeckItem.HighlightedCards.Count == 0)
+        {
+            HighlightedTCGPCards = Array.Empty<TCGPCard>();
+            _cardsLoadedForCode = null;
+            return;
+        }
+        
+        // Avoid refetching if we already loaded cards for this deck code
+        if (_cardsLoadedForCode == DeckItem.Code && HighlightedTCGPCards.Count > 0)
+            return;
+        
         List<TCGPCardRequest> tcgpCardRequests = DeckItem.HighlightedCards
             .Select(c => new TCGPCardRequest(c.CollectionCode, c.CollectionNumber))
             .ToList();
 
         TCGPCardsRequest tcgpCardsRequest = new(tcgpCardRequests);
-        HighlightedTCGPCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(tcgpCardsRequest, loadThumbnail:true);
+        var cards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(tcgpCardsRequest, loadThumbnail:true);
+        HighlightedTCGPCards = cards;
+        _cardsLoadedForCode = DeckItem.Code;
     }
 
     #endregion
