@@ -7,8 +7,14 @@
 
 
 <div class="decks-page-page">
+    <div class="pager pager--top">
+        <button class="pager__btn" disabled="@(CurrentPage <= 1)" @onclick="PrevPage">&#8592;</button>
+        <span class="pager__info">@Localizer.Localize("page.decksView.page", "Page") @CurrentPage</span>
+        <button class="pager__btn" disabled="@(!HasNextPage)" @onclick="NextPage">&#8594;</button>
+    </div>
+
     <div id="deck-scroll" class="deck-items">
-        @if (DeckItems.Count <= 0 && !HasMore)
+        @if (DeckItems.Count <= 0 && !IsLoading)
         {
             <p class="deck-items__no-cards-text">@Localizer.Localize("page.decksView.noCards.text", "No cards found.")</p>
         }
@@ -20,9 +26,15 @@
             }
         }
         
-        @if (IsLoading && HasMore)
+        @if (IsLoading)
         {
             <LoadingWheel/>
         }
+    </div>
+
+    <div class="pager pager--bottom">
+        <button class="pager__btn" disabled="@(CurrentPage <= 1)" @onclick="PrevPage">@Localizer.Localize("pager.prev", "Prev")</button>
+        <span class="pager__info">@Localizer.Localize("page.decksView.page", "Page") @CurrentPage</span>
+        <button class="pager__btn" disabled="@(!HasNextPage)" @onclick="NextPage">@Localizer.Localize("pager.next", "Next")</button>
     </div>
 </div>

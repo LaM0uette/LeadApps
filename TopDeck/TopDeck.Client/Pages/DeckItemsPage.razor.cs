@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.JSInterop;
 using TopDeck.Domain.Models;
 using TopDeck.Shared.Components;
@@ -12,32 +13,70 @@ public class DeckItemsPagePresenter : PresenterBase
     
     protected List<DeckItem> DeckItems { get; } = [];
     protected bool IsLoading { get; private set; }
-    protected bool HasMore { get; private set; } = true;
 
-    private int _skip;
-    private const int _take = 30;
+    // Pagination state
+    protected int CurrentPage { get; private set; } = 1; // 1-based
+    protected int PageSize { get; private set; } = 30;
+    protected bool HasNextPage { get; private set; }
+
+    [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
+    [Inject] private NavigationManager _nav { get; set; } = null!;
+
+    private bool _restoreScrollPending;
+    private string ScrollKey => $"decks:p{CurrentPage}:s{PageSize}";
+
+    private DotNetObjectReference<DeckItemsPagePresenter>? _objRef;
+
+    // Legacy fields kept to avoid breaking references while migrating away from infinite scroll
     private bool _jsReady;
     private bool _prefillInProgress;
     private long _lastLoadTicks;
     private bool _pendingBottomTrigger;
-    private int _activeLoads; // number of in-flight background loads
+    private int _activeLoads;
+    private int _skip;
+    private const int _take = 30;
     
-    [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadFromUriAsync(_nav.Uri);
+        _restoreScrollPending = true;
+    }
     
-    private DotNetObjectReference<DeckItemsPagePresenter>? _objRef;
+    protected override Task OnInitializedAsync()
+    {
+        _nav.LocationChanged += OnLocationChanged;
+        return base.OnInitializedAsync();
+    }
+    
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        _ = InvokeAsync(async () =>
+        {
+            await LoadFromUriAsync(e.Location);
+            _restoreScrollPending = true;
+            StateHasChanged();
+        });
+    }
+    
+    private Task LoadFromUriAsync(string location)
+    {
+        Uri uri = new(location);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        if (int.TryParse(query.Get("page"), out int p) && p > 0) CurrentPage = p; else CurrentPage = 1;
+        if (int.TryParse(query.Get("size"), out int s) && s > 0 && s <= 100) PageSize = s; else PageSize = 30;
+        return LoadPageAsync();
+    }
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && JS is IJSInProcessRuntime && !_jsReady)
+        if (firstRender)
         {
-            // Prevent JS-triggered callbacks from kicking off loads before we prefill
-            _prefillInProgress = true;
-            
             _objRef = DotNetObjectReference.Create(this);
-            await JS.InvokeVoidAsync("TopDeck.registerInfiniteScroll", _objRef, "#deck-scroll", 800);
-            
-            _jsReady = true;
-            await EnsureInitialScrollAsync();
+        }
+        if (_restoreScrollPending && JS is IJSInProcessRuntime)
+        {
+            try{ await JS.InvokeVoidAsync("TopDeck.restoreScroll", ScrollKey, "#deck-scroll"); } catch {}
+            _restoreScrollPending = false;
         }
     }
 
@@ -46,170 +85,81 @@ public class DeckItemsPagePresenter : PresenterBase
     #region Methods
 
     [JSInvokable]
-    public async Task OnNearBottom()
+    public Task OnNearBottom()
     {
-        if (_prefillInProgress)
-        {
-            _pendingBottomTrigger = true;
-            return;
-        }
-        if (!HasMore)
-            return;
-        
-        long now = DateTime.UtcNow.Ticks;
-        
-        if (now - _lastLoadTicks < TimeSpan.FromMilliseconds(250).Ticks) 
-            return;
-        
-        await LoadMoreAsync();
-        StateHasChanged();
+        // Infinite scroll disabled in favor of pagination
+        return Task.CompletedTask;
     }
     
 
-    private async Task EnsureInitialScrollAsync()
+    private Task EnsureInitialScrollAsync()
     {
-        if (!_jsReady || !HasMore) 
-            return;
-        
-        _prefillInProgress = true;
-        
+        // Infinite scroll removed; nothing to ensure
+        return Task.CompletedTask;
+    }
+    
+    private Task LoadMoreAsync()
+    {
+        // Infinite scroll removed
+        return Task.CompletedTask;
+    }
+
+    // Pagination helpers
+    private async Task LoadPageAsync()
+    {
+        IsLoading = true;
+        DeckItems.Clear();
+        StateHasChanged();
         try
         {
-            bool canScroll = await JS.InvokeAsync<bool>("TopDeck.canScroll", "#deck-scroll", 0);
-            
-            if (!canScroll)
-            {
-                const int targetCount = _take * 2;
-                int iterations = 0;
-                const int maxIterations = 5;
-                
-                while (DeckItems.Count < targetCount && HasMore && iterations < maxIterations)
-                {
-                    await LoadMoreAsync();
-                    await InvokeAsync(StateHasChanged);
-                    iterations++;
-                    
-                    bool afterCanScroll = await JS.InvokeAsync<bool>("TopDeck.canScroll", "#deck-scroll", 0);
-                    
-                    if (afterCanScroll) 
-                        break;
-                }
-            }
-        }
-        catch
-        {
-            // ignored
+            int skip = (CurrentPage - 1) * PageSize;
+            if (skip < 0) skip = 0;
+            IReadOnlyList<DeckItem> items = await _deckItemService.GetPageAsync(skip, PageSize);
+            DeckItems.AddRange(items);
+            HasNextPage = items.Count == PageSize;
         }
         finally
         {
-            _prefillInProgress = false;
-            if (_pendingBottomTrigger && HasMore && !IsLoading)
-            {
-                _pendingBottomTrigger = false;
-                await LoadMoreAsync();
-                await InvokeAsync(StateHasChanged);
-            }
+            IsLoading = false;
+            StateHasChanged();
         }
     }
-    
-    private async Task LoadMoreAsync()
+
+    protected void PrevPage()
     {
-        if (!HasMore) return;
-        
-        // Capture the skip value for this request and immediately allocate placeholders
-        int requestSkip = _skip;
-        int count = _take;
-        int startIndex = DeckItems.Count;
-        
-        // Add placeholders to avoid blocking scroll
-        for (int i = 0; i < count; i++)
+        if (CurrentPage <= 1) return;
+        SaveScroll();
+        NavigateToPage(CurrentPage - 1);
+    }
+
+    protected void NextPage()
+    {
+        if (!HasNextPage) return;
+        SaveScroll();
+        NavigateToPage(CurrentPage + 1);
+    }
+
+    protected void GoToPage(int page)
+    {
+        if (page < 1) page = 1;
+        SaveScroll();
+        NavigateToPage(page);
+    }
+
+    private void NavigateToPage(int page)
+    {
+        var uri = new Uri(_nav.Uri);
+        var basePath = uri.GetLeftPart(UriPartial.Path);
+        var target = $"{basePath}?page={page}&size={PageSize}";
+        _nav.NavigateTo(target);
+    }
+
+    private void SaveScroll()
+    {
+        if (JS is IJSInProcessRuntime)
         {
-            DeckItems.Add(new DeckItem(
-                Id: 0,
-                CreatorUui: string.Empty,
-                Name: string.Empty,
-                Code: string.Empty,
-                HighlightedCards: new List<DeckItemCard>(),
-                EnergyIds: new List<int>(),
-                TagIds: new List<int>(),
-                LikeUserUuids: new List<string>(),
-                DislikeUserUuids: new List<string>(),
-                CreatedAt: DateTime.UtcNow
-            ));
+            try { JS.InvokeVoidAsync("TopDeck.saveScroll", ScrollKey, "#deck-scroll"); } catch {}
         }
-        _skip += count; // reserve the range for subsequent loads
-        
-        _activeLoads++;
-        IsLoading = _activeLoads > 0;
-        await InvokeAsync(StateHasChanged);
-        
-        // Fire-and-forget the actual data load; fill placeholders when ready
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                IReadOnlyList<DeckItem> page = await _deckItemService.GetPageAsync(requestSkip, count);
-                //await Task.Delay(2000); // debug slow network simulation
-                
-                await InvokeAsync(async () =>
-                {
-                    int received = page.Count;
-                    if (received > 0)
-                    {
-                        // Replace placeholders with real items
-                        for (int i = 0; i < received; i++)
-                        {
-                            int idx = startIndex + i;
-                            if (idx < DeckItems.Count)
-                                DeckItems[idx] = page[i];
-                            else
-                                DeckItems.Add(page[i]);
-                        }
-                        
-                        if (received < count)
-                        {
-                            // Remove extra placeholders and mark end
-                            int extra = count - received;
-                            int removeAt = Math.Min(startIndex + received, DeckItems.Count);
-                            int canRemove = Math.Min(extra, DeckItems.Count - removeAt);
-                            if (canRemove > 0)
-                            {
-                                DeckItems.RemoveRange(removeAt, canRemove);
-                            }
-                            HasMore = false;
-                            if (_jsReady)
-                            {
-                                await JS.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // No results: remove all placeholders and stop
-                        int removeAt = Math.Min(startIndex, DeckItems.Count);
-                        int canRemove = Math.Min(count, DeckItems.Count - removeAt);
-                        if (canRemove > 0)
-                            DeckItems.RemoveRange(removeAt, canRemove);
-                        
-                        HasMore = false;
-                        if (_jsReady)
-                        {
-                            await JS.InvokeVoidAsync("TopDeck.unregisterInfiniteScroll");
-                        }
-                    }
-                    
-                    StateHasChanged();
-                });
-            }
-            finally
-            {
-                _lastLoadTicks = DateTime.UtcNow.Ticks;
-                _activeLoads--;
-                if (_activeLoads < 0) _activeLoads = 0;
-                IsLoading = _activeLoads > 0;
-                await InvokeAsync(StateHasChanged);
-            }
-        });
     }
     
     #endregion
@@ -219,6 +169,12 @@ public class DeckItemsPagePresenter : PresenterBase
     public override async ValueTask DisposeAsync()
     {
         await base.DisposeAsync();
+        
+        try
+        {
+            _nav.LocationChanged -= OnLocationChanged;
+        }
+        catch { }
         
         try
         {

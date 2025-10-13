@@ -84,4 +84,32 @@
             state.target = null;
         }
     };
+
+    // Scroll position helpers using sessionStorage
+    window.TopDeck.saveScroll = function(key, selector){
+        try{
+            const el = selector ? document.querySelector(selector) : null;
+            const scrollTop = el ? (el.scrollTop || 0) : (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0);
+            sessionStorage.setItem('scroll:' + key, String(scrollTop));
+        }catch(e){}
+    };
+
+    window.TopDeck.restoreScroll = function(key, selector){
+        try{
+            const raw = sessionStorage.getItem('scroll:' + key);
+            if (!raw) return false;
+            const y = parseInt(raw, 10) || 0;
+            const el = selector ? document.querySelector(selector) : null;
+            if (el){
+                el.scrollTop = y;
+            } else {
+                window.scrollTo(0, y);
+            }
+            return true;
+        }catch(e){ return false; }
+    };
+
+    window.TopDeck.clearScroll = function(key){
+        try{ sessionStorage.removeItem('scroll:' + key); }catch(e){}
+    };
 })();

@@ -4,18 +4,49 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: self-start;
+    justify-content: flex-start;
+    align-items: stretch;
     
     overflow: hidden;
+    background: #fff;
 }
 
+.pager {
+    position: sticky;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 8px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(4px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.pager--top { top: 0; }
+.pager--bottom { bottom: 0; border-top: 1px solid rgba(0,0,0,0.06); border-bottom: none; }
+.pager__btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px 14px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.15);
+    background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
+    color: #222;
+}
+.pager__btn:disabled { opacity: 0.4; }
+.pager__info {
+    font-family: var(--font-bold), sans-serif;
+    font-size: 16px;
+}
 
 .deck-items {
     width: 100%;
-    height: 100%;
-    
-    padding: 20px 8px 0 8px;
+    /* Use flex to fill remaining space below top pager and above bottom pager */
+    flex: 1 1 auto;
+
+    padding: 12px 8px 72px 8px; /* leave room for bottom pager */
     box-sizing: border-box;
 
     display: flex;
@@ -36,13 +67,13 @@
     
 @media (min-width: 1366px) {
     .deck-items {
-        padding: 40px 20% 0 20%;
+        padding: 20px 20% 80px 20%;
         gap: 40px;
     }
 }
 
 @media (min-width: 2048px) {
     .deck-items {
-        padding: 40px 28% 0 28%;
+        padding: 20px 28% 80px 28%;
     }
 }
