@@ -23,7 +23,8 @@ public class DeckItemsPagePresenter : PresenterBase
     [Inject] private NavigationManager _nav { get; set; } = null!;
 
     private bool _restoreScrollPending;
-    private string ScrollKey => $"decks:p{CurrentPage}:s{PageSize}";
+    private bool _suppressSaveOnNavigation;
+    private string ScrollKey => "decks";
 
     private DotNetObjectReference<DeckItemsPagePresenter>? _objRef;
 
@@ -128,21 +129,24 @@ public class DeckItemsPagePresenter : PresenterBase
     protected void PrevPage()
     {
         if (CurrentPage <= 1) return;
-        SaveScroll();
+        _suppressSaveOnNavigation = true;
+        ClearScroll();
         NavigateToPage(CurrentPage - 1);
     }
 
     protected void NextPage()
     {
         if (!HasNextPage) return;
-        SaveScroll();
+        _suppressSaveOnNavigation = true;
+        ClearScroll();
         NavigateToPage(CurrentPage + 1);
     }
 
     protected void GoToPage(int page)
     {
         if (page < 1) page = 1;
-        SaveScroll();
+        _suppressSaveOnNavigation = true;
+        ClearScroll();
         NavigateToPage(page);
     }
 
@@ -161,6 +165,14 @@ public class DeckItemsPagePresenter : PresenterBase
             try { JS.InvokeVoidAsync("TopDeck.saveScroll", ScrollKey, "#deck-scroll"); } catch {}
         }
     }
+
+    private void ClearScroll()
+    {
+        if (JS is IJSInProcessRuntime)
+        {
+            try { JS.InvokeVoidAsync("TopDeck.clearScroll", ScrollKey); } catch {}
+        }
+    }
     
     #endregion
 
@@ -168,6 +180,16 @@ public class DeckItemsPagePresenter : PresenterBase
 
     public override async ValueTask DisposeAsync()
     {
+        // Save scroll position if we navigate away (but not during page change where we reset)
+        try
+        {
+            if (!_suppressSaveOnNavigation)
+            {
+                SaveScroll();
+            }
+        }
+        catch { }
+
         await base.DisposeAsync();
         
         try
