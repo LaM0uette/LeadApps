@@ -12,30 +12,36 @@
 }
 
 .pager {
-    position: sticky;
-    z-index: 5;
+    position: static; /* not sticky anymore */
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    padding: 8px;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(4px);
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+    gap: 8px;
+    padding: 12px 8px;
+    background: transparent;
+    border-top: 1px solid rgba(0,0,0,0.06);
 }
-.pager--top { top: 0; }
-.pager--bottom { bottom: 0; border-top: 1px solid rgba(0,0,0,0.06); border-bottom: none; }
+.pager--bottom { margin-top: 8px; }
+.pager__pages { display: flex; align-items: center; gap: 6px; }
+.pager__ellipsis { padding: 0 6px; color: #888; }
 .pager__btn {
-    min-width: 44px;
-    min-height: 44px;
-    padding: 8px 14px;
-    font-size: 16px;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 6px 12px;
+    font-size: 15px;
     border-radius: 10px;
     border: 1px solid rgba(0,0,0,0.15);
     background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
     color: #222;
 }
-.pager__btn:disabled { opacity: 0.4; }
+.pager__btn--page { min-width: 36px; }
+.pager__btn.is-current { 
+    background: #222; 
+    color: #fff; 
+    border-color: #222;
+}
+.pager__btn:disabled { opacity: 0.6; }
 .pager__info {
     font-family: var(--font-bold), sans-serif;
     font-size: 16px;
@@ -43,10 +49,9 @@
 
 .deck-items {
     width: 100%;
-    /* Use flex to fill remaining space below top pager and above bottom pager */
     flex: 1 1 auto;
 
-    padding: 12px 8px 72px 8px; /* leave room for bottom pager */
+    padding: 12px 8px; /* no extra bottom space needed now */
     box-sizing: border-box;
 
     display: flex;

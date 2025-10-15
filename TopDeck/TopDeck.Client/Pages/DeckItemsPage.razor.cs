@@ -123,7 +123,7 @@ public class DeckItemsPagePresenter : PresenterBase
         }
     }
 
-    private void NavigateToPage(int page)
+    protected void NavigateToPage(int page)
     {
         Uri uri = new(_nav.Uri);
         string basePath = uri.GetLeftPart(UriPartial.Path);
@@ -145,6 +145,66 @@ public class DeckItemsPagePresenter : PresenterBase
         {
             // ignored
         }
+    }
+
+    protected readonly struct PaginationButton
+    {
+        public int Page { get; }
+        public bool IsCurrent { get; }
+        public bool IsEllipsis { get; }
+        public PaginationButton(int page, bool isCurrent)
+        {
+            Page = page;
+            IsCurrent = isCurrent;
+            IsEllipsis = false;
+        }
+        private PaginationButton(bool _) { Page = -1; IsCurrent = false; IsEllipsis = true; }
+        public static PaginationButton Ellipsis() => new(true);
+    }
+
+    protected IEnumerable<PaginationButton> GetPageButtons()
+    {
+        // Desired pattern example for 13 pages on page 6: 1 … 4 5 6 7 8 … 13
+        // Rules:
+        // - Always show first and last pages.
+        // - Show a window of pages around current: [current-2, current+2].
+        // - Insert ellipses when there's a gap greater than 1 between consecutive shown pages.
+        int last = _maxPage;
+        if (last <= 1)
+        {
+            yield return new PaginationButton(1, Page == 1);
+            yield break;
+        }
+
+        int current = Math.Clamp(Page, 1, last);
+        int windowStart = Math.Max(1, current - 2);
+        int windowEnd = Math.Min(last, current + 2);
+
+        // Always first
+        yield return new PaginationButton(1, current == 1);
+
+        // Ellipsis after first if needed
+        if (windowStart > 2)
+        {
+            yield return PaginationButton.Ellipsis();
+        }
+
+        // Middle window (avoid duplicating first/last)
+        int middleStart = Math.Max(2, windowStart);
+        int middleEnd = Math.Min(last - 1, windowEnd);
+        for (int p = middleStart; p <= middleEnd; p++)
+        {
+            yield return new PaginationButton(p, p == current);
+        }
+
+        // Ellipsis before last if needed
+        if (windowEnd < last - 1)
+        {
+            yield return PaginationButton.Ellipsis();
+        }
+
+        // Always last
+        yield return new PaginationButton(last, current == last);
     }
     
     #endregion
