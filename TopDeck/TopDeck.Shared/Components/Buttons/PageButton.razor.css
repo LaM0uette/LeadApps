@@ -1,0 +1,18 @@
+﻿.pager__ellipsis { padding: 0 6px; color: #888; }
+.pager__btn {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 6px 12px;
+    font-size: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.15);
+    background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
+    color: #222;
+}
+.pager__btn--page { min-width: 36px; }
+.pager__btn.is-current {
+    background: #222;
+    color: #fff;
+    border-color: #222;
+}
+.pager__btn:disabled { opacity: 0.6; }

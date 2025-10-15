@@ -7,7 +7,6 @@
 
 
 <div class="decks-page-page">
-    
     <div id="deck-scroll" class="deck-items">
         @if (DeckItems.Count <= 0 && !IsLoading)
         {
@@ -25,23 +24,19 @@
         {
             <LoadingWheel/>
         }
-    </div>
-
-    <div class="pager pager--bottom">
-        <button class="pager__btn" disabled="@(Page <= 1)" @onclick="PrevPage">@Localizer.Localize("pager.prev", "Prev")</button>
-        <div class="pager__pages">
-            @foreach (var p in GetPageButtons())
-            {
-                if (p.IsEllipsis)
-                {
-                    <span class="pager__ellipsis">…</span>
-                }
-                else
-                {
-                    <button class="pager__btn pager__btn--page @(p.IsCurrent ? "is-current" : null)" disabled="@p.IsCurrent" @onclick="(() => NavigateToPage(p.Page))">@p.Page</button>
-                }
-            }
-        </div>
-        <button class="pager__btn" disabled="@(!HasNextPage)" @onclick="NextPage">@Localizer.Localize("pager.next", "Next")</button>
+        
+        @if (DeckItems.Count > 0 && !IsLoading)
+        {
+            <div class="pager pager--bottom">
+                <button class="pager__btn" disabled="@(Page <= 1)" @onclick="PrevPage">@Localizer.Localize("pager.prev", "Prev")</button>
+                <div class="pager__pages">
+                    @foreach (PageButtonModel pageButtonModel in GetPageButtons())
+                    {
+                        <PageButton Page="@pageButtonModel.Page" IsCurrent="@pageButtonModel.IsCurrent" IsEllipsis="@pageButtonModel.IsEllipsis" Clicked="NavigateToPage" />
+                    }
+                </div>
+                <button class="pager__btn" disabled="@(!HasNextPage)" @onclick="NextPage">@Localizer.Localize("pager.next", "Next")</button>
+            </div>
+        }
     </div>
 </div>

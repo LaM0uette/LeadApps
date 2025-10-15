@@ -1,0 +1,16 @@
+﻿@namespace TopDeck.Shared.Components
+@inherits PageButtonBase
+
+
+@if (IsEllipsis)
+{
+    <span class="pager__ellipsis">…</span>
+}
+else
+{
+    <button class="pager__btn pager__btn--page @(IsCurrent ? "is-current" : null)"
+            disabled="@IsCurrent"
+            @onclick="() => Clicked.InvokeAsync(Page)">
+        @Page
+    </button>
+}
