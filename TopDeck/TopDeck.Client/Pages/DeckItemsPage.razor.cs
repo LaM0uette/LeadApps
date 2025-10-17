@@ -110,12 +110,8 @@ public class DeckItemsPagePresenter : PresenterBase
     
     protected IEnumerable<PageButtonModel> GetPageButtons()
     {
-        // Desired pattern example for 13 pages on page 6: 1 … 4 5 6 7 8 … 13
-        // Rules:
-        // - Always show first and last pages.
-        // - Show a window of pages around current: [current-2, current+2].
-        // - Insert ellipses when there's a gap greater than 1 between consecutive shown pages.
         int last = _maxPage;
+        
         if (last <= 1)
         {
             yield return new PageButtonModel(1, Page == 1);
@@ -126,16 +122,13 @@ public class DeckItemsPagePresenter : PresenterBase
         int windowStart = Math.Max(1, current - 2);
         int windowEnd = Math.Min(last, current + 2);
 
-        // Always first
         yield return new PageButtonModel(1, current == 1);
 
-        // Ellipsis after first if needed
         if (windowStart > 2)
         {
             yield return PageButtonModel.Ellipsis();
         }
 
-        // Middle window (avoid duplicating first/last)
         int middleStart = Math.Max(2, windowStart);
         int middleEnd = Math.Min(last - 1, windowEnd);
         for (int p = middleStart; p <= middleEnd; p++)
@@ -143,13 +136,11 @@ public class DeckItemsPagePresenter : PresenterBase
             yield return new PageButtonModel(p, p == current);
         }
 
-        // Ellipsis before last if needed
         if (windowEnd < last - 1)
         {
             yield return PageButtonModel.Ellipsis();
         }
 
-        // Always last
         yield return new PageButtonModel(last, current == last);
     }
     

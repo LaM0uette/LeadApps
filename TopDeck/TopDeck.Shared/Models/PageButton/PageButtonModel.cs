@@ -2,25 +2,27 @@
 
 public readonly struct PageButtonModel
 {
+    #region Statements
+
     public int Page { get; }
     public bool IsCurrent { get; }
     public bool IsEllipsis { get; }
     
-    public PageButtonModel(int page, bool isCurrent)
+    public PageButtonModel(int page, bool isCurrent, bool isEllipsis = false)
     {
         Page = page;
         IsCurrent = isCurrent;
-        IsEllipsis = false;
+        IsEllipsis = isEllipsis;
     }
-    
-    private PageButtonModel(bool _) 
-    { 
-        Page = -1; 
-        IsCurrent = false; IsEllipsis = true; 
-    }
-    
+
+    #endregion
+
+    #region Methods
+
     public static PageButtonModel Ellipsis()
     {
-        return new PageButtonModel(true);
+        return new PageButtonModel(-1, false, true);
     }
+
+    #endregion
 }
