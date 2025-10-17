@@ -41,15 +41,13 @@ public class DeckItemPresenter : PresenterBase
     
     protected override async Task OnParametersSetAsync()
     {
-        // Skip fetching for placeholders or when no highlighted cards are available yet
-        if (string.IsNullOrWhiteSpace(DeckItem.Code) || DeckItem.HighlightedCards == null || DeckItem.HighlightedCards.Count == 0)
+        if (string.IsNullOrWhiteSpace(DeckItem.Code) || DeckItem.HighlightedCards.Count == 0)
         {
-            HighlightedTCGPCards = Array.Empty<TCGPCard>();
+            HighlightedTCGPCards = [];
             _cardsLoadedForCode = null;
             return;
         }
         
-        // Avoid refetching if we already loaded cards for this deck code
         if (_cardsLoadedForCode == DeckItem.Code && HighlightedTCGPCards.Count > 0)
             return;
         
@@ -58,7 +56,8 @@ public class DeckItemPresenter : PresenterBase
             .ToList();
 
         TCGPCardsRequest tcgpCardsRequest = new(tcgpCardRequests);
-        var cards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(tcgpCardsRequest, loadThumbnail:true);
+        List<TCGPCard> cards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(tcgpCardsRequest, loadThumbnail:true);
+        
         HighlightedTCGPCards = cards;
         _cardsLoadedForCode = DeckItem.Code;
     }
