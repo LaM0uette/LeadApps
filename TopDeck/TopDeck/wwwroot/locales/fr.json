@@ -8,6 +8,8 @@
   "component.button.login.text": "Se connecter",
   "component.button.logout.text": "Se déconnecter",
   "component.button.back.text": "Retour",
+  "component.pageButton.previous.text": "Précédent",
+  "component.pageButton.next.text": "Suivant",
   "component.loadingWheel.text": "Chargement…",
   "feedback.text.copied": "Copié",
   "feedback.text.notFound": "Introuvable",

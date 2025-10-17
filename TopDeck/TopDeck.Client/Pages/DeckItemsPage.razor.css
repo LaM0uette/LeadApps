@@ -11,43 +11,6 @@
     background: #fff;
 }
 
-.pager {
-    position: static; /* not sticky anymore */
-    width: 100%;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px 8px;
-    background: transparent;
-    border-top: 1px solid rgba(0,0,0,0.06);
-}
-.pager--bottom { margin-top: 8px; }
-.pager__pages { display: flex; align-items: center; gap: 6px; }
-.pager__ellipsis { padding: 0 6px; color: #888; }
-.pager__btn {
-    min-width: 40px;
-    min-height: 40px;
-    padding: 6px 12px;
-    font-size: 15px;
-    border-radius: 10px;
-    border: 1px solid rgba(0,0,0,0.15);
-    background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
-    color: #222;
-}
-.pager__btn--page { min-width: 36px; }
-.pager__btn.is-current { 
-    background: #222; 
-    color: #fff; 
-    border-color: #222;
-}
-.pager__btn:disabled { opacity: 0.6; }
-.pager__info {
-    font-family: var(--font-bold), sans-serif;
-    font-size: 16px;
-}
-
 .deck-items {
     width: 100%;
     flex: 1 1 auto;
@@ -69,6 +32,55 @@
         font-family: var(--font-bold), sans-serif;
         font-size: 1.2rem;
     }
+
+
+.deck-items-pager {
+    width: 100%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 30px;
+    
+    background: transparent;
+    
+    z-index: 1;
+}
+
+    .deck-items-pager__button {
+        height: 25px;
+
+        font-family: var(--font-bold), sans-serif;
+        font-size: 0.9em;
+        
+        border: none;
+        background: transparent;
+        color: var(--color-text);
+        
+        cursor: var(--cursor-pointer);
+        user-select: none;
+    }
+
+    .deck-items-pager__button:hover {
+        opacity: 0.8;
+    }
+    
+    .deck-items-pager__button:active {
+        opacity: 0.6;
+    }
+    
+    .deck-items-pager__button:disabled { 
+        opacity: 0.4; 
+        cursor: var(--cursor-default);
+    }
+    
+    
+.deck-items-page-buttons { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+}
     
     
 @media (min-width: 1366px) {

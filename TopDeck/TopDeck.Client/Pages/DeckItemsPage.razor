@@ -27,15 +27,17 @@
         
         @if (DeckItems.Count > 0 && !IsLoading)
         {
-            <div class="pager pager--bottom">
-                <button class="pager__btn" disabled="@(Page <= 1)" @onclick="PrevPage">@Localizer.Localize("pager.prev", "Prev")</button>
-                <div class="pager__pages">
+            <div class="deck-items-pager">
+                <button class="deck-items-pager__button" disabled="@(Page <= 1)" @onclick="PrevPage">@Localizer.Localize("component.pageButton.previous.text", "Previous")</button>
+                <HorizontalSpacer Value="40"/>
+                <div class="deck-items-page-buttons">
                     @foreach (PageButtonModel pageButtonModel in GetPageButtons())
                     {
                         <PageButton Page="@pageButtonModel.Page" IsCurrent="@pageButtonModel.IsCurrent" IsEllipsis="@pageButtonModel.IsEllipsis" Clicked="NavigateToPage" />
                     }
                 </div>
-                <button class="pager__btn" disabled="@(!HasNextPage)" @onclick="NextPage">@Localizer.Localize("pager.next", "Next")</button>
+                <HorizontalSpacer Value="40"/>
+                <button class="deck-items-pager__button" disabled="@(!HasNextPage)" @onclick="NextPage">@Localizer.Localize("component.pageButton.next.text", "Next")</button>
             </div>
         }
     </div>

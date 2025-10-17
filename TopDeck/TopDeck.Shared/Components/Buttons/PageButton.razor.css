@@ -1,18 +1,37 @@
-﻿.pager__ellipsis { padding: 0 6px; color: #888; }
-.pager__btn {
-    min-width: 40px;
-    min-height: 40px;
-    padding: 6px 12px;
-    font-size: 15px;
-    border-radius: 10px;
-    border: 1px solid rgba(0,0,0,0.15);
-    background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
-    color: #222;
+﻿.page-button-ellipsis { 
+    padding: 0 6px;
+    color: var(--color-text);
 }
-.pager__btn--page { min-width: 36px; }
-.pager__btn.is-current {
-    background: #222;
-    color: #fff;
-    border-color: #222;
+
+.page-button {
+    height: 25px;
+
+    font-family: var(--font-bold), sans-serif;
+    font-size: 0.9em;
+
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--color-text);
+
+    cursor: var(--cursor-pointer);
+    user-select: none;
 }
-.pager__btn:disabled { opacity: 0.6; }
+
+    .page-button:hover {
+        color: var(--color-text-strong);
+        border-bottom: 2px solid var(--color-text-strong);
+    }
+    
+    .page-button:active {
+        opacity: 0.8;
+    }
+
+    .page-button--active {
+        font-family: var(--font-extra-bold), sans-serif;
+        color: var(--color-text-strong);
+        
+        border-bottom: 2px solid var(--color-text-strong);
+
+        cursor: var(--cursor-default);
+    }
