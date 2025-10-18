@@ -5,13 +5,13 @@
 <PageTitle>Deck edit</PageTitle>
 
 
-<div class="deck-details-page-container">
-    <div class="deck-details-left-side"></div>
+<div class="deck-details-edit-page-container">
+    <div class="deck-details-edit-left-side"></div>
     
-    <div class="deck-details-page">
-        <div class="deck-details-header">
-            <div class="deck-details-header-top">
-                <div class="deck-details-title-panel-container">
+    <div class="deck-details-edit-page">
+        <div class="deck-details-edit-header">
+            <div class="deck-details-edit-header-top">
+                <div class="deck-details-edit-title-panel-container">
                     <TitlePanel Name="@DeckName" Width="200px" Height="35px" FontSize="1.1em"/>
                 </div>
             </div>
@@ -19,8 +19,8 @@
             @if (IsMobile) { <VerticalSpacer Value="10"/> }
             else { <VerticalSpacer Value="25"/> }
 
-            <div class="deck-details-highlight">
-                <div class="deck-details-highlighted-cards">
+            <div class="deck-details-edit-highlight">
+                <div class="deck-details-edit-highlighted-cards">
                     
                     @if (TCGPHighlightedCards.Count == 0)
                     {
@@ -28,7 +28,7 @@
                     }
                     else
                     {
-                        <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-edit-highlighted-cards__card" src="@TCGPHighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
                     }
                     
                     @if (TCGPHighlightedCards.Count <= 1)
@@ -37,7 +37,7 @@
                     }
                     else
                     {
-                        <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-edit-highlighted-cards__card" src="@TCGPHighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
                     }
                     
                     @if (TCGPHighlightedCards.Count <= 2)
@@ -46,31 +46,31 @@
                     }
                     else
                     {
-                        <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-edit-highlighted-cards__card" src="@TCGPHighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>
                     }
                     
                 </div>
 
-                <div class="deck-details-energies">
+                <div class="deck-details-edit-energies">
                     @*@foreach (int energyId in DeckDetails.EnergyIds)
                         {
-                            <img class="deck-details-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
+                            <img class="deck-details-edit-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
                         }*@
                 </div>
             </div>
                 
             <VerticalSpacer Value="8"/>
-            <hr class="deck-details-header__separator">
+            <hr class="deck-details-edit-header__separator">
         </div>
         
         @if (CurrentTab is Tab.Cards)
         {
-            <div class="deck-details-cards">
+            <div class="deck-details-edit-cards">
                 @if (TCGPCards.Count > 0)
                 {
                     foreach (TCGPCard card in TCGPCards)
                     {
-                        <img class="deck-details-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-edit-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
                     }
                 
                 }
@@ -90,7 +90,7 @@
         }
         else if (CurrentTab is Tab.Overview)
         {
-            <div class="deck-details-overview">
+            <div class="deck-details-edit-overview">
                 @if (TCGPCards.Count <= 0)
                 {
                     @*<LoadingWheel/>*@
@@ -99,7 +99,7 @@
                 {
                     foreach (TCGPCard card in TCGPCards)
                     {
-                        <img class="deck-details-overview__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-edit-overview__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
                     }
                 }
             </div>
@@ -125,7 +125,7 @@
     
     @if (IsMobile)
     {
-        <div class="deck-details-page-test">
+        <div class="deck-details-cards-edit">
             <div class="deck-details-header">
                 <VerticalSpacer Value="8"/>
                 <hr class="deck-details-header__separator">
@@ -149,5 +149,5 @@
         </div>
     }
     
-    <div class="deck-details-right-side"></div>
+    <div class="deck-details-edit-right-side"></div>
 </div>
