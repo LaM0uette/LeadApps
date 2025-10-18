@@ -13,6 +13,7 @@ public static class DeckItemEndpoints
         RouteGroupBuilder group = app.MapGroup("/api/deckItems");
 
         group.MapGet("page", GetPageAsync);
+        group.MapGet("count", GetCountAsync);
         group.MapGet("deckItem/{code}", GetByCodeAsync);
         group.MapPost("", CreateAsync);
         group.MapPut("{id:int}", UpdateAsync);
@@ -73,6 +74,12 @@ public static class DeckItemEndpoints
     {
         bool ok = await service.DeleteAsync(id, ct);
         return ok ? Results.NoContent() : Results.NotFound();
+    }
+    
+    private static async Task<IResult> GetCountAsync([FromServices] IDeckItemService service, CancellationToken ct)
+    {
+        int count = await service.GetTotalCountAsync(ct);
+        return Results.Ok(count);
     }
     
     #endregion

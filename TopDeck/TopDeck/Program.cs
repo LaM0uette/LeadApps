@@ -75,6 +75,7 @@ builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 builder.Services.AddScoped<IAuthUserRequester, FakeAuthUserRequester>();
 builder.Services.AddScoped<IUserService, FakeUserService>();
 
+// Use real API-backed services for prerendering/SSR
 builder.Services.AddSingleton<IDeckItemService, FakeDeckItemService>();
 builder.Services.AddSingleton<IDeckDetailsService, FakeDeckDetailsService>();
 

@@ -11,6 +11,11 @@ public class FakeDeckItemService : IDeckItemService
         IReadOnlyList<DeckItem> result = [];
         return Task.FromResult(result);
     }
+
+    public Task<int> GetDeckItemCountAsync(CancellationToken ct = default)
+    {
+        return Task.FromResult(0);
+    }
     
     public Task<DeckItem?> GetByCodeAsync(string code, CancellationToken ct = default)
     {

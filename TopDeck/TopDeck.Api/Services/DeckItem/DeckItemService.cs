@@ -28,7 +28,7 @@ public class DeckItemService : IDeckItemService
     {
         return await _repo.DbSet
             .AsNoTracking().AsSplitQuery()
-            .OrderBy(d => d.CreatedAt).ThenBy(d => d.Id)
+            .OrderByDescending(d => d.UpdatedAt).ThenByDescending(d => d.CreatedAt)
             .Skip(skip).Take(take)
             .Select(DeckItemMapper.Expression)
             .ToListAsync(ct);
@@ -88,6 +88,11 @@ public class DeckItemService : IDeckItemService
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
     {
         return await _repo.DeleteAsync(id, ct);
+    }
+
+    public async Task<int> GetTotalCountAsync(CancellationToken ct = default)
+    {
+        return await _repo.CountAsync(ct);
     }
 
     #endregion

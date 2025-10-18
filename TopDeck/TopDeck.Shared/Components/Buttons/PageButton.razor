@@ -1,0 +1,16 @@
+﻿@namespace TopDeck.Shared.Components
+@inherits PageButtonBase
+
+
+@if (IsEllipsis)
+{
+    <span class="page-button-ellipsis">…</span>
+}
+else
+{
+    <button class="page-button @(IsCurrent ? "page-button--active" : null)"
+            disabled="@IsCurrent"
+            @onclick="() => Clicked.InvokeAsync(Page)">
+        @Page
+    </button>
+}

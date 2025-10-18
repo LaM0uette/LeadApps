@@ -43,6 +43,12 @@ public class DeckItemService : ApiService, IDeckItemService
     {
         return base.DeleteAsync($"{_route}/{id}", ct);
     }
+    
+    public async Task<int> GetDeckItemCountAsync(CancellationToken ct = default)
+    {
+        int? count = await GetJsonAsync<int>($"{_route}/count", ct);
+        return count ?? 0;
+    }
 
     #endregion
 }

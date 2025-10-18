@@ -8,6 +8,8 @@
   "component.button.login.text": "Log in",
   "component.button.logout.text": "Log out",
   "component.button.back.text": "Back",
+  "component.pageButton.previous.text": "Previous",
+    "component.pageButton.next.text": "Next",
   "component.loadingWheel.text": "Loading…",
   "feedback.text.copied": "Copied",
   "feedback.text.notFound": "Not found",

@@ -66,6 +66,11 @@ public class DeckItemRepository : IDeckItemRepository
         return await _db.Decks.AnyAsync(d => d.Code == code, ct);
     }
     
+    public async Task<int> CountAsync(CancellationToken ct = default)
+    {
+        return await _db.Decks.CountAsync(ct);
+    }
+    
     #endregion
 
     #region Methods

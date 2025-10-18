@@ -9,4 +9,5 @@ public interface IDeckItemService
     Task<DeckItemOutputDTO> CreateAsync(DeckItemInputDTO dto, CancellationToken ct = default);
     Task<DeckItemOutputDTO?> UpdateAsync(int id, DeckItemInputDTO dto, CancellationToken ct = default);
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);
+    Task<int> GetTotalCountAsync(CancellationToken ct = default);
 }

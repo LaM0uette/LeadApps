@@ -1,0 +1,37 @@
+﻿.page-button-ellipsis { 
+    padding: 0 6px;
+    color: var(--color-text);
+}
+
+.page-button {
+    height: 25px;
+
+    font-family: var(--font-bold), sans-serif;
+    font-size: 0.9em;
+
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--color-text);
+
+    cursor: var(--cursor-pointer);
+    user-select: none;
+}
+
+    .page-button:hover {
+        color: var(--color-text-strong);
+        border-bottom: 2px solid var(--color-text-strong);
+    }
+    
+    .page-button:active {
+        opacity: 0.8;
+    }
+
+    .page-button--active {
+        font-family: var(--font-extra-bold), sans-serif;
+        color: var(--color-text-strong);
+        
+        border-bottom: 2px solid var(--color-text-strong);
+
+        cursor: var(--cursor-default);
+    }

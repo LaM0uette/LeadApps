@@ -14,4 +14,5 @@ public interface IDeckItemRepository
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);
     
     Task<bool> ExistsByCodeAsync(string code, CancellationToken ct = default);
+    Task<int> CountAsync(CancellationToken ct = default);
 }

@@ -19,19 +19,22 @@ public static class DeckDetailsMapper
         deck.DeckTags.Select(tag => tag.TagId),
         deck.Likes.Select(like => like.User.Uuid.ToString()),
         deck.Dislikes.Select(dislike => dislike.User.Uuid.ToString()),
-        deck.Suggestions.Select(s => new DeckDetailsSuggestionOutputDTO(
-            s.Id,
-            s.Suggestor.Uuid.ToString(),
-            s.Suggestor.UserName,
-            s.AddedCards.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)),
-            s.RemovedCards.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)),
-            s.AddedEnergyIds,
-            s.RemovedEnergyIds,
-            s.Likes.Select(l => l.User.Uuid.ToString()),
-            s.Dislikes.Select(dl => dl.User.Uuid.ToString()),
-            s.CreatedAt,
-            s.UpdatedAt
-        )),
+        deck.Suggestions
+            .OrderByDescending(s => s.UpdatedAt)
+            .ThenByDescending(s => s.CreatedAt)
+            .Select(s => new DeckDetailsSuggestionOutputDTO(
+                s.Id,
+                s.Suggestor.Uuid.ToString(),
+                s.Suggestor.UserName,
+                s.AddedCards.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)),
+                s.RemovedCards.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)),
+                s.AddedEnergyIds,
+                s.RemovedEnergyIds,
+                s.Likes.Select(l => l.User.Uuid.ToString()),
+                s.Dislikes.Select(dl => dl.User.Uuid.ToString()),
+                s.CreatedAt,
+                s.UpdatedAt
+            )),
         deck.CreatedAt,
         deck.UpdatedAt
     );
