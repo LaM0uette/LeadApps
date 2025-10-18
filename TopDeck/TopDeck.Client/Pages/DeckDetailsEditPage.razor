@@ -63,9 +63,64 @@
             <hr class="deck-details-header__separator">
         </div>
         
-        <div class="deck-details-cards">
+        @if (CurrentTab is Tab.Cards)
+        {
+            <div class="deck-details-cards">
+                @if (TCGPCards.Count > 0)
+                {
+                    foreach (TCGPCard card in TCGPCards)
+                    {
+                        <img class="deck-details-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                    }
+                
+                }
+
+                @if (TCGPCards.Count < 20)
+                {
+                    if (IsMobile)
+                    {
+                        <PlusButton Width="115px" Height="160px"/>
+                    }
+                    else
+                    {
+                        <PlusButton Width="192px" Height="267px"/>
+                    }
+                }
+            </div>
+        }
+        else if (CurrentTab is Tab.Overview)
+        {
+            <div class="deck-details-overview">
+                @if (TCGPCards.Count <= 0)
+                {
+                    @*<LoadingWheel/>*@
+                }
+                else
+                {
+                    foreach (TCGPCard card in TCGPCards)
+                    {
+                        <img class="deck-details-overview__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                    }
+                }
+            </div>
+        }
+        
+        @if (IsMobile)
+        {
+            <a class="deck-details-back-button" href="/decks">
+                <img class="deck-details-back-button__icon" src="img/arrow-back-icon.svg" alt="back button"/>
+            </a>
             
-        </div>
+            <div class="deck-details-tabs">
+                <button class="deck-details-tab-button @(CurrentTab is Tab.Cards ? "active" : "")" @onclick="() => SelectTab(Tab.Cards)">
+                    <img class="deck-details-tab-button__icon" src="img/card-tab-icon@(CurrentTab is Tab.Cards ? "-active" : "").svg" alt="card tab button"/>
+                </button>
+
+                <button class="deck-details-tab-button @(CurrentTab is Tab.Overview ? "active" : "")" @onclick="() => SelectTab(Tab.Overview)">
+                    <img class="deck-details-tab-button__icon" src="img/overview-tab-icon@(CurrentTab is Tab.Overview ? "-active" : "").svg" alt="overview tab button"/>
+                </button>
+            </div>
+        }
     </div>
     
     <div class="deck-details-right-side"></div>

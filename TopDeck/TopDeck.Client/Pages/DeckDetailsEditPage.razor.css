@@ -13,6 +13,13 @@
 
 .deck-details-right-side {
     display: none;
+
+    width: 95%;
+
+    padding: 140px 0 65px 0;
+    box-sizing: border-box;
+
+    overflow: hidden;
 }
 
 
@@ -138,6 +145,34 @@
 
     overflow-y: auto;
 }
+
+    .deck-details-cards__card {
+        width: 115px;
+        height: auto;
+        justify-self: center;
+    }
+
+
+.deck-details-overview {
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 65px);
+    justify-content: center;
+    align-content: start;
+    gap: 5px;
+
+    padding: 10px 5px;
+    box-sizing: border-box;
+
+    overflow-y: auto;
+}
+
+    .deck-details-overview__card {
+        width: 65px;
+        height: auto;
+        justify-self: center;
+    }
     
 
 @media (min-width: 1366px) {
@@ -183,11 +218,161 @@
         }
 }
 
+
+.deck-details-back-button {
+    position: absolute;
+    bottom: 55px;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 50px;
+    height: 50px;
+    text-decoration: none;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: var(--color-bg);
+    outline: 1px solid var(--color-outline);
+
+    border-radius: 50%;
+    box-shadow: var(--shadow-m);
+
+    cursor: var(--cursor-pointer);
+
+    z-index: 3;
+    user-select: none;
+}
+
+.deck-details-back-button:hover {
+    opacity: 0.8;
+}
+
+.deck-details-back-button:active {
+    opacity: 0.6;
+}
+
+.deck-details-back-button__icon {
+    width: 24px;
+    height: 24px;
+}
+
+
+.deck-details-tabs {
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+
+    user-select: none;
+}
+
+
+.deck-details-tab-button {
+    width: 80px;
+    height: 40px;
+
+    border: none;
+    background: transparent;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: var(--cursor-pointer);
+}
+
+.deck-details-tab-button:hover > .deck-details-tab-button__icon {
+    opacity: 0.8;
+}
+
+.deck-details-tab-button:active > .deck-details-tab-button__icon {
+    opacity: 0.6;
+}
+
+.deck-details-tab-button__icon {
+    width: 24px;
+    height: 24px;
+}
+
+
 @media (min-width: 2048px) {
     .deck-details-cards {
         grid-template-columns: repeat(auto-fill, 230px);
     }
     .deck-details-cards__card {
         width: 230px;
+    }
+}
+@media (min-width: 1366px) {
+    .deck-details-page-container {
+        grid-template-columns: 0.9fr 2fr 0.9fr;
+        gap: 25px;
+    }
+
+    .deck-details-left-side {
+        display: inline;
+    }
+
+    .deck-details-right-side {
+        display: inline;
+    }
+
+    .deck-details-page {
+        outline: 1px solid var(--color-outline);
+    }
+
+    .deck-details-header {
+        padding: 12px;
+    }
+
+    .deck-details-title-panel-container {
+        transform: scale(1.3);
+        transform-origin: top left;
+    }
+
+    .deck-details-highlight {
+        grid-template-columns: 3fr 2fr 3fr;
+    }
+
+    .deck-details-cards {
+        grid-template-columns: repeat(auto-fill, 200px);
+        gap: 25px;
+        padding: 12px;
+    }
+    .deck-details-cards__card {
+        width: 192px;
+    }
+
+    .deck-details-overview {
+        grid-template-columns: repeat(auto-fill, 110px);
+        gap: 6px;
+        padding: 12px;
+    }
+    .deck-details-overview__card {
+        width: 110px;
+    }
+}
+
+@media (min-width: 2048px) {
+    .deck-details-cards {
+        grid-template-columns: repeat(auto-fill, 230px);
+    }
+    .deck-details-cards__card {
+        width: 230px;
+    }
+
+    .deck-details-overview {
+        grid-template-columns: repeat(auto-fill, 160px);
+    }
+    .deck-details-overview__card {
+        width: 160px;
     }
 }

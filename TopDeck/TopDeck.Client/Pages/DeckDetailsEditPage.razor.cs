@@ -5,6 +5,16 @@ namespace TopDeck.Client.Pages;
 
 public class DeckDetailsEditPagePresenter : PresenterBase
 {
+    #region Enums
+    
+    protected enum Tab
+    {
+        Cards,
+        Overview
+    }
+
+    #endregion
+    
     #region Statements
     
     protected readonly Dictionary<int, string> EnergyTypes = new()
@@ -23,12 +33,18 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     protected string DeckName { get; set; } = "Nom du Deck";
     protected IReadOnlyList<TCGPCard> TCGPHighlightedCards { get; set; } = [];
+    protected IReadOnlyList<TCGPCard> TCGPCards { get; set; } = [];
+    
+    protected Tab CurrentTab { get; set; } = Tab.Cards;
 
     #endregion
 
     #region Methods
 
-    //
+    protected void SelectTab(Tab tab)
+    {
+        CurrentTab = tab;
+    }
 
     #endregion
 }
