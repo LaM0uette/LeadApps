@@ -21,9 +21,34 @@
 
             <div class="deck-details-highlight">
                 <div class="deck-details-highlighted-cards">
-                    @*<img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                    
+                    @if (TCGPHighlightedCards.Count == 0)
+                    {
+                        <PlusButton Width="86px" Height="120px"/>
+                    }
+                    else
+                    {
+                        <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                    }
+                    
+                    @if (TCGPHighlightedCards.Count <= 1)
+                    {
+                        <PlusButton Width="68px" Height="96px"/>
+                    }
+                    else
+                    {
                         <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
-                        <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>*@
+                    }
+                    
+                    @if (TCGPHighlightedCards.Count <= 2)
+                    {
+                        <PlusButton Width="68px" Height="96px"/>
+                    }
+                    else
+                    {
+                        <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>
+                    }
+                    
                 </div>
 
                 <div class="deck-details-energies">
@@ -42,4 +67,6 @@
             
         </div>
     </div>
+    
+    <div class="deck-details-right-side"></div>
 </div>

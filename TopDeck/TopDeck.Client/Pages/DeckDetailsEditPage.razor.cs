@@ -1,4 +1,5 @@
 ﻿using TopDeck.Shared.Components;
+using TopDeck.Shared.Models.TCGP;
 
 namespace TopDeck.Client.Pages;
 
@@ -21,6 +22,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     };
     
     protected string DeckName { get; set; } = "Nom du Deck";
+    protected IReadOnlyList<TCGPCard> TCGPHighlightedCards { get; set; } = [];
 
     #endregion
 

@@ -6,6 +6,15 @@
     grid-template-columns: 1fr;
 }
 
+.deck-details-left-side {
+    display: none;
+}
+
+
+.deck-details-right-side {
+    display: none;
+}
+
 
 .deck-details-page {
     position: relative;
@@ -74,8 +83,7 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-end;
-
-    overflow: hidden;
+    gap: 8px;
 
     z-index: 1;
 }
@@ -136,6 +144,14 @@
     .deck-details-page-container {
         grid-template-columns: 0.9fr 2fr 0.9fr;
         gap: 25px;
+    }
+
+    .deck-details-left-side {
+        display: inline;
+    }
+
+    .deck-details-right-side {
+        display: inline;
     }
     
     .deck-details-page {
