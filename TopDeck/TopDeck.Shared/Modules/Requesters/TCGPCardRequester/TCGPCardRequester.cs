@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using TopDeck.Shared.Models.TCGP;
@@ -23,6 +24,17 @@ public class TCGPCardRequester : ITCGPCardRequester
 
     #region Methods
 
+    public async Task<List<TCGPCard>> GetAllTCGPCardsAsync(string? cultureOverride = null, bool loadThumbnail = false, CancellationToken ct = default)
+    {
+        string culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+        string urlParams = $"?lng={cultureOverride ?? culture}";
+        string loadThumbnailParam = $"&thumbnail={(loadThumbnail ? "true" : "false")}";
+        
+        List<TCGPCard>? tcgCards = await GetJsonAsync<List<TCGPCard>>($"/cards{urlParams}{loadThumbnailParam}", ct);
+        
+        return tcgCards ?? [];
+    }
+
     public async Task<List<TCGPCard>> GetTCGPCardsByRequestAsync(TCGPCardsRequest deck, string? cultureOverride = null, bool loadThumbnail = false, CancellationToken ct = default)
     {
         string culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
@@ -37,6 +49,11 @@ public class TCGPCardRequester : ITCGPCardRequester
         return cards;
     }
     
+    
+    private async Task<T?> GetJsonAsync<T>(string requestUri, CancellationToken ct = default)
+    {
+        return await _http.GetFromJsonAsync<T>(requestUri, ct);
+    }
 
     private async Task<T> PostAsync<T>(string path, object? body = null, CancellationToken cancellationToken = default)
     {

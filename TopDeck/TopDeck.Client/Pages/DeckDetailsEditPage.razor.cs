@@ -62,14 +62,11 @@ public class DeckDetailsEditPagePresenter : PresenterBase
                 new TCGPCardRequest("A1", 14),
                 new TCGPCardRequest("A1", 15),
                 new TCGPCardRequest("A1", 16),
-                new TCGPCardRequest("A1", 17),
-                new TCGPCardRequest("A1", 18),
-                new TCGPCardRequest("A1", 19),
-                new TCGPCardRequest("A1", 20)
+                new TCGPCardRequest("A1", 17)
             ]);
         
-        TCGPAllCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest, loadThumbnail:true);
-        TCGPCards = TCGPAllCards.Take(17).ToList();
+        TCGPCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest, loadThumbnail:true);
+        TCGPAllCards = await _tcgpCardRequester.GetAllTCGPCardsAsync(loadThumbnail:true);
     }
 
     #endregion
