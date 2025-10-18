@@ -2,9 +2,21 @@
 @inherits TitlePanelBase
 
 
-<div class="title-panel" 
+<div class="title-panel"
      style="width: @Width; height: @Height; font-size: @FontSize;"
      @onclick:preventDefault 
      @onclick:stopPropagation>
-    <p class="title-panel__text">@Name</p>
+
+    @if (IsEditing)
+    {
+        <input class="title-panel__input"
+               value="@EditableName"
+               @oninput="OnNameChanged"
+               @onblur="StopEditing"
+               @onkeydown="HandleKeyDown" />
+    }
+    else
+    {
+        <p class="title-panel__text" @ondblclick="StartEditing">@Name</p>
+    }
 </div>

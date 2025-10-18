@@ -19,6 +19,8 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         { 9, "Dragon" },
         { 10, "Colorless" }
     };
+    
+    protected string DeckName { get; set; } = "Nom du Deck";
 
     #endregion
 
