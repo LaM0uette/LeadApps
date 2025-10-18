@@ -1,0 +1,37 @@
+﻿.deck-item-add-button {
+    position: relative;
+    
+    width: 165px;
+    height: 250px;
+    
+    background: var(--color-bg);
+    text-decoration: none;
+    
+    border: none;
+    outline: 1px solid var(--color-outline);
+    border-radius: var(--radius-l);
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: var(--drop-shadow-s);
+
+    overflow: hidden;
+    
+    cursor: var(--cursor-pointer);
+    user-select: none;
+}
+
+    .deck-item-add-button__plus-icon {
+        width: 40%;
+        height: auto;
+    }
+
+
+@media (min-width: 1366px) {
+    .deck-item-add-button {
+        width: 275px;
+        height: 380px;
+    }
+}

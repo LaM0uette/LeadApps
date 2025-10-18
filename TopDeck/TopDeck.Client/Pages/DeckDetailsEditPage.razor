@@ -1,0 +1,45 @@
+﻿@page "/decks/edit"
+@inherits DeckDetailsEditPagePresenter
+@attribute [AllowAnonymous]
+
+<PageTitle>Deck edit</PageTitle>
+
+
+<div class="deck-details-page-container">
+    <div class="deck-details-left-side"></div>
+    
+    <div class="deck-details-page">
+        <div class="deck-details-header">
+            <div class="deck-details-header-top">
+                <div class="deck-details-title-panel-container">
+                    @* <TitlePanel Name="@DeckDetails.Name" Width="200px" Height="35px" FontSize="1.1em"/> *@
+                </div>
+            </div>
+
+            @if (IsMobile) { <VerticalSpacer Value="10"/> }
+            else { <VerticalSpacer Value="25"/> }
+
+            <div class="deck-details-highlight">
+                <div class="deck-details-highlighted-cards">
+                    @*<img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>*@
+                </div>
+
+                <div class="deck-details-energies">
+                    @*@foreach (int energyId in DeckDetails.EnergyIds)
+                        {
+                            <img class="deck-details-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
+                        }*@
+                </div>
+            </div>
+                
+            <VerticalSpacer Value="8"/>
+            <hr class="deck-details-header__separator">
+        </div>
+        
+        <div class="deck-details-cards">
+            
+        </div>
+    </div>
+</div>
