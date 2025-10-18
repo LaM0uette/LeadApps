@@ -123,5 +123,31 @@
         }
     </div>
     
+    @if (IsMobile)
+    {
+        <div class="deck-details-page-test">
+            <div class="deck-details-header">
+                <VerticalSpacer Value="8"/>
+                <hr class="deck-details-header__separator">
+            </div>
+            
+            <div class="deck-details-cards">
+                <div class="deck-details-cards">
+                    @if (TCGPCards.Count <= 0)
+                    {
+                        <LoadingWheel/>
+                    }
+                    else
+                    {
+                        foreach (TCGPCard card in TCGPCards)
+                        {
+                            <img class="deck-details-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    
     <div class="deck-details-right-side"></div>
 </div>
