@@ -39,6 +39,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected IReadOnlyList<TCGPCard> TCGPAllCards { get; set; } = [];
     
     protected Tab CurrentTab { get; set; } = Tab.Cards;
+    protected bool IsEditing { get; set; }
     
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
 
@@ -76,6 +77,11 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected void SelectTab(Tab tab)
     {
         CurrentTab = tab;
+    }
+
+    protected void SetEditMode()
+    {
+        IsEditing = true;
     }
 
     #endregion

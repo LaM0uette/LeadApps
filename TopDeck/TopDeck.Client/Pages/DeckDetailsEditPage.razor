@@ -79,11 +79,11 @@
                 {
                     if (IsMobile)
                     {
-                        <PlusButton Width="115px" Height="160px"/>
+                        <PlusButton Width="115px" Height="160px" Clicked="SetEditMode"/>
                     }
                     else
                     {
-                        <PlusButton Width="192px" Height="267px"/>
+                        <PlusButton Width="192px" Height="267px" Clicked="SetEditMode"/>
                     }
                 }
             </div>
@@ -123,7 +123,7 @@
         }
     </div>
     
-    @if (IsMobile)
+    @if (IsMobile && CurrentTab == Tab.Cards && IsEditing)
     {
         <div class="deck-details-cards-edit">
             <div class="deck-details-cards-edit-header">
