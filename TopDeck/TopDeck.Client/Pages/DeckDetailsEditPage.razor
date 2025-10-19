@@ -68,9 +68,12 @@
             <div class="deck-details-edit-cards">
                 @if (TCGPCards.Count > 0)
                 {
-                    foreach (TCGPCard card in TCGPCards)
+                    foreach ((TCGPCardRef cardRef, int quantity) in TCGPCards)
                     {
-                        <img class="deck-details-edit-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        for (int i = 0; i < quantity; i++)
+                        {
+                            <img class="deck-details-edit-cards__card" src="@cardRef.ImageUrl" alt="@cardRef.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        }
                     }
                 
                 }
@@ -97,9 +100,12 @@
                 }
                 else
                 {
-                    foreach (TCGPCard card in TCGPCards)
+                    foreach ((TCGPCardRef cardRef, int quantity) in TCGPCards)
                     {
-                        <img class="deck-details-edit-overview__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        for (int i = 0; i < quantity; i++)
+                        {
+                            <img class="deck-details-edit-overview__card" src="@cardRef.ImageUrl" alt="@cardRef.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        }
                     }
                 }
             </div>
@@ -128,9 +134,12 @@
         <div class="deck-details-cards-edit">
             <div class="deck-details-cards-edit-header">
                 <div class="deck-details-cards-edit-cards-preview">
-                    @foreach (TCGPCard card in TCGPCards)
+                    @foreach ((TCGPCardRef cardRef, int quantity) in TCGPCards)
                     {
-                        <img class="deck-details-cards-edit-cards-preview__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        for (int i = 0; i < quantity; i++)
+                        {
+                            <img class="deck-details-cards-edit-cards-preview__card" src="@cardRef.ImageUrl" alt="@cardRef.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        }
                     }
                 </div>
                 <VerticalSpacer Value="8"/>
@@ -146,7 +155,9 @@
                 {
                     foreach (TCGPCard card in TCGPAllCards)
                     {
-                        <img class="deck-details-cards-edit-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <button class="deck-details-cards-edit-card-button" @onclick="() => AddToDeck(card)">
+                            <img class="deck-details-cards-edit-card-button__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        </button>
                     }
                 }
             </div>

@@ -35,7 +35,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     protected string DeckName { get; set; } = "Nom du Deck";
     protected IReadOnlyList<TCGPCard> TCGPHighlightedCards { get; set; } = [];
-    protected IReadOnlyList<TCGPCard> TCGPCards { get; set; } = [];
+    protected Dictionary<TCGPCardRef, int> TCGPCards { get; set; } = [];
     protected IReadOnlyList<TCGPCard> TCGPAllCards { get; set; } = [];
     
     protected Tab CurrentTab { get; set; } = Tab.Cards;
@@ -45,28 +45,6 @@ public class DeckDetailsEditPagePresenter : PresenterBase
 
     protected override async Task OnInitializedAsync()
     {
-        TCGPCardsRequest deckRequest = new(
-            [
-                new TCGPCardRequest("A1", 1),
-                new TCGPCardRequest("A1", 2),
-                new TCGPCardRequest("A1", 3),
-                new TCGPCardRequest("A1", 4),
-                new TCGPCardRequest("A1", 5),
-                new TCGPCardRequest("A1", 6),
-                new TCGPCardRequest("A1", 7),
-                new TCGPCardRequest("A1", 8),
-                new TCGPCardRequest("A1", 9),
-                new TCGPCardRequest("A1", 10),
-                new TCGPCardRequest("A1", 11),
-                new TCGPCardRequest("A1", 12),
-                new TCGPCardRequest("A1", 13),
-                new TCGPCardRequest("A1", 14),
-                new TCGPCardRequest("A1", 15),
-                new TCGPCardRequest("A1", 16),
-                new TCGPCardRequest("A1", 17)
-            ]);
-        
-        TCGPCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest, loadThumbnail:true);
         TCGPAllCards = await _tcgpCardRequester.GetAllTCGPCardsAsync(loadThumbnail:true);
     }
 
@@ -82,6 +60,23 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected void SetEditMode()
     {
         IsEditing = true;
+    }
+
+    protected void AddToDeck(TCGPCard card)
+    {
+        TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
+
+        int existingCountForName = TCGPCards
+            .Where(kv => kv.Key.Name.Equals(card.Name, StringComparison.OrdinalIgnoreCase))
+            .Sum(kv => kv.Value);
+
+        if (existingCountForName >= 2)
+            return;
+
+        if (TCGPCards.TryAdd(cardRef, 1))
+            return;
+
+        TCGPCards[cardRef]++;
     }
 
     #endregion
