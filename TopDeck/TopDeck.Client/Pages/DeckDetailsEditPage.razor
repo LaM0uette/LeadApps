@@ -155,24 +155,38 @@
                 {
                     foreach (TCGPCard card in TCGPAllCards)
                     {
-                        <button class="deck-details-cards-edit-card-button" @onclick="() => AddToDeck(card)">
+                        int cardQuantityInDeck = GetCardQuantityInDeck(card);
+                        
+                        <button class="deck-details-cards-edit-card-button" 
+                                @onclick:preventDefault="true"
+                                @onclick:stopPropagation="true"
+                                @onclick="() => AddToDeck(card)">
                             <img class="deck-details-cards-edit-card-button__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
-                            @if (GetCardQuantityInDeck(card) > 0)
+                            @if (cardQuantityInDeck > 0)
                             {
                                 <div class="deck-details-cards-edit-card-button-overlay">
-                                    <div class="deck-details-cards-edit-card-button-overlay-remove-button">
+                                    <button class="deck-details-cards-edit-card-button-overlay-remove-button" 
+                                            @onclick:preventDefault="true"
+                                            @onclick:stopPropagation="true"
+                                            @onclick="() => RemoveFromDeck(card)">
                                         <img class="deck-details-cards-edit-card-button-overlay-remove-button__icon" src="img/suggestion-minus-icon.svg" alt="minus icon"/>
-                                    </div>
+                                    </button>
                                     
                                     <div class="deck-details-cards-edit-card-button-overlay-count">
-                                        @GetCardQuantityInDeck(card)/2
+                                        @(cardQuantityInDeck)/2
                                     </div>
                                     
                                     <div class="deck-details-cards-edit-card-button-overlay-controls">
-                                        <button class="deck-details-cards-edit-card-button-overlay-controls-btn">
+                                        <button class="deck-details-cards-edit-card-button-overlay-controls-btn" 
+                                                @onclick:preventDefault="true"
+                                                @onclick:stopPropagation="true"
+                                                @onclick="() => RemoveOneFromDeck(card)">
                                             <img src="img/suggestion-minus-icon.svg" alt="minus"/>
                                         </button>
-                                        <button class="deck-details-cards-edit-card-button-overlay-controls-btn">
+                                        <button class="deck-details-cards-edit-card-button-overlay-controls-btn" 
+                                                @onclick:preventDefault="true"
+                                                @onclick:stopPropagation="true"
+                                                @onclick="() => AddToDeck(card)" disabled="@(cardQuantityInDeck >= MAX_IDENTICAL_CARDS_IN_DECK)">
                                             <img src="img/suggestion-plus-icon.svg" alt="plus"/>
                                         </button>
                                     </div>

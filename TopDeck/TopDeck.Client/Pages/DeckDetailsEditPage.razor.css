@@ -394,6 +394,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    
+    border: none;
 
     background: var(--color-bg);
     box-shadow: var(--shadow-l);
@@ -405,6 +407,14 @@
         width: 70%;
         height: 70%;
         justify-self: center;
+    }
+
+    .deck-details-cards-edit-card-button-overlay-remove-button:hover {
+        opacity: 0.8;
+    }
+    
+    .deck-details-cards-edit-card-button-overlay-remove-button:active {
+        opacity: 0.6;
     }
 
 
@@ -450,6 +460,22 @@
         width: auto;
         height: 70%;
         object-fit: contain;
+    }
+
+    .deck-details-cards-edit-card-button-overlay-controls-btn:hover img {
+        opacity: 0.8;
+    }
+    
+    .deck-details-cards-edit-card-button-overlay-controls-btn:active img {
+        opacity: 0.6;
+    }
+
+    .deck-details-cards-edit-card-button-overlay-controls-btn:disabled {
+        cursor: default;
+    }
+
+    .deck-details-cards-edit-card-button-overlay-controls-btn:disabled img {
+        opacity: 0.4;
     }
     
 

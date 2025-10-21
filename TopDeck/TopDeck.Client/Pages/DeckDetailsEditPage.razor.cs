@@ -20,7 +20,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     #region Statements
     
     private const int MAX_CARDS_IN_DECK = 20;
-    private const int MAX_IDENTICAL_CARDS_IN_DECK = 2;
+    protected const int MAX_IDENTICAL_CARDS_IN_DECK = 2;
     private const int MAX_CARDS_DURING_BUILD_DECK = 30;
     
     protected readonly Dictionary<int, string> EnergyTypes = new()
@@ -84,6 +84,28 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             return;
 
         TCGPCards[cardRef]++;
+    }
+    
+    protected void RemoveOneFromDeck(TCGPCard card)
+    {
+        TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
+
+        if (!TCGPCards.TryGetValue(cardRef, out int quantity))
+            return;
+
+        if (quantity <= 1)
+        {
+            TCGPCards.Remove(cardRef);
+            return;
+        }
+
+        TCGPCards[cardRef]--;
+    }
+    
+    protected void RemoveFromDeck(TCGPCard card)
+    {
+        TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
+        TCGPCards.Remove(cardRef);
     }
     
     protected int GetCardQuantityInDeck(TCGPCard card)
