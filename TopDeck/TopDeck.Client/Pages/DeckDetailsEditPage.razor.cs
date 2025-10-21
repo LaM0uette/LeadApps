@@ -120,7 +120,6 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     
     
-    [Inject] IJSRuntime JS { get; set; } = null!;
 
     protected string GetCardElementId(TCGPCard c) => $"card-{c.Collection.Code}-{c.CollectionNumber}";
 
