@@ -43,10 +43,13 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected Dictionary<TCGPCardRef, int> TCGPCards { get; set; } = [];
     protected IReadOnlyList<TCGPCard> TCGPAllCards { get; set; } = [];
     
-    protected Tab CurrentTab { get; set; } = Tab.Cards;
-    protected bool IsEditing { get; set; }
+    protected Tab CurrentTab { get; private set; } = Tab.Cards;
+    protected bool IsEditing { get; private set; }
+    protected string? SelectedCardId { get; private set; }
     
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
+    
+    private TCGPCardRef? _selectedCardRef { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -65,6 +68,25 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected void SetEditMode()
     {
         IsEditing = true;
+    }
+    
+    protected string GetCardElementId(TCGPCard c)
+    {
+        return $"card-{c.Collection.Code}-{c.CollectionNumber}";
+    }
+    
+    protected async Task SelectCard(string uniqueId, TCGPCardRef cardRef)
+    {
+        SelectedCardId = uniqueId;
+        _selectedCardRef = cardRef;
+        
+        TCGPCard? card = TCGPAllCards.FirstOrDefault(c => c.Collection.Code == cardRef.CollectionCode && c.CollectionNumber == cardRef.CollectionNumber);
+        if (card is null) 
+            return;
+        
+        string id = GetCardElementId(card);
+        await InvokeAsync(StateHasChanged);
+        await JS.InvokeVoidAsync("TopDeck.scrollCardIntoView", id);
     }
 
     protected void AddToDeck(TCGPCard card)
@@ -109,6 +131,26 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         TCGPCards.Remove(cardRef);
     }
     
+    protected void RemoveFromDeckRef(TCGPCardRef cardRef)
+    {
+        if (!TCGPCards.TryGetValue(cardRef, out int quantity)) 
+            return;
+        
+        if (quantity <= 1)
+        {
+            TCGPCards.Remove(cardRef);
+        }
+        else
+        {
+            TCGPCards[cardRef] = quantity - 1;
+        }
+        
+        if (_selectedCardRef == cardRef && !TCGPCards.ContainsKey(cardRef))
+        {
+            _selectedCardRef = null;
+        }
+    }
+    
     protected int GetCardQuantityInDeck(TCGPCard card)
     {
         TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
@@ -116,35 +158,4 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     }
 
     #endregion
-    
-    
-    
-    
-
-    protected string GetCardElementId(TCGPCard c) => $"card-{c.Collection.Code}-{c.CollectionNumber}";
-
-    protected void RemoveFromDeckRef(TCGPCardRef cardRef)
-    {
-        if (!TCGPCards.TryGetValue(cardRef, out var q)) return;
-        if (q <= 1) TCGPCards.Remove(cardRef);
-        else TCGPCards[cardRef] = q - 1;
-        if (SelectedCardRef == cardRef && !TCGPCards.ContainsKey(cardRef)) SelectedCardRef = null;
-    }
-    
-    
-    protected string? SelectedCardId { get; set; }
-    protected TCGPCardRef? SelectedCardRef { get; set; }
-
-    protected async Task SelectCard(string uniqueId, TCGPCardRef cardRef)
-    {
-        SelectedCardId = uniqueId;
-        SelectedCardRef = cardRef;
-        var card = TCGPAllCards.FirstOrDefault(c =>
-            c.Collection.Code == cardRef.CollectionCode &&
-            c.CollectionNumber == cardRef.CollectionNumber);
-        if (card is null) return;
-        var id = GetCardElementId(card);
-        await InvokeAsync(StateHasChanged);
-        await JS.InvokeVoidAsync("TopDeck.scrollCardIntoView", id);
-    }
 }
