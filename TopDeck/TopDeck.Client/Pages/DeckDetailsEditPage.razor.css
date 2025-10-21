@@ -383,6 +383,76 @@
 }
 
 
+.deck-details-cards-edit-card-button-overlay-remove-button {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: var(--color-bg);
+    box-shadow: var(--shadow-l);
+
+    border-radius: 50%;
+}
+
+    .deck-details-cards-edit-card-button-overlay-remove-button__icon {
+        width: 70%;
+        height: 70%;
+        justify-self: center;
+    }
+
+
+.deck-details-cards-edit-card-button-overlay-count {
+    font-family: var(--font-bold), sans-serif;
+    font-size: 2rem;
+    
+    color: var(--color-text-very-light);
+    
+    pointer-events: none;
+}
+
+
+.deck-details-cards-edit-card-button-overlay-controls {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+
+    background: var(--color-bg);
+    border-radius: 20px;
+    padding: 2px 8px;
+    box-shadow: var(--shadow-s);
+}
+
+    .deck-details-cards-edit-card-button-overlay-controls-btn {
+        width: 40px;
+        height: 30px;
+        border: none;
+        border-radius: 50%;
+        background: transparent;
+    
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    
+        cursor: pointer;
+    }
+    
+    .deck-details-cards-edit-card-button-overlay-controls-btn img {
+        width: auto;
+        height: 70%;
+        object-fit: contain;
+    }
+    
+
 @media (min-width: 1366px) {
     .deck-details-edit-page-container {
         grid-template-columns: 0.9fr 2fr 0.9fr;

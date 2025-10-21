@@ -160,7 +160,22 @@
                             @if (GetCardQuantityInDeck(card) > 0)
                             {
                                 <div class="deck-details-cards-edit-card-button-overlay">
-                                
+                                    <div class="deck-details-cards-edit-card-button-overlay-remove-button">
+                                        <img class="deck-details-cards-edit-card-button-overlay-remove-button__icon" src="img/suggestion-minus-icon.svg" alt="minus icon"/>
+                                    </div>
+                                    
+                                    <div class="deck-details-cards-edit-card-button-overlay-count">
+                                        @GetCardQuantityInDeck(card)/2
+                                    </div>
+                                    
+                                    <div class="deck-details-cards-edit-card-button-overlay-controls">
+                                        <button class="deck-details-cards-edit-card-button-overlay-controls-btn">
+                                            <img src="img/suggestion-minus-icon.svg" alt="minus"/>
+                                        </button>
+                                        <button class="deck-details-cards-edit-card-button-overlay-controls-btn">
+                                            <img src="img/suggestion-plus-icon.svg" alt="plus"/>
+                                        </button>
+                                    </div>
                                 </div>
                             }
                         </button>
