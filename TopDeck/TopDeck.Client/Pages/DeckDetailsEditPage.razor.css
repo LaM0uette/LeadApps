@@ -306,38 +306,68 @@
 
 .deck-details-cards-edit-cards-preview {
     width: 100%;
-    height: 215px;
+    height: 275px;
     
     display: grid;
     grid-auto-flow: row;
-    grid-template-columns: repeat(15, 70px);
+    grid-template-columns: repeat(15, 85px);
     grid-template-rows: repeat(2, 1fr);
-    gap: 4px;
+    gap: 3px;
     
-    padding: 10px;
+    padding: 8px;
     box-sizing: border-box;
     
     overflow-x: auto;
     overflow-y: hidden;
+    
+    scrollbar-width: thin;
+}
+
+
+.deck-details-cards-edit-cards-preview__card-wrapper {
+    position: relative;
 }
 
     .deck-details-cards-edit-cards-preview__card {
-        width: 70px;
+        width: 85px;
         height: auto;
     }
 
-    .deck-details-cards-edit-cards-preview__card.selected {
+    .deck-details-cards-edit-cards-preview__card--selected {
         outline: 3px solid var(--color-outline);
         border-radius: 6px;
     }
-
-    .flash { outline: 3px solid rgba(255,255,255,.9); border-radius: 8px; transition: outline-color .6s; }
     
     .deck-details-cards-edit-cards-preview__remove {
-        display: block;
-        margin: 4px auto 0;
-        font-size: 0.8rem;
-        padding: 2px 6px;
+        position: absolute;
+        top: -5px;
+        left: -6px;
+        
+        width: 100px;
+        height: 30px;
+
+        border: 1px solid var(--color-outline);
+        background: var(--color-bg);
+        color: var(--color-cancel);
+
+        font-family: var(--font), sans-serif;
+        font-size: 0.9em;
+        
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        
+        border-radius: 15px;
+        box-shadow: var(--shadow-l);
+        
+        z-index: 4;
+    }
+
+    .deck-details-cards-edit-cards-preview__remove > img {
+        width: 16px;
+        height: 16px;
     }
 
 
@@ -491,6 +521,14 @@
     .deck-details-cards-edit-card-button-overlay-controls-btn:disabled img {
         opacity: 0.4;
     }
+
+
+.flash {
+    outline: 3px solid rgba(255,255,255,.9);
+    border-radius: 8px;
+
+    transition: outline-color .6s;
+}
     
 
 @media (min-width: 1366px) {

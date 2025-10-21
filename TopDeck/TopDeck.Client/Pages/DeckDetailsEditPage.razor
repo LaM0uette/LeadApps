@@ -141,12 +141,14 @@
                             string uniqueId = $"{cardRef.CollectionCode}-{cardRef.CollectionNumber}-{i}";
                             
                             <div class="deck-details-cards-edit-cards-preview__card-wrapper">
-                                <img class="deck-details-cards-edit-cards-preview__card @(SelectedCardId == uniqueId ? "selected" : null)"
+                                <img class="deck-details-cards-edit-cards-preview__card @(SelectedCardId == uniqueId ? "deck-details-cards-edit-cards-preview__card--selected" : null)"
                                      src="@cardRef.ImageUrl" alt="@cardRef.Name"
                                      @onclick="() => SelectCard(uniqueId, cardRef)"/>
                                 @if (SelectedCardId == uniqueId)
                                 {
-                                    <button class="deck-details-cards-edit-cards-preview__remove" @onclick="() => RemoveFromDeckRef(cardRef)">Remove</button>
+                                    <button class="deck-details-cards-edit-cards-preview__remove" @onclick="() => RemoveFromDeckRef(cardRef)">
+                                        <img src="img/suggestion-minus-icon.svg" alt="minus"/> Remove
+                                    </button>
                                 }
                             </div>
                         }
