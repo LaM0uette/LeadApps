@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using TCGPCardRequester;
 using TopDeck.Shared.Components;
 using TopDeck.Shared.Models.TCGP;
@@ -115,4 +116,36 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     }
 
     #endregion
+    
+    
+    
+    
+    [Inject] IJSRuntime JS { get; set; } = null!;
+
+    protected string GetCardElementId(TCGPCard c) => $"card-{c.Collection.Code}-{c.CollectionNumber}";
+
+    protected void RemoveFromDeckRef(TCGPCardRef cardRef)
+    {
+        if (!TCGPCards.TryGetValue(cardRef, out var q)) return;
+        if (q <= 1) TCGPCards.Remove(cardRef);
+        else TCGPCards[cardRef] = q - 1;
+        if (SelectedCardRef == cardRef && !TCGPCards.ContainsKey(cardRef)) SelectedCardRef = null;
+    }
+    
+    
+    protected string? SelectedCardId { get; set; }
+    protected TCGPCardRef? SelectedCardRef { get; set; }
+
+    protected async Task SelectCard(string uniqueId, TCGPCardRef cardRef)
+    {
+        SelectedCardId = uniqueId;
+        SelectedCardRef = cardRef;
+        var card = TCGPAllCards.FirstOrDefault(c =>
+            c.Collection.Code == cardRef.CollectionCode &&
+            c.CollectionNumber == cardRef.CollectionNumber);
+        if (card is null) return;
+        var id = GetCardElementId(card);
+        await InvokeAsync(StateHasChanged);
+        await JS.InvokeVoidAsync("TopDeck.scrollCardIntoView", id);
+    }
 }

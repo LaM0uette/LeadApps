@@ -326,6 +326,20 @@
         height: auto;
     }
 
+    .deck-details-cards-edit-cards-preview__card.selected {
+        outline: 3px solid var(--color-outline);
+        border-radius: 6px;
+    }
+
+    .flash { outline: 3px solid rgba(255,255,255,.9); border-radius: 8px; transition: outline-color .6s; }
+    
+    .deck-details-cards-edit-cards-preview__remove {
+        display: block;
+        margin: 4px auto 0;
+        font-size: 0.8rem;
+        padding: 2px 6px;
+    }
+
 
 .deck-details-cards-edit-cards {
     height: 100%;

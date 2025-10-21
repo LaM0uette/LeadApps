@@ -138,7 +138,17 @@
                     {
                         for (int i = 0; i < quantity; i++)
                         {
-                            <img class="deck-details-cards-edit-cards-preview__card" src="@cardRef.ImageUrl" alt="@cardRef.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                            string uniqueId = $"{cardRef.CollectionCode}-{cardRef.CollectionNumber}-{i}";
+                            
+                            <div class="deck-details-cards-edit-cards-preview__card-wrapper">
+                                <img class="deck-details-cards-edit-cards-preview__card @(SelectedCardId == uniqueId ? "selected" : null)"
+                                     src="@cardRef.ImageUrl" alt="@cardRef.Name"
+                                     @onclick="() => SelectCard(uniqueId, cardRef)"/>
+                                @if (SelectedCardId == uniqueId)
+                                {
+                                    <button class="deck-details-cards-edit-cards-preview__remove" @onclick="() => RemoveFromDeckRef(cardRef)">Remove</button>
+                                }
+                            </div>
                         }
                     }
                 </div>
@@ -157,7 +167,8 @@
                     {
                         int cardQuantityInDeck = GetCardQuantityInDeck(card);
                         
-                        <button class="deck-details-cards-edit-card-button" 
+                        <button id="@GetCardElementId(card)"
+                                class="deck-details-cards-edit-card-button" 
                                 @onclick:preventDefault="true"
                                 @onclick:stopPropagation="true"
                                 @onclick="() => AddToDeck(card)">
