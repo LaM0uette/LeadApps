@@ -156,6 +156,14 @@
                 </div>
                 <VerticalSpacer Value="8"/>
                 <hr class="deck-details-cards-edit-header__separator">
+                <div class="deck-details-cards-edit-header-deck-info">
+                    <div class="deck-details-cards-edit-header-deck-info__card-count @(TotalCardsInDeck > 20 ? "deck-details-cards-edit-header-deck-info__card-count--over-limit" : null)">
+                        @TotalCardsInDeck/20
+                    </div>
+                    <button class="deck-details-cards-edit-header-deck-info__filter-button">
+                        
+                    </button>
+                </div>
             </div>
             
             <div class="deck-details-cards-edit-cards">

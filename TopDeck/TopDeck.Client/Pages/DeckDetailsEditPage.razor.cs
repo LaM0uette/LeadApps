@@ -42,6 +42,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected IReadOnlyList<TCGPCard> TCGPHighlightedCards { get; set; } = [];
     protected Dictionary<TCGPCardRef, int> TCGPCards { get; set; } = [];
     protected IReadOnlyList<TCGPCard> TCGPAllCards { get; set; } = [];
+    protected int TotalCardsInDeck => TCGPCards.Values.Sum();
     
     protected Tab CurrentTab { get; private set; } = Tab.Cards;
     protected bool IsEditing { get; private set; }
@@ -91,7 +92,10 @@ public class DeckDetailsEditPagePresenter : PresenterBase
 
     protected void AddToDeck(TCGPCard card)
     {
-        if (TCGPCards.Count >= MAX_CARDS_DURING_BUILD_DECK)
+        SelectedCardId = null;
+        _selectedCardRef = null;
+        
+        if (TotalCardsInDeck >= MAX_CARDS_DURING_BUILD_DECK)
             return;
         
         TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
@@ -111,6 +115,9 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     protected void RemoveOneFromDeck(TCGPCard card)
     {
+        SelectedCardId = null;
+        _selectedCardRef = null;
+        
         TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
 
         if (!TCGPCards.TryGetValue(cardRef, out int quantity))
@@ -127,6 +134,9 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     protected void RemoveFromDeck(TCGPCard card)
     {
+        SelectedCardId = null;
+        _selectedCardRef = null;
+        
         TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
         TCGPCards.Remove(cardRef);
     }
@@ -147,6 +157,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         
         if (_selectedCardRef == cardRef && !TCGPCards.ContainsKey(cardRef))
         {
+            SelectedCardId = null;
             _selectedCardRef = null;
         }
     }

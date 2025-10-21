@@ -302,6 +302,38 @@
     margin: 0;
     box-shadow: var(--shadow-s);
 }
+
+
+.deck-details-cards-edit-header-deck-info {
+    width: 100%;
+
+    padding: 12px 22px;
+    box-sizing: border-box;
+    background: var(--color-border);
+    border-radius: 0 0 25px 25px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    z-index: 5;
+}
+
+    .deck-details-cards-edit-header-deck-info__card-count {
+        font-family: var(--font-extra-bold), sans-serif;
+        font-size: 1.3em;
+        color: var(--color-text);
+    }
+    
+    .deck-details-cards-edit-header-deck-info__card-count--over-limit {
+        color: var(--color-error);
+    }
+    
+    
+.deck-details-cards-edit-header-deck-info__filter-button {
+    border: none;
+}
     
 
 .deck-details-cards-edit-cards-preview {
@@ -331,6 +363,7 @@
     .deck-details-cards-edit-cards-preview__card {
         width: 85px;
         height: auto;
+        box-shadow: var(--shadow-l);
     }
 
     .deck-details-cards-edit-cards-preview__card--selected {
@@ -407,6 +440,7 @@
         width: 115px;
         height: auto;
         justify-self: center;
+        box-shadow: var(--shadow-l);
     }
     
     
