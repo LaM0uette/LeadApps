@@ -333,6 +333,7 @@
     
 .deck-details-cards-edit-header-deck-info__filter-button {
     border: none;
+    visibility: hidden;
 }
     
 
@@ -564,6 +565,46 @@
     transition: outline-color .6s;
 }
     
+
+.deck-details-cards-edit-cards-ok-button {
+    position: absolute;
+    bottom: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 180px;
+    height: 50px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+    background: var(--color-success);
+    outline: 1px solid var(--color-outline);
+
+    border-radius: 25px;
+    box-shadow: var(--shadow-l);
+    
+    font-family: var(--font-extra-bold), sans-serif;
+    font-size: 1.5em;
+    color: var(--color-bg);
+    text-align: center;
+
+    cursor: var(--cursor-pointer);
+
+    z-index: 3;
+    user-select: none;
+}
+
+    .deck-details-cards-edit-cards-ok-button:hover {
+        opacity: 0.9;
+    }
+    
+    .deck-details-cards-edit-cards-ok-button:active {
+        opacity: 0.75;
+    }
+
 
 @media (min-width: 1366px) {
     .deck-details-edit-page-container {

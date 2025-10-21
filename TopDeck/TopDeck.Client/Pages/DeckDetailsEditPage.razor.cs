@@ -71,6 +71,11 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         IsEditing = true;
     }
     
+    protected void ExitEditMode()
+    {
+        IsEditing = false;
+    }
+    
     protected string GetCardElementId(TCGPCard c)
     {
         return $"card-{c.Collection.Code}-{c.CollectionNumber}";
