@@ -365,6 +365,23 @@
         justify-self: center;
     }
     
+    
+.deck-details-cards-edit-card-button-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    
+    width: 100%;
+    height: 100%;
+    
+    background: linear-gradient(to top, rgba(80,80,80,0.7) 2%, rgba(100,100,100,0.4) 50%, rgba(140,140,140,0.5) 85%, rgba(150,150,150,0.1) 100%);
+    border-radius: var(--radius-s);
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 
 @media (min-width: 1366px) {
     .deck-details-edit-page-container {

@@ -157,6 +157,12 @@
                     {
                         <button class="deck-details-cards-edit-card-button" @onclick="() => AddToDeck(card)">
                             <img class="deck-details-cards-edit-card-button__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                            @if (GetCardQuantityInDeck(card) > 0)
+                            {
+                                <div class="deck-details-cards-edit-card-button-overlay">
+                                
+                                </div>
+                            }
                         </button>
                     }
                 }

@@ -19,6 +19,10 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     #region Statements
     
+    private const int MAX_CARDS_IN_DECK = 20;
+    private const int MAX_IDENTICAL_CARDS_IN_DECK = 2;
+    private const int MAX_CARDS_DURING_BUILD_DECK = 30;
+    
     protected readonly Dictionary<int, string> EnergyTypes = new()
     {
         { 1, "Grass" },
@@ -64,19 +68,28 @@ public class DeckDetailsEditPagePresenter : PresenterBase
 
     protected void AddToDeck(TCGPCard card)
     {
+        if (TCGPCards.Count >= MAX_CARDS_DURING_BUILD_DECK)
+            return;
+        
         TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
 
         int existingCountForName = TCGPCards
             .Where(kv => kv.Key.Name.Equals(card.Name, StringComparison.OrdinalIgnoreCase))
             .Sum(kv => kv.Value);
 
-        if (existingCountForName >= 2)
+        if (existingCountForName >= MAX_IDENTICAL_CARDS_IN_DECK)
             return;
 
         if (TCGPCards.TryAdd(cardRef, 1))
             return;
 
         TCGPCards[cardRef]++;
+    }
+    
+    protected int GetCardQuantityInDeck(TCGPCard card)
+    {
+        TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
+        return TCGPCards.GetValueOrDefault(cardRef, 0);
     }
 
     #endregion
