@@ -20,7 +20,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     #region Statements
     
-    private const int MAX_CARDS_IN_DECK = 20;
+    protected const int MAX_CARDS_IN_DECK = 20;
     protected const int MAX_IDENTICAL_CARDS_IN_DECK = 2;
     private const int MAX_CARDS_DURING_BUILD_DECK = 30;
     

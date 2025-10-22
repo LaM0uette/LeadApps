@@ -9,12 +9,13 @@
   "component.button.logout.text": "Log out",
   "component.button.back.text": "Back",
   "component.pageButton.previous.text": "Previous",
-    "component.pageButton.next.text": "Next",
+  "component.pageButton.next.text": "Next",
   "component.loadingWheel.text": "Loading…",
   "feedback.text.copied": "Copied",
   "feedback.text.notFound": "Not found",
   "page.deckDetail.noSuggestions.text": "No suggestions available for this deck.",
   "page.deckDetail.showAll.text": "View All",
   "page.deckDetail.suggestion.title": "Suggestions:",
+  "page.deckDetailEdit.editButton.text": "Edit",
   "page.decksView.noCards.text": "No cards found."
 }

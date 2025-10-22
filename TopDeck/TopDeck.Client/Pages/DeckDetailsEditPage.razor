@@ -61,12 +61,22 @@
                 
             <VerticalSpacer Value="8"/>
             <hr class="deck-details-edit-header__separator">
+            
+            <div class="deck-details-edit-header-deck-info">
+                <div class="deck-details-edit-header-deck-info__card-count @(TotalCardsInDeck > 20 ? "deck-details-edit-header-deck-info__card-count--over-limit" : null)">
+                    @TotalCardsInDeck/20
+                </div>
+                <button class="deck-details-edit-header__edit-button" @onclick="SetEditMode">
+                    @Localizer.Localize("page.deckDetailEdit.editButton.text", "Edit")
+                </button>
+            </div>
+            
         </div>
         
         @if (CurrentTab is Tab.Cards)
         {
             <div class="deck-details-edit-cards">
-                @if (TCGPCards.Count > 0)
+                @if (TotalCardsInDeck > 0)
                 {
                     foreach ((TCGPCardRef cardRef, int quantity) in TCGPCards)
                     {
@@ -78,7 +88,7 @@
                 
                 }
 
-                @if (TCGPCards.Count < 20)
+                @if (TotalCardsInDeck < MAX_CARDS_IN_DECK)
                 {
                     if (IsMobile)
                     {
@@ -94,7 +104,7 @@
         else if (CurrentTab is Tab.Overview)
         {
             <div class="deck-details-edit-overview">
-                @if (TCGPCards.Count <= 0)
+                @if (TotalCardsInDeck <= 0)
                 {
                     @*<LoadingWheel/>*@
                 }

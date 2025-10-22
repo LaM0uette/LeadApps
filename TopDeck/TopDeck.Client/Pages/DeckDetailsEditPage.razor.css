@@ -64,6 +64,63 @@
     }
 
     
+.deck-details-edit-header-deck-info {
+    margin: 10px 5px 5px auto;
+
+    padding: 5px 6px;
+    box-sizing: border-box;
+    background: var(--color-bg);
+    border-radius: 30px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+
+    outline: 1px solid var(--color-outline);
+    box-shadow: var(--shadow-l);
+    
+    user-select: none;
+}
+
+    .deck-details-edit-header-deck-info__card-count {
+        margin-left: 10px;
+        
+        font-family: var(--font-bold), sans-serif;
+        font-size: 1em;
+        color: var(--color-text);
+    }
+    
+    .deck-details-edit-header-deck-info__card-count--over-limit {
+        color: var(--color-error);
+    }
+    
+    
+.deck-details-edit-header__edit-button {
+    font-family: var(--font-bold), sans-serif;
+    font-size: 1em;
+    color: var(--color-text);
+
+    padding: 5px 20px;
+    box-sizing: border-box;
+
+    border: none;
+    outline: 1px solid var(--color-outline);
+    background: var(--color-bg);
+    border-radius: 20px;
+    box-shadow: var(--shadow-l);
+}
+
+    .deck-details-edit-header__edit-button:hover {
+        opacity: 0.8;
+    }
+    
+    .deck-details-edit-header__edit-button:active {
+        opacity: 0.6;
+    }
+    
+    
 .deck-details-edit-header-top {
     width: 100%;
 
@@ -568,7 +625,7 @@
 
 .deck-details-cards-edit-cards-ok-button {
     position: absolute;
-    bottom: 55px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
 
