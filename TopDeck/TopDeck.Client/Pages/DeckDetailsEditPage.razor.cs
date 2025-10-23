@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TCGPCardRequester;
+using TopDeck.Contracts.DTO;
 using TopDeck.Shared.Components;
 using TopDeck.Shared.Models.TCGP;
+using TopDeck.Shared.Services;
+using TopDeck.Shared.UIStore;
+using TopDeck.Shared.UIStore.States.AuthenticatedUser;
 
 namespace TopDeck.Client.Pages;
 
@@ -41,14 +45,18 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected string DeckName { get; set; } = "Nom du Deck";
     protected IReadOnlyList<TCGPCard> TCGPHighlightedCards { get; set; } = [];
     protected Dictionary<TCGPCardRef, int> TCGPCards { get; set; } = [];
+    protected Dictionary<TCGPCardRef, int> TCGPCardsCache { get; set; } = [];
     protected IReadOnlyList<TCGPCard> TCGPAllCards { get; set; } = [];
+    
     protected int TotalCardsInDeck => TCGPCards.Values.Sum();
+    protected bool IsDeckModified => !TCGPCards.OrderBy(kv => kv.Key.Name).SequenceEqual(TCGPCardsCache.OrderBy(kv => kv.Key.Name));
     
     protected Tab CurrentTab { get; private set; } = Tab.Cards;
     protected bool IsEditing { get; private set; }
     protected string? SelectedCardId { get; private set; }
     
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
+    [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
     
     private TCGPCardRef? _selectedCardRef { get; set; }
 
@@ -173,12 +181,38 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         return TCGPCards.GetValueOrDefault(cardRef, 0);
     }
     
-    protected void Cancel()
+    protected async Task Cancel()
     {
+        await GoBackAsync();
     }
     
-    protected void Save()
+    protected async Task Save()
     {
+        if (TotalCardsInDeck != MAX_CARDS_IN_DECK)
+            return;
+        
+        DeckItemInputDTO dto = new(
+            UIStore.GetState<AuthenticatedUserState>().Id,
+            DeckName,
+            TCGPCards.Select(kv => new DeckItemCardInputDTO(
+                kv.Key.CollectionCode,
+                kv.Key.CollectionNumber,
+                TCGPHighlightedCards.Any(c => c.Collection.Code == kv.Key.CollectionCode && c.CollectionNumber == kv.Key.CollectionNumber)
+                )).ToList(),
+            EnergyIds: [],
+            TagIds: []
+        );
+
+        await _deckItemService.CreateAsync(dto);
+        
+        TCGPCardsCache = new Dictionary<TCGPCardRef, int>(TCGPCards);
+        await GoBackAsync();
+    }
+    
+    
+    private async Task GoBackAsync()
+    {
+        await JS.InvokeVoidAsync("historyBack", NavigationManager.BaseUri + "decks");
     }
 
     #endregion

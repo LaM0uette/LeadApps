@@ -11,6 +11,8 @@ public class PresenterBase : ComponentBase, IAsyncDisposable
 
     [Inject] protected IJSRuntime JS { get; set; } = null!;
     [Inject] protected ILocalizer Localizer { get; set; } = null!;
+    [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] protected UIStore.UIStore UIStore { get; set; } = null!;
     
     protected bool IsMobile => _windowWidth < 768;
 

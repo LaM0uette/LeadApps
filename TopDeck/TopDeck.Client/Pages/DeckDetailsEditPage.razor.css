@@ -294,6 +294,12 @@
         opacity: 0.75;
     }
 
+.deck-details-cards-edit-cards-cancel-button:disabled,
+.deck-details-cards-edit-cards-save-button:disabled {
+    background: var(--color-border);
+    cursor: default;
+}
+
 
 .deck-details-tabs {
     width: 100%;
