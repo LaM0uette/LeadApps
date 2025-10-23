@@ -159,14 +159,14 @@
     @if (IsMobile && CurrentTab == Tab.Cards && IsPickingHighlightCards)
     {
         <div class="deck-details-cards-picking-highlight-cards">
-            <div class="deck-details-cards-picking-highlight-cards-cards">
-                @if (TCGPCards.Count <= 0)
-                {
-                    <LoadingWheel/>
-                }
-                else
-                {
-                    foreach ((TCGPCardRef cardRef, int quantity) in TCGPCards)
+            @if (TCGPCards.Count <= 0)
+            {
+                @Localizer.Localize("page.deckDetailEdit.noCardsInDeck.text", "No cards in deck.")
+            }
+            else
+            {
+                <div class="deck-details-cards-picking-highlight-cards-cards">
+                    @foreach ((TCGPCardRef cardRef, int quantity) in TCGPCards)
                     {
                         TCGPCard? card = TCGPAllCards.FirstOrDefault(c => c.Collection.Code == cardRef.CollectionCode && c.CollectionNumber == cardRef.CollectionNumber);
                         
@@ -188,8 +188,8 @@
                             }
                         </button>
                     }
-                }
-            </div>
+                </div>
+            }
             
             <button class="deck-details-cards-edit-cards-ok-button" @onclick="ExitPickingHighlightCardsMode">
                 X
@@ -199,6 +199,24 @@
     
     @if (IsMobile && CurrentTab == Tab.Cards && IsPickingEnergies)
     {
+        <div class="deck-details-cards-picking-energies">
+            <div class="deck-details-cards-picking-energies-energies">
+                @foreach ((int id, string name) in EnergyTypes)
+                {
+                    <button class="deck-details-cards-edit-energy @(IsEnergySelected(id) ? "deck-details-cards-edit-energy--toggled" : null)"
+                            @onclick:preventDefault="true"
+                            @onclick:stopPropagation="true"
+                            @onclick="() => ToggleEnergyType(id)">
+                        <img class="deck-details-cards-edit-energy__img" src="https://tcgp-dex.com/energyTypes/@(name.ToLower()).webp" alt="@name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <p class="deck-details-cards-edit-energy__name">@name</p>
+                    </button>
+                }
+            </div>
+            
+            <button class="deck-details-cards-edit-cards-ok-button" @onclick="ExitPickingEnergiesMode">
+                X
+            </button>
+        </div>
     }
 
     @if (IsMobile && CurrentTab == Tab.Cards && IsEditing)

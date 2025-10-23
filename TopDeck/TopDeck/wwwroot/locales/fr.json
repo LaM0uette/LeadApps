@@ -19,5 +19,6 @@
   "page.deckDetailEdit.editButton.text": "Modifier",
   "page.deckDetailEdit.cancelButton.text": "Annuler",
   "page.deckDetailEdit.saveButton.text": "Sauvegarder",
+  "page.deckDetailEdit.noCardsInDeck.text": "Aucune carte dans ce deck.",
   "page.decksView.noCards.text": "Aucune carte trouvée."
 }

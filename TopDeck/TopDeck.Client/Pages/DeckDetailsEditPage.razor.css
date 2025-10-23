@@ -137,7 +137,7 @@
     width: 100%;
 
     display: grid;
-    grid-template-columns: 5fr 2fr;
+    grid-template-columns: 5fr 3fr;
 
     z-index: 2;
 }
@@ -359,7 +359,6 @@
     z-index: 3;
 }
 
-
 .deck-details-cards-picking-highlight-cards-cards {
     height: 100%;
 
@@ -374,6 +373,89 @@
 
     overflow-y: auto;
 }
+
+
+.deck-details-cards-picking-energies {
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--color-bg);
+
+    overflow: hidden;
+    z-index: 3;
+}
+
+.deck-details-cards-picking-energies-energies {
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(2, 190px);
+    justify-content: center;
+    align-content: start;
+    column-gap: 12px;
+    row-gap: 24px;
+
+    margin-top: 60px;
+    padding: 10px 5px 80px 5px;
+    box-sizing: border-box;
+
+    overflow-y: auto;
+}
+
+
+.deck-details-cards-edit-energy {
+    position: relative;
+
+    width: 190px;
+    height: 42px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+    border-radius: 21px;
+    background: transparent;
+
+    outline: 1px solid var(--color-outline);
+
+    padding: 0;
+}
+
+    .deck-details-cards-edit-energy__img {
+        position: absolute;
+        left: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        
+        width: 28px;
+        height: 28px;
+
+        background: transparent;
+        border-radius: 14px;
+        
+        box-shadow: var(--shadow-m);
+    }
+    
+    .deck-details-cards-edit-energy__name {
+        font-family: var(--font-bold), sans-serif;
+        font-size: 1.2em;
+        color: var(--color-text);
+    }
+    
+    .deck-details-cards-edit-energy--toggled {
+        background: var(--color-text);
+    }
+
+    .deck-details-cards-edit-energy--toggled .deck-details-cards-edit-energy__name {
+        color: var(--color-bg);
+    }
     
 
 .deck-details-cards-edit {

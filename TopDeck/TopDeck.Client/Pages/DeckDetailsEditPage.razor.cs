@@ -114,6 +114,25 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     {
         return TCGPHighlightedCards.Contains(card);
     }
+    
+    protected void ToggleEnergyType(int energyId)
+    {
+        if (EnergyIds.Contains(energyId))
+        {
+            EnergyIds.Remove(energyId);
+            return;
+        }
+        
+        if (EnergyIds.Count >= 3)
+            return;
+        
+        EnergyIds.Add(energyId);
+    }
+    
+    protected bool IsEnergySelected(int energyId)
+    {
+        return EnergyIds.Contains(energyId);
+    }
 
     protected void SetEditMode()
     {
