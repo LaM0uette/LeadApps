@@ -27,6 +27,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected const int MAX_CARDS_IN_DECK = 20;
     protected const int MAX_IDENTICAL_CARDS_IN_DECK = 2;
     private const int MAX_CARDS_DURING_BUILD_DECK = 30;
+    private const int MAX_HIGHLIGHT_CARDS = 3;
     
     protected readonly Dictionary<int, string> EnergyTypes = new()
     {
@@ -43,7 +44,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     };
     
     protected string DeckName { get; set; } = "Nom du Deck";
-    protected IReadOnlyList<TCGPCard> TCGPHighlightedCards { get; set; } = [];
+    protected List<TCGPCard> TCGPHighlightedCards { get; set; } = [];
     protected Dictionary<TCGPCardRef, int> TCGPCards { get; set; } = [];
     protected Dictionary<TCGPCardRef, int> TCGPCardsCache { get; set; } = [];
     protected IReadOnlyList<TCGPCard> TCGPAllCards { get; set; } = [];
@@ -55,6 +56,9 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected Tab CurrentTab { get; private set; } = Tab.Cards;
     protected bool IsEditing { get; private set; }
     protected string? SelectedCardId { get; private set; }
+    
+    protected bool IsPickingHighlightCards { get; private set; }
+    protected bool IsPickingEnergies { get; private set; }
     
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
     [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
@@ -73,6 +77,42 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected void SelectTab(Tab tab)
     {
         CurrentTab = tab;
+    }
+    
+    protected void SetPickingHighlightCardsMode()
+    {
+        IsPickingHighlightCards = true;
+    }
+    
+    protected void ExitPickingHighlightCardsMode()
+    {
+        IsPickingHighlightCards = false;
+    }
+    
+    protected void SetPickingEnergiesMode()
+    {
+        IsPickingEnergies = true;
+    }
+    
+    protected void ExitPickingEnergiesMode()
+    {
+        IsPickingEnergies = false;
+    }
+    
+    protected void AddToHighlightCards(TCGPCard card)
+    {
+        if (TCGPHighlightedCards.Remove(card))
+            return;
+        
+        if (TCGPHighlightedCards.Count >= MAX_HIGHLIGHT_CARDS)
+            return;
+        
+        TCGPHighlightedCards.Add(card);
+    }
+    
+    protected bool IsCardInHighlightCards(TCGPCard card)
+    {
+        return TCGPHighlightedCards.Contains(card);
     }
 
     protected void SetEditMode()

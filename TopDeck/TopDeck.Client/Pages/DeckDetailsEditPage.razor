@@ -24,29 +24,32 @@
                     
                     @if (TCGPHighlightedCards.Count == 0)
                     {
-                        <PlusButton Width="86px" Height="120px"/>
+                        <PlusButton Width="86px" Height="120px" Clicked="SetPickingHighlightCardsMode"/>
                     }
                     else
                     {
-                        <img class="deck-details-edit-highlighted-cards__card" src="@TCGPHighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-edit-highlighted-cards__card" src="@TCGPHighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"
+                             @onclick="SetPickingHighlightCardsMode"/>
                     }
                     
                     @if (TCGPHighlightedCards.Count <= 1)
                     {
-                        <PlusButton Width="68px" Height="96px"/>
+                        <PlusButton Width="68px" Height="96px" Clicked="SetPickingHighlightCardsMode"/>
                     }
                     else
                     {
-                        <img class="deck-details-edit-highlighted-cards__card" src="@TCGPHighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-edit-highlighted-cards__card" src="@TCGPHighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"
+                             @onclick="SetPickingHighlightCardsMode"/>
                     }
                     
                     @if (TCGPHighlightedCards.Count <= 2)
                     {
-                        <PlusButton Width="68px" Height="96px"/>
+                        <PlusButton Width="68px" Height="96px" Clicked="SetPickingHighlightCardsMode"/>
                     }
                     else
                     {
-                        <img class="deck-details-edit-highlighted-cards__card" src="@TCGPHighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-edit-highlighted-cards__card" src="@TCGPHighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"
+                             @onclick="SetPickingHighlightCardsMode"/>
                     }
                     
                 </div>
@@ -145,6 +148,51 @@
         }
     </div>
     
+    @if (IsMobile && CurrentTab == Tab.Cards && IsPickingHighlightCards)
+    {
+        <div class="deck-details-cards-picking-highlight-cards">
+            <div class="deck-details-cards-picking-highlight-cards-cards">
+                @if (TCGPCards.Count <= 0)
+                {
+                    <LoadingWheel/>
+                }
+                else
+                {
+                    foreach ((TCGPCardRef cardRef, int quantity) in TCGPCards)
+                    {
+                        TCGPCard? card = TCGPAllCards.FirstOrDefault(c => c.Collection.Code == cardRef.CollectionCode && c.CollectionNumber == cardRef.CollectionNumber);
+                        
+                        if (card == null)
+                            continue;
+                        
+                        <button class="deck-details-cards-edit-card-button" 
+                                @onclick:preventDefault="true"
+                                @onclick:stopPropagation="true"
+                                @onclick="() => AddToHighlightCards(card)">
+                            <img class="deck-details-cards-edit-card-button__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                            @if (IsCardInHighlightCards(card))
+                            {
+                                <div class="deck-details-cards-edit-card-button-overlay">
+                                    <div class="deck-details-cards-edit-card-button-overlay-count">
+                                        @(TCGPHighlightedCards.IndexOf(card) + 1)
+                                    </div>
+                                </div>
+                            }
+                        </button>
+                    }
+                }
+            </div>
+            
+            <button class="deck-details-cards-edit-cards-ok-button" @onclick="ExitPickingHighlightCardsMode">
+                X
+            </button>
+        </div>
+    }
+    
+    @if (IsMobile && CurrentTab == Tab.Cards && IsPickingEnergies)
+    {
+    }
+
     @if (IsMobile && CurrentTab == Tab.Cards && IsEditing)
     {
         <div class="deck-details-cards-edit">
