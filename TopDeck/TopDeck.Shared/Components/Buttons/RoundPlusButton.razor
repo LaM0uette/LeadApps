@@ -1,0 +1,11 @@
+﻿@namespace TopDeck.Shared.Components
+@inherits RoundPlusButtonPresenter
+
+
+<button class="round-plus-button" 
+        style="width: @Size; height: @Size;" 
+        @onclick:preventDefault="true"
+        @onclick:stopPropagation="true"
+        @onclick="Clicked">
+   <img class="round-plus-button__icon" src="img/plus-icon.svg" alt="plus icon"/>
+</button>

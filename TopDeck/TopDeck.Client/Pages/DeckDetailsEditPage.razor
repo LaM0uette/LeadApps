@@ -55,10 +55,18 @@
                 </div>
 
                 <div class="deck-details-edit-energies">
-                    @*@foreach (int energyId in DeckDetails.EnergyIds)
+                    @if (EnergyIds.Count <= 0)
+                    {
+                        <RoundPlusButton Size="26px" Clicked="SetPickingEnergiesMode"/>
+                    }
+                    else
+                    {
+                        foreach (int energyId in EnergyIds)
                         {
-                            <img class="deck-details-edit-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
-                        }*@
+                            <img class="deck-details-edit-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"
+                                 @onclick="SetPickingEnergiesMode"/>
+                        }
+                    }
                 </div>
             </div>
                 
