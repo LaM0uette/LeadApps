@@ -47,6 +47,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected Dictionary<TCGPCardRef, int> TCGPCards { get; set; } = [];
     protected Dictionary<TCGPCardRef, int> TCGPCardsCache { get; set; } = [];
     protected IReadOnlyList<TCGPCard> TCGPAllCards { get; set; } = [];
+    protected List<int> EnergyIds { get; set; } = [];
     
     protected int TotalCardsInDeck => TCGPCards.Values.Sum();
     protected bool IsDeckModified => !TCGPCards.OrderBy(kv => kv.Key.Name).SequenceEqual(TCGPCardsCache.OrderBy(kv => kv.Key.Name));
@@ -111,7 +112,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         if (TotalCardsInDeck >= MAX_CARDS_DURING_BUILD_DECK)
             return;
         
-        TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
+        TCGPCardRef cardRef = new(card.Name, card.Type.Id, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
 
         int existingCountForName = TCGPCards
             .Where(kv => kv.Key.Name.Equals(card.Name, StringComparison.OrdinalIgnoreCase))
@@ -131,7 +132,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         SelectedCardId = null;
         _selectedCardRef = null;
         
-        TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
+        TCGPCardRef cardRef = new(card.Name, card.Type.Id, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
 
         if (!TCGPCards.TryGetValue(cardRef, out int quantity))
             return;
@@ -150,7 +151,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         SelectedCardId = null;
         _selectedCardRef = null;
         
-        TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
+        TCGPCardRef cardRef = new(card.Name, card.Type.Id, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
         TCGPCards.Remove(cardRef);
     }
     
@@ -177,7 +178,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     protected int GetCardQuantityInDeck(TCGPCard card)
     {
-        TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
+        TCGPCardRef cardRef = new(card.Name, card.Type.Id, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
         return TCGPCards.GetValueOrDefault(cardRef, 0);
     }
     
@@ -191,6 +192,27 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         if (TotalCardsInDeck != MAX_CARDS_IN_DECK)
             return;
         
+        if (TCGPHighlightedCards.Count == 0)
+        {
+            TCGPHighlightedCards = TCGPCards
+                .Take(3)
+                .Select(kv => TCGPAllCards.First(c => c.Collection.Code == kv.Key.CollectionCode && c.CollectionNumber == kv.Key.CollectionNumber))
+                .ToList();
+        }
+        
+        if (EnergyIds.Count == 0)
+        {
+            TCGPCardsRequest energyRequest = new(
+                TCGPCards
+                    .Select(kv => new TCGPCardRequest(kv.Key.CollectionCode, kv.Key.CollectionNumber))
+                    .Distinct()
+                    .ToList()
+            );
+            
+            List<int> energies = await _tcgpCardRequester.GetDeckPokemonTypesAsync(energyRequest);
+            EnergyIds = energies.Take(3).ToList();
+        }
+        
         DeckItemInputDTO dto = new(
             UIStore.GetState<AuthenticatedUserState>().Id,
             DeckName,
@@ -199,7 +221,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
                 kv.Key.CollectionNumber,
                 TCGPHighlightedCards.Any(c => c.Collection.Code == kv.Key.CollectionCode && c.CollectionNumber == kv.Key.CollectionNumber)
                 )).ToList(),
-            EnergyIds: [],
+            EnergyIds: EnergyIds,
             TagIds: []
         );
 

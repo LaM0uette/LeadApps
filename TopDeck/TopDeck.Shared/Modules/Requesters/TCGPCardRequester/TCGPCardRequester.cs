@@ -49,6 +49,12 @@ public class TCGPCardRequester : ITCGPCardRequester
         return cards;
     }
     
+    public async Task<List<int>> GetDeckPokemonTypesAsync(TCGPCardsRequest deck, CancellationToken ct = default)
+    {
+        List<int> types = await PostAsync<List<int>>("/cards/deckPokemonTypes", deck, ct);
+        return types;
+    }
+    
     
     private async Task<T?> GetJsonAsync<T>(string requestUri, CancellationToken ct = default)
     {
