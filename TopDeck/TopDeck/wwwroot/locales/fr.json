@@ -17,5 +17,7 @@
   "page.deckDetail.showAll.text": "Voir tout",
   "page.deckDetail.suggestion.title": "Suggestions :",
   "page.deckDetailEdit.editButton.text": "Modifier",
+  "page.deckDetailEdit.cancelButton.text": "Annuler",
+  "page.deckDetailEdit.saveButton.text": "Sauvegarder",
   "page.decksView.noCards.text": "Aucune carte trouvée."
 }

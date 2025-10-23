@@ -172,6 +172,14 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         TCGPCardRef cardRef = new(card.Name, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
         return TCGPCards.GetValueOrDefault(cardRef, 0);
     }
+    
+    protected void Cancel()
+    {
+    }
+    
+    protected void Save()
+    {
+    }
 
     #endregion
 }

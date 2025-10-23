@@ -233,44 +233,65 @@
     }
 
 
-.deck-details-back-button {
+.deck-details-cards-edit-cards-buttons-container {
     position: absolute;
     bottom: 55px;
-
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: 50px;
+    
+    width: 100%;
+    
+    padding: 4px 12px;
+    box-sizing: border-box;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    
+    user-select: none;
+}
+    
+    
+.deck-details-cards-edit-cards-cancel-button, 
+.deck-details-cards-edit-cards-save-button {
+    width: 40%;
     height: 50px;
-    text-decoration: none;
 
     display: flex;
     justify-content: center;
     align-items: center;
 
-    background: var(--color-bg);
+    border: none;
     outline: 1px solid var(--color-outline);
 
-    border-radius: 50%;
-    box-shadow: var(--shadow-m);
+    border-radius: 25px;
+    box-shadow: var(--shadow-l);
+
+    font-family: var(--font-extra-bold), sans-serif;
+    font-size: 1.5em;
+    color: var(--color-bg);
+    text-align: center;
 
     cursor: var(--cursor-pointer);
 
-    z-index: 3;
     user-select: none;
 }
 
-    .deck-details-back-button:hover {
-        opacity: 0.8;
+    .deck-details-cards-edit-cards-cancel-button {
+        background: var(--color-cancel);
     }
-    
-    .deck-details-back-button:active {
-        opacity: 0.6;
+
+    .deck-details-cards-edit-cards-save-button {
+        background: var(--color-ok);
     }
-    
-    .deck-details-back-button__icon {
-        width: 24px;
-        height: 24px;
+
+    .deck-details-cards-edit-cards-cancel-button:hover,
+    .deck-details-cards-edit-cards-save-button:hover {
+        opacity: 0.9;
+    }
+
+    .deck-details-cards-edit-cards-cancel-button:active,
+    .deck-details-cards-edit-cards-save-button:active {
+        opacity: 0.75;
     }
 
 
@@ -637,7 +658,7 @@
     align-items: center;
 
     border: none;
-    background: var(--color-success);
+    background: var(--color-ok);
     outline: 1px solid var(--color-outline);
 
     border-radius: 25px;

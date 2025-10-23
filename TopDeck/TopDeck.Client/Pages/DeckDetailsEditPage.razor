@@ -123,9 +123,15 @@
         
         @if (IsMobile)
         {
-            <a class="deck-details-back-button" href="/decks">
-                <img class="deck-details-back-button__icon" src="img/arrow-back-icon.svg" alt="back button"/>
-            </a>
+            <div class="deck-details-cards-edit-cards-buttons-container">
+                <button class="deck-details-cards-edit-cards-cancel-button" @onclick="Cancel">
+                    @Localizer.Localize("page.deckDetailEdit.cancelButton.text", "Cancel")
+                </button>
+            
+                <button class="deck-details-cards-edit-cards-save-button" @onclick="Save">
+                    @Localizer.Localize("page.deckDetailEdit.saveButton.text", "Save")
+                </button>
+            </div>
             
             <div class="deck-details-tabs">
                 <button class="deck-details-tab-button @(CurrentTab is Tab.Cards ? "active" : "")" @onclick="() => SelectTab(Tab.Cards)">
