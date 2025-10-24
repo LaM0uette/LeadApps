@@ -43,7 +43,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         { 10, "Colorless" }
     };
     
-    protected string DeckName { get; set; } = "Nom du Deck";
+    protected string DeckName { get; set; } = string.Empty;
     protected List<TCGPCard> TCGPHighlightedCards { get; set; } = [];
     protected Dictionary<TCGPCardRef, int> TCGPCards { get; set; } = [];
     protected Dictionary<TCGPCardRef, int> TCGPCardsCache { get; set; } = [];

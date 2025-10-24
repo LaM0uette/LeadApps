@@ -11,6 +11,7 @@
   "component.pageButton.previous.text": "Previous",
   "component.pageButton.next.text": "Next",
   "component.loadingWheel.text": "Loading…",
+  "component.titlePanel.placeholder": "Deck name",
   "feedback.text.copied": "Copied",
   "feedback.text.notFound": "Not found",
   "page.deckDetail.noSuggestions.text": "No suggestions available for this deck.",

@@ -29,4 +29,28 @@
         overflow: hidden;
     
         color: var(--color-secondary);
+        cursor: var(--cursor-text);
     }
+
+
+.title-panel__input {
+    font-family: var(--font-extra-bold), sans-serif;
+    font-size: inherit;
+    color: var(--color-secondary);
+
+    width: 100%;
+    text-align: center;
+    border: none;
+    outline: none;
+    background: transparent;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+
+.title-panel__input::placeholder {
+    color: var(--color-text-light);
+    opacity: 0.7;
+}

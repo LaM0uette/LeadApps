@@ -3,17 +3,18 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace TopDeck.Shared.Components;
 
-public class TitlePanelBase : ComponentBase
+public class TitlePanelBase : PresenterBase
 {
     #region Statements
 
-    [Parameter, EditorRequired] public required string Name { get; set; }
+    [Parameter] public string Name { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> NameChanged { get; set; }
+    
     [Parameter] public string Width { get; set; } = "100px";
     [Parameter] public string Height { get; set; } = "26px";
     [Parameter] public string FontSize { get; set; } = "0.63em";
-    
-    [Parameter] public EventCallback<string> NameChanged { get; set; }
 
+    protected ElementReference InputElement;
     protected bool IsEditing { get; set; }
     protected string EditableName { get; set; } = string.Empty;
 
@@ -29,6 +30,13 @@ public class TitlePanelBase : ComponentBase
     protected void StartEditing()
     {
         IsEditing = true;
+        StateHasChanged();
+        
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(1);
+            await InputElement.FocusAsync();
+        });
     }
 
     protected async Task StopEditing()

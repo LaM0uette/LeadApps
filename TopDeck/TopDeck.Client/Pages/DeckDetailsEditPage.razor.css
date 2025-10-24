@@ -110,6 +110,9 @@
     background: var(--color-bg);
     border-radius: 20px;
     box-shadow: var(--shadow-l);
+
+    user-select: none;
+    cursor: var(--cursor-pointer);
 }
 
     .deck-details-edit-header__edit-button:hover {
@@ -372,6 +375,9 @@
     box-sizing: border-box;
 
     overflow-y: auto;
+    
+    user-select: none;
+    cursor: var(--cursor-pointer);
 }
 
 
@@ -426,6 +432,9 @@
     outline: 1px solid var(--color-outline);
 
     padding: 0;
+
+    user-select: none;
+    cursor: var(--cursor-pointer);
 }
 
     .deck-details-cards-edit-energy__img {
@@ -593,6 +602,9 @@
         box-shadow: var(--shadow-l);
         
         z-index: 4;
+
+        user-select: none;
+        cursor: var(--cursor-pointer);
     }
 
     .deck-details-cards-edit-cards-preview__remove > img {
@@ -631,6 +643,9 @@
     background: transparent;
     
     padding: 0;
+
+    user-select: none;
+    cursor: var(--cursor-pointer);
 }
 
     .deck-details-cards-edit-card-button__img {
@@ -676,6 +691,9 @@
     box-shadow: var(--shadow-l);
 
     border-radius: 50%;
+
+    user-select: none;
+    cursor: var(--cursor-pointer);
 }
 
     .deck-details-cards-edit-card-button-overlay-remove-button__icon {
@@ -836,7 +854,7 @@
     .deck-details-edit-cards {
         grid-template-columns: repeat(auto-fill, 200px);
         gap: 25px;
-        padding: 12px;
+        padding: 12px 12px 100px 12px;
     }
     .deck-details-edit-cards__card {
         width: 192px;
