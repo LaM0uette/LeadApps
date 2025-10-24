@@ -116,7 +116,18 @@ public class DeckItemService : IDeckItemService
         }
 
         Deck updated = await _repo.UpdateAsync(existing, ct);
-        return DeckItemMapper.MapToDTO(updated);
+
+        // Reload the deck with all navigation properties needed for mapping to avoid NREs
+        Deck? reloaded = await _repo.DbSet
+            .AsNoTracking()
+            .Include(d => d.Creator)
+            .Include(d => d.Cards)
+            .Include(d => d.DeckTags)
+            .Include(d => d.Likes).ThenInclude(l => l.User)
+            .Include(d => d.Dislikes).ThenInclude(dl => dl.User)
+            .FirstOrDefaultAsync(d => d.Id == updated.Id, ct);
+
+        return reloaded is null ? DeckItemMapper.MapToDTO(updated) : DeckItemMapper.MapToDTO(reloaded);
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
