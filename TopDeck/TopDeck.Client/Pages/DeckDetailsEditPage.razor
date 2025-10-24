@@ -216,8 +216,9 @@
                 <div class="deck-details-cards-edit-cards-preview">
                     @for (int i = 0; i < TCGPCards.Count; i++)
                     {
-                        TCGPCard card = TCGPCards[i];
-                        string uniqueId = $"{card.Collection.Code}-{card.CollectionNumber}-{i}";
+                        int index = i; // capture stable copy to avoid modified-closure issues
+                        TCGPCard card = TCGPCards[index];
+                        string uniqueId = $"{card.Collection.Code}-{card.CollectionNumber}-{index}";
                         
                         <div class="deck-details-cards-edit-cards-preview__card-wrapper">
                             <img class="deck-details-cards-edit-cards-preview__card @(SelectedCardId == uniqueId ? "deck-details-cards-edit-cards-preview__card--selected" : null)"
@@ -225,7 +226,7 @@
                                  @onclick="() => SelectCard(uniqueId, card)"/>
                             @if (SelectedCardId == uniqueId)
                             {
-                                <button class="deck-details-cards-edit-cards-preview__remove" @onclick="() => RemoveFromDeckAt(i)" @onclick:preventDefault="true" @onclick:stopPropagation="true">
+                                <button class="deck-details-cards-edit-cards-preview__remove" @onclick="() => RemoveFromDeckAt(index)" @onclick:preventDefault="true" @onclick:stopPropagation="true">
                                     <img src="img/suggestion-minus-icon.svg" alt="minus"/> Remove
                                 </button>
                             }
