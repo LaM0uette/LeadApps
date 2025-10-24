@@ -137,7 +137,7 @@
                 @Localizer.Localize("page.deckDetailEdit.cancelButton.text", "Cancel")
             </button>
             
-            <button class="deck-details-cards-edit-cards-save-button" @onclick="Save" disabled="@(!IsDeckModified || TotalCardsInDeck != MAX_CARDS_IN_DECK)">
+            <button class="deck-details-cards-edit-cards-save-button" @onclick="Save" disabled="@(!IsDeckModified || TotalCardsInDeck != MAX_CARDS_IN_DECK || string.IsNullOrEmpty(DeckName))">
                 @Localizer.Localize("page.deckDetailEdit.saveButton.text", "Save")
             </button>
         </div>
