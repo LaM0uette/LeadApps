@@ -132,18 +132,18 @@
             </div>
         }
         
+        <div class="deck-details-cards-edit-cards-buttons-container">
+            <button class="deck-details-cards-edit-cards-cancel-button" @onclick="Cancel">
+                @Localizer.Localize("page.deckDetailEdit.cancelButton.text", "Cancel")
+            </button>
+            
+            <button class="deck-details-cards-edit-cards-save-button" @onclick="Save" disabled="@(!IsDeckModified || TotalCardsInDeck != MAX_CARDS_IN_DECK)">
+                @Localizer.Localize("page.deckDetailEdit.saveButton.text", "Save")
+            </button>
+        </div>
+        
         @if (IsMobile)
         {
-            <div class="deck-details-cards-edit-cards-buttons-container">
-                <button class="deck-details-cards-edit-cards-cancel-button" @onclick="Cancel">
-                    @Localizer.Localize("page.deckDetailEdit.cancelButton.text", "Cancel")
-                </button>
-            
-                <button class="deck-details-cards-edit-cards-save-button" @onclick="Save" disabled="@(!IsDeckModified || TotalCardsInDeck != MAX_CARDS_IN_DECK)">
-                    @Localizer.Localize("page.deckDetailEdit.saveButton.text", "Save")
-                </button>
-            </div>
-            
             <div class="deck-details-tabs">
                 <button class="deck-details-tab-button @(CurrentTab is Tab.Cards ? "active" : "")" @onclick="() => SelectTab(Tab.Cards)">
                     <img class="deck-details-tab-button__icon" src="img/card-tab-icon@(CurrentTab is Tab.Cards ? "-active" : "").svg" alt="card tab button"/>
@@ -156,7 +156,7 @@
         }
     </div>
     
-    @if (IsMobile && CurrentTab == Tab.Cards && IsPickingHighlightCards)
+    @if (CurrentTab == Tab.Cards && IsPickingHighlightCards)
     {
         <div class="deck-details-cards-picking-highlight-cards">
             @if (TCGPCards.Count <= 0)
@@ -197,7 +197,7 @@
         </div>
     }
     
-    @if (IsMobile && CurrentTab == Tab.Cards && IsPickingEnergies)
+    @if (CurrentTab == Tab.Cards && IsPickingEnergies)
     {
         <div class="deck-details-cards-picking-energies">
             <div class="deck-details-cards-picking-energies-energies">
@@ -219,7 +219,7 @@
         </div>
     }
 
-    @if (IsMobile && CurrentTab == Tab.Cards && IsEditing)
+    @if (CurrentTab == Tab.Cards && IsEditing)
     {
         <div class="deck-details-cards-edit">
             <div class="deck-details-cards-edit-header">

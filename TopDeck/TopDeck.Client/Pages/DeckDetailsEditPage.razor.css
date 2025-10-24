@@ -850,6 +850,18 @@
     .deck-details-edit-overview__card {
         width: 110px;
     }
+    
+    .deck-details-cards-picking-highlight-cards,
+    .deck-details-cards-picking-energies,
+    .deck-details-cards-edit {
+        outline: 1px solid var(--color-outline);
+        width: 56%;
+        left: 22%;
+    }
+    
+    .deck-details-cards-edit-cards-buttons-container {
+        bottom: 25px;
+    }
 }
 
 @media (min-width: 2048px) {
