@@ -44,8 +44,12 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     };
     
     protected string DeckName { get; set; } = string.Empty;
+    
+    // TODO: merge to one list with a IsHighlighted property
     protected List<TCGPCard> TCGPHighlightedCards { get; set; } = [];
     protected List<TCGPCard> TCGPCards { get; set; } = [];
+    private Dictionary<TCGPCard, bool> _tcgpHighlightedCardsMapping { get; set; } = new();
+    
     protected List<TCGPCard> TCGPCardsCache { get; set; } = [];
     protected IReadOnlyList<TCGPCard> TCGPAllCards { get; set; } = [];
     protected List<int> EnergyIds { get; set; } = [];
@@ -93,6 +97,8 @@ public class DeckDetailsEditPagePresenter : PresenterBase
                 .Cast<TCGPCard>()
                 .Take(3)
                 .ToList();
+            
+            _tcgpHighlightedCardsMapping = TCGPHighlightedCards.ToDictionary(c => c, c => true);
 
             // Build deck cards list with duplicates
             TCGPCards = existing.Cards
@@ -143,17 +149,21 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected void AddToHighlightCards(TCGPCard card)
     {
         if (TCGPHighlightedCards.Remove(card))
+        {
+            _tcgpHighlightedCardsMapping[card] = false;
             return;
+        }
         
         if (TCGPHighlightedCards.Count >= MAX_HIGHLIGHT_CARDS)
             return;
         
         TCGPHighlightedCards.Add(card);
+        _tcgpHighlightedCardsMapping[card] = true;
     }
     
     protected bool IsCardInHighlightCards(TCGPCard card)
     {
-        return TCGPHighlightedCards.Contains(card);
+        return _tcgpHighlightedCardsMapping.ContainsKey(card) && _tcgpHighlightedCardsMapping[card];
     }
     
     protected void ToggleEnergyType(int energyId)
@@ -285,26 +295,16 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             List<int> energies = await _tcgpCardRequester.GetDeckPokemonTypesAsync(energyRequest);
             EnergyIds = energies.Take(3).ToList();
         }
-        
-        // Build card list preserving duplicates and mark only one highlighted per unique card
-        List<DeckItemCardInputDTO> cardInputs = new();
-        HashSet<string> highlightedAssigned = new();
-        foreach (TCGPCard c in TCGPCards)
-        {
-            string key = c.Collection.Code + "|" + c.CollectionNumber.ToString();
-            bool isHighlighted = false;
-            if (TCGPHighlightedCards.Any(h => h.Collection.Code == c.Collection.Code && h.CollectionNumber == c.CollectionNumber) && !highlightedAssigned.Contains(key))
-            {
-                isHighlighted = true;
-                highlightedAssigned.Add(key);
-            }
-            cardInputs.Add(new DeckItemCardInputDTO(c.Collection.Code, c.CollectionNumber, isHighlighted));
-        }
 
         DeckItemInputDTO dto = new(
             UIStore.GetState<AuthenticatedUserState>().Id,
             DeckName,
-            cardInputs,
+            TCGPCards.Select(c => new DeckItemCardInputDTO(
+                    c.Collection.Code,
+                    c.CollectionNumber,
+                    _tcgpHighlightedCardsMapping.ContainsKey(c) && _tcgpHighlightedCardsMapping[c]
+                )
+            ).ToList(),
             EnergyIds: EnergyIds,
             TagIds: []
         );
