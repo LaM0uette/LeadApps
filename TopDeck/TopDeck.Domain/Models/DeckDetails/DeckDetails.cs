@@ -6,7 +6,6 @@ public record DeckDetails(
     string Name,
     string Code,
     ICollection<DeckDetailsCard> Cards,
-    ICollection<DeckDetailsCard> HighlightedCards,
     ICollection<int> EnergyIds,
     ICollection<int> TagIds,
     ICollection<string> LikeUserUuids,

@@ -87,8 +87,8 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             EnergyIds = existing.EnergyIds.ToList();
 
             // Map highlighted cards
-            TCGPHighlightedCards = existing.HighlightedCards
-                .Select(hc => TCGPAllCards.FirstOrDefault(c => c.Collection.Code == hc.CollectionCode && c.CollectionNumber == hc.CollectionNumber))
+            TCGPHighlightedCards = existing.Cards
+                .Select(hc => TCGPAllCards.FirstOrDefault(c => c.Collection.Code == hc.CollectionCode && c.CollectionNumber == hc.CollectionNumber && hc.IsHighlighted))
                 .Where(c => c is not null)
                 .Cast<TCGPCard>()
                 .Take(3)

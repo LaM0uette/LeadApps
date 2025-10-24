@@ -2,5 +2,6 @@
 
 public record DeckDetailsCard(
     string CollectionCode,
-    int CollectionNumber
+    int CollectionNumber,
+    bool IsHighlighted
 );

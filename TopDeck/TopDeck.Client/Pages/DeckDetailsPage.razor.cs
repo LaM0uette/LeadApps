@@ -85,9 +85,11 @@ public class DeckDetailsPagePresenter : PresenterBase
         TCGPCardsRequest deckRequest = new(tcgpCardRequests);
         TCGPCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(deckRequest);
         
-        TCGPHighlightedCards = TCGPCards
-            .Where(c => DeckDetails.HighlightedCards
-                .Any(dc => dc.CollectionCode == c.Collection.Code && dc.CollectionNumber == c.CollectionNumber))
+        TCGPHighlightedCards = DeckDetails.Cards
+            .Select(hc => TCGPCards.FirstOrDefault(c => c.Collection.Code == hc.CollectionCode && c.CollectionNumber == hc.CollectionNumber && hc.IsHighlighted))
+            .Where(c => c is not null)
+            .Cast<TCGPCard>()
+            .Take(3)
             .ToList();
     }
 

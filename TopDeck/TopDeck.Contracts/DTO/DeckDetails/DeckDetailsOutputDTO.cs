@@ -6,7 +6,6 @@ public record DeckDetailsOutputDTO(
     string Name,
     string Code,
     IEnumerable<DeckDetailsCardOutputDTO> Cards,
-    IEnumerable<DeckDetailsCardOutputDTO> HighlightedCards,
     IEnumerable<int> EnergyIds,
     IEnumerable<int> TagIds,
     IEnumerable<string> LikeUserUuids,
