@@ -45,10 +45,10 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     protected string DeckName { get; set; } = string.Empty;
     
-    // TODO: merge to one list with a IsHighlighted property
+    // TODO: merge to one list with a IsHighlighted property, add DeckCard id for cards to find the correct highlighted cards
     protected List<TCGPCard> TCGPHighlightedCards { get; set; } = [];
     protected List<TCGPCard> TCGPCards { get; set; } = [];
-    private Dictionary<TCGPCard, bool> _tcgpHighlightedCardsMapping { get; set; } = new();
+    private Dictionary<string, bool> _tcgpHighlightedCardsMapping { get; set; } = new();
     
     protected List<TCGPCard> TCGPCardsCache { get; set; } = [];
     protected IReadOnlyList<TCGPCard> TCGPAllCards { get; set; } = [];
@@ -98,7 +98,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
                 .Take(3)
                 .ToList();
             
-            _tcgpHighlightedCardsMapping = TCGPHighlightedCards.ToDictionary(c => c, c => true);
+            _tcgpHighlightedCardsMapping = TCGPHighlightedCards.ToDictionary<TCGPCard, string, bool>(c => GetCardKey(c), c => true);
 
             // Build deck cards list with duplicates
             TCGPCards = existing.Cards
@@ -119,6 +119,11 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     private static IEnumerable<TCGPCard> SortCards(IEnumerable<TCGPCard> cards)
     {
         return cards.OrderBy(c => c.Collection.Code).ThenBy(c => c.CollectionNumber).ThenBy(c => c.Name);
+    }
+
+    private static string GetCardKey(TCGPCard c)
+    {
+        return $"{c.Collection.Code}:{c.CollectionNumber}";
     }
 
     protected void SelectTab(Tab tab)
@@ -148,9 +153,12 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     protected void AddToHighlightCards(TCGPCard card)
     {
-        if (TCGPHighlightedCards.Remove(card))
+        string key = GetCardKey(card);
+        // Toggle off if already selected (by logical key)
+        if (TCGPHighlightedCards.Any(c => GetCardKey(c) == key))
         {
-            _tcgpHighlightedCardsMapping[card] = false;
+            TCGPHighlightedCards.RemoveAll(c => GetCardKey(c) == key);
+            _tcgpHighlightedCardsMapping[key] = false;
             return;
         }
         
@@ -158,12 +166,13 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             return;
         
         TCGPHighlightedCards.Add(card);
-        _tcgpHighlightedCardsMapping[card] = true;
+        _tcgpHighlightedCardsMapping[key] = true;
     }
     
     protected bool IsCardInHighlightCards(TCGPCard card)
     {
-        return _tcgpHighlightedCardsMapping.ContainsKey(card) && _tcgpHighlightedCardsMapping[card];
+        string key = GetCardKey(card);
+        return _tcgpHighlightedCardsMapping.ContainsKey(key) && _tcgpHighlightedCardsMapping[key];
     }
     
     protected void ToggleEnergyType(int energyId)
@@ -296,15 +305,30 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             EnergyIds = energies.Take(3).ToList();
         }
 
+        // Build highlighted keys set and mark only the first occurrence of each as highlighted
+        HashSet<string> highlightedKeys = TCGPHighlightedCards
+            .Select(GetCardKey)
+            .ToHashSet();
+        HashSet<string> usedHighlightKeys = new();
+
         DeckItemInputDTO dto = new(
             UIStore.GetState<AuthenticatedUserState>().Id,
             DeckName,
-            TCGPCards.Select(c => new DeckItemCardInputDTO(
-                    c.Collection.Code,
-                    c.CollectionNumber,
-                    _tcgpHighlightedCardsMapping.ContainsKey(c) && _tcgpHighlightedCardsMapping[c]
-                )
-            ).ToList(),
+            TCGPCards.Select(c => {
+                    string key = GetCardKey(c);
+                    bool isHighlighted = false;
+                    if (highlightedKeys.Contains(key) && !usedHighlightKeys.Contains(key))
+                    {
+                        isHighlighted = true;
+                        usedHighlightKeys.Add(key);
+                    }
+                    return new DeckItemCardInputDTO(
+                        c.Collection.Code,
+                        c.CollectionNumber,
+                        isHighlighted
+                    );
+                })
+                .ToList(),
             EnergyIds: EnergyIds,
             TagIds: []
         );
