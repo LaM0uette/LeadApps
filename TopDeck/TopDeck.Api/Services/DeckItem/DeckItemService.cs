@@ -13,11 +13,13 @@ public class DeckItemService : IDeckItemService
 
     private readonly IDeckItemRepository _repo;
     private readonly IUserRepository _users;
+    private readonly IDeckSuggestionRepository _suggestions;
 
-    public DeckItemService(IDeckItemRepository repo, IUserRepository users)
+    public DeckItemService(IDeckItemRepository repo, IUserRepository users, IDeckSuggestionRepository suggestions)
     {
         _repo = repo;
         _users = users;
+        _suggestions = suggestions;
     }
 
     #endregion
@@ -83,6 +85,15 @@ public class DeckItemService : IDeckItemService
 
         ValidateDeckLimits(dto);
 
+        // Determine if the card composition changed (ignore highlight flag)
+        var before = existing.Cards
+            .GroupBy(c => new { c.CollectionCode, c.CollectionNumber })
+            .ToDictionary(g => g.Key, g => g.Count());
+        var after = dto.Cards
+            .GroupBy(c => new { c.CollectionCode, c.CollectionNumber })
+            .ToDictionary(g => g.Key, g => g.Count());
+        bool cardsChanged = before.Count != after.Count || before.Any(kvp => !after.TryGetValue(kvp.Key, out int cnt) || cnt != kvp.Value);
+
         // Update scalar properties
         existing.Name = dto.Name;
         existing.EnergyIds = dto.EnergyIds.ToList();
@@ -113,6 +124,12 @@ public class DeckItemService : IDeckItemService
                 TagId = tagId,
                 Tag = null!
             });
+        }
+
+        // If cards changed, clear all suggestions for this deck as they may be invalid now
+        if (cardsChanged)
+        {
+            await _suggestions.DeleteByDeckIdAsync(existing.Id, ct);
         }
 
         Deck updated = await _repo.UpdateAsync(existing, ct);

@@ -45,14 +45,19 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     protected string DeckName { get; set; } = string.Empty;
     
+    protected List<TCGPCard> TCGPCards { get; set; } = [];
+    protected List<TCGPCard> TCGPCardsCache { get; set; } = [];
+    
     // TODO: merge to one list with a IsHighlighted property, add DeckCard id for cards to find the correct highlighted cards
     protected List<TCGPCard> TCGPHighlightedCards { get; set; } = [];
-    protected List<TCGPCard> TCGPCards { get; set; } = [];
+    protected List<TCGPCard> TCGPHighlightedCardsCache { get; set; } = [];
     private Dictionary<string, bool> _tcgpHighlightedCardsMapping { get; set; } = new();
     
-    protected List<TCGPCard> TCGPCardsCache { get; set; } = [];
     protected IReadOnlyList<TCGPCard> TCGPAllCards { get; set; } = [];
+    
     protected List<int> EnergyIds { get; set; } = [];
+    protected List<int> EnergyIdsCache { get; set; } = [];
+    
     
     protected int TotalCardsInDeck => TCGPCards.Count;
     protected bool IsDeckModified => !SortCards(TCGPCards).SequenceEqual(SortCards(TCGPCardsCache));
@@ -89,6 +94,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             _deckId = existing.Id;
             DeckName = existing.Name;
             EnergyIds = existing.EnergyIds.ToList();
+            EnergyIdsCache = existing.EnergyIds.ToList();
 
             // Map highlighted cards
             TCGPHighlightedCards = existing.Cards
@@ -97,6 +103,8 @@ public class DeckDetailsEditPagePresenter : PresenterBase
                 .Cast<TCGPCard>()
                 .Take(3)
                 .ToList();
+            
+            TCGPHighlightedCardsCache = new List<TCGPCard>(TCGPHighlightedCards);
             
             _tcgpHighlightedCardsMapping = TCGPHighlightedCards.ToDictionary<TCGPCard, string, bool>(c => GetCardKey(c), c => true);
 
@@ -115,16 +123,6 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     #endregion
 
     #region Methods
-
-    private static IEnumerable<TCGPCard> SortCards(IEnumerable<TCGPCard> cards)
-    {
-        return cards.OrderBy(c => c.Collection.Code).ThenBy(c => c.CollectionNumber).ThenBy(c => c.Name);
-    }
-
-    private static string GetCardKey(TCGPCard c)
-    {
-        return $"{c.Collection.Code}:{c.CollectionNumber}";
-    }
 
     protected void SelectTab(Tab tab)
     {
@@ -356,13 +354,32 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         }
         
         TCGPCardsCache = new List<TCGPCard>(TCGPCards);
+        EnergyIdsCache = new List<int>(EnergyIds);
+        TCGPHighlightedCardsCache = new List<TCGPCard>(TCGPHighlightedCards);
         await GoBackAsync();
+    }
+    
+    protected bool NothingModified()
+    {
+        return SortCards(TCGPCards).SequenceEqual(SortCards(TCGPCardsCache))
+               && EnergyIds.OrderBy(id => id).SequenceEqual(EnergyIdsCache.OrderBy(id => id))
+               && TCGPHighlightedCards.Select(GetCardKey).OrderBy(k => k).SequenceEqual(TCGPHighlightedCardsCache.Select(GetCardKey).OrderBy(k => k));
     }
     
     
     private async Task GoBackAsync()
     {
         await JS.InvokeVoidAsync("historyBack", NavigationManager.BaseUri + "decks");
+    }
+    
+    private static IEnumerable<TCGPCard> SortCards(IEnumerable<TCGPCard> cards)
+    {
+        return cards.OrderBy(c => c.Collection.Code).ThenBy(c => c.CollectionNumber).ThenBy(c => c.Name);
+    }
+
+    private static string GetCardKey(TCGPCard c)
+    {
+        return $"{c.Collection.Code}:{c.CollectionNumber}";
     }
 
     #endregion
