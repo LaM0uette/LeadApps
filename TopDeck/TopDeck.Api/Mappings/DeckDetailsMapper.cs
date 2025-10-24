@@ -13,7 +13,9 @@ public static class DeckDetailsMapper
         deck.Creator.Uuid.ToString(),
         deck.Name,
         deck.Code,
-        deck.Cards.Select(card => new DeckDetailsCardOutputDTO(card.CollectionCode, card.CollectionNumber, card.IsHighlighted)),
+        deck.Cards
+            .OrderBy(card => card.Id)
+            .Select(card => new DeckDetailsCardOutputDTO(card.CollectionCode, card.CollectionNumber, card.IsHighlighted)),
         deck.EnergyIds,
         deck.DeckTags.Select(tag => tag.TagId),
         deck.Likes.Select(like => like.User.Uuid.ToString()),

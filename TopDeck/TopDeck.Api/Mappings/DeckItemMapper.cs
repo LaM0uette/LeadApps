@@ -15,6 +15,7 @@ public static class DeckItemMapper
         deck.Code,
         deck.Cards
             .Where(card => card.IsHighlighted)
+            .OrderBy(card => card.Id)
             .Select(card => new DeckItemCardOutputDTO(card.CollectionCode, card.CollectionNumber)),
         deck.EnergyIds,
         deck.DeckTags.Select(tag => tag.TagId),

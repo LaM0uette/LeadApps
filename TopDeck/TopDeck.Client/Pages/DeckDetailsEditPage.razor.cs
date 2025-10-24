@@ -305,30 +305,43 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             EnergyIds = energies.Take(3).ToList();
         }
 
-        // Build highlighted keys set and mark only the first occurrence of each as highlighted
-        HashSet<string> highlightedKeys = TCGPHighlightedCards
-            .Select(GetCardKey)
-            .ToHashSet();
-        HashSet<string> usedHighlightKeys = new();
+        // Build DTO preserving the user order of highlighted cards by inserting them first
+        // Count occurrences of each card in the deck
+        Dictionary<string, int> counts = new();
+        foreach (TCGPCard c in TCGPCards)
+        {
+            string k = GetCardKey(c);
+            counts[k] = counts.TryGetValue(k, out int v) ? v + 1 : 1;
+        }
+
+        List<DeckItemCardInputDTO> dtoCards = new();
+
+        // 1) Add highlighted cards first, in the exact user-selected order, one copy each
+        foreach (TCGPCard hc in TCGPHighlightedCards)
+        {
+            string hk = GetCardKey(hc);
+            if (counts.TryGetValue(hk, out int cnt) && cnt > 0)
+            {
+                dtoCards.Add(new DeckItemCardInputDTO(hc.Collection.Code, hc.CollectionNumber, true));
+                counts[hk] = cnt - 1; // consume one copy
+            }
+        }
+
+        // 2) Append remaining copies of all cards (not highlighted), in the deck list order
+        foreach (TCGPCard c in TCGPCards)
+        {
+            string k = GetCardKey(c);
+            if (counts.TryGetValue(k, out int cnt) && cnt > 0)
+            {
+                dtoCards.Add(new DeckItemCardInputDTO(c.Collection.Code, c.CollectionNumber, false));
+                counts[k] = cnt - 1;
+            }
+        }
 
         DeckItemInputDTO dto = new(
             UIStore.GetState<AuthenticatedUserState>().Id,
             DeckName,
-            TCGPCards.Select(c => {
-                    string key = GetCardKey(c);
-                    bool isHighlighted = false;
-                    if (highlightedKeys.Contains(key) && !usedHighlightKeys.Contains(key))
-                    {
-                        isHighlighted = true;
-                        usedHighlightKeys.Add(key);
-                    }
-                    return new DeckItemCardInputDTO(
-                        c.Collection.Code,
-                        c.CollectionNumber,
-                        isHighlighted
-                    );
-                })
-                .ToList(),
+            dtoCards,
             EnergyIds: EnergyIds,
             TagIds: []
         );
