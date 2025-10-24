@@ -92,7 +92,8 @@
                 {
                     foreach (TCGPCard card in TCGPCards)
                     {
-                        <img class="deck-details-edit-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <img class="deck-details-edit-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"
+                             @onclick="SetEditMode"/>
                     }
                 
                 }
@@ -172,7 +173,7 @@
                             {
                                 <div class="deck-details-cards-edit-card-button-overlay">
                                     <div class="deck-details-cards-edit-card-button-overlay-count">
-                                        @(TCGPHighlightedCards.IndexOf(card) + 1)
+                                        @(TCGPHighlightedCards.FindIndex(h => h.Collection.Code == card.Collection.Code && h.CollectionNumber == card.CollectionNumber) + 1)
                                     </div>
                                 </div>
                             }

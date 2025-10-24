@@ -131,6 +131,8 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     protected void SetPickingHighlightCardsMode()
     {
+        // ensure mapping reflects current highlighted list before displaying picking UI
+        RebuildHighlightedMapping();
         IsPickingHighlightCards = true;
     }
     
@@ -432,6 +434,13 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     private static string GetCardKey(TCGPCard c)
     {
         return $"{c.Collection.Code}:{c.CollectionNumber}";
+    }
+
+    private void RebuildHighlightedMapping()
+    {
+        // Recompute the mapping from current highlighted list to avoid stale references/flags
+        _tcgpHighlightedCardsMapping = TCGPHighlightedCards
+            .ToDictionary<TCGPCard, string, bool>(c => GetCardKey(c), _ => true);
     }
 
     #endregion

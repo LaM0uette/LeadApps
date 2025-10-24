@@ -159,6 +159,9 @@
     .deck-details-edit-highlighted-cards__card {
         width: 86px;
         object-fit: contain;
+
+        user-select: none;
+        cursor: pointer;
     }
     
     .deck-details-edit-highlighted-cards__card:nth-child(2) {
@@ -189,6 +192,9 @@
         max-height: 26px;
         max-width: 26px;
         object-fit: contain;
+
+        user-select: none;
+        cursor: pointer;
     }
 
 
@@ -211,6 +217,9 @@
         width: 115px;
         height: auto;
         justify-self: center;
+
+        user-select: none;
+        cursor: pointer;
     }
 
 
@@ -570,6 +579,9 @@
         width: 85px;
         height: auto;
         box-shadow: var(--shadow-l);
+
+        user-select: none;
+        cursor: pointer;
     }
 
     .deck-details-cards-edit-cards-preview__card--selected {
