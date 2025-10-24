@@ -43,14 +43,18 @@ else
 
                 <div class="deck-details-highlight">
                     <div class="deck-details-highlighted-cards">
-                        @if (TCGPHighlightedCards.Count < 3)
-                        {
-                            <LoadingWheel/> /* TODO: replace this by placeholder img or two first img in deck */
-                        }
-                        else
+                        @if (TCGPHighlightedCards.Count >= 1)
                         {
                             <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+                        }
+                        
+                        @if (TCGPHighlightedCards.Count >= 2)
+                        {
                             <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
+                        }
+                        
+                        @if (TCGPHighlightedCards.Count >= 3)
+                        {
                             <img class="deck-details-highlighted-cards__card" src="@TCGPHighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"/>
                         }
                     </div>

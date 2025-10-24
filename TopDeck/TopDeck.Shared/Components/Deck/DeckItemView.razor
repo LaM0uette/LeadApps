@@ -23,9 +23,13 @@
         
         <div class="deck-highlight-cards">
 
-            @if (HighlightedTCGPCards.Count >= 2)
+            @if (HighlightedTCGPCards.Count >= 1)
             {
                 <img class="deck-highlight-cards__card" src="@HighlightedTCGPCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"/>
+            }
+                        
+            @if (HighlightedTCGPCards.Count >= 2)
+            {
                 <img class="deck-highlight-cards__card" src="@HighlightedTCGPCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"/>
             }
 

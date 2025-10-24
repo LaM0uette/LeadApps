@@ -132,8 +132,9 @@ public class DeckDetailsPagePresenter : PresenterBase
     
     protected void EditDeck()
     {
-        Console.WriteLine("EditDeck clicked");
-        //_navigationManager.NavigateTo($"/decks/{DeckDetails?.Code}/edit");
+        if (DeckDetails is null)
+            return;
+        _navigationManager.NavigateTo($"/decks/{DeckDetails.Code}/edit");
     }
 
     #endregion

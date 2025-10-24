@@ -7,6 +7,7 @@ using TopDeck.Shared.Models.TCGP;
 using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore;
 using TopDeck.Shared.UIStore.States.AuthenticatedUser;
+using TopDeck.Domain.Models;
 
 namespace TopDeck.Client.Pages;
 
@@ -62,12 +63,53 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
     [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
+    [Inject] private IDeckDetailsService _deckDetailsService { get; set; } = null!;
+
+    [Parameter] public string? DeckCode { get; set; }
     
+    private int? _deckId;
     private TCGPCardRef? _selectedCardRef { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         TCGPAllCards = await _tcgpCardRequester.GetAllTCGPCardsAsync(loadThumbnail:true);
+
+        if (!string.IsNullOrWhiteSpace(DeckCode))
+        {
+            DeckDetails? existing = await _deckDetailsService.GetByCodeAsync(DeckCode);
+            if (existing is null)
+            {
+                await GoBackAsync();
+                return;
+            }
+
+            _deckId = existing.Id;
+            DeckName = existing.Name;
+            EnergyIds = existing.EnergyIds.ToList();
+
+            // Map highlighted cards
+            TCGPHighlightedCards = existing.HighlightedCards
+                .Select(hc => TCGPAllCards.FirstOrDefault(c => c.Collection.Code == hc.CollectionCode && c.CollectionNumber == hc.CollectionNumber))
+                .Where(c => c is not null)
+                .Cast<TCGPCard>()
+                .Take(3)
+                .ToList();
+
+            // Build deck cards with quantities
+            TCGPCards = existing.Cards
+                .GroupBy(c => new { c.CollectionCode, c.CollectionNumber })
+                .Select(g =>
+                {
+                    TCGPCard? card = TCGPAllCards.FirstOrDefault(c => c.Collection.Code == g.Key.CollectionCode && c.CollectionNumber == g.Key.CollectionNumber);
+                    if (card is null) return (Ref: (TCGPCardRef?)null, Count: 0);
+                    TCGPCardRef cardRef = new(card.Name, card.Type.Id, card.Collection.Code, card.CollectionNumber, card.ImageUrl ?? string.Empty);
+                    return (Ref: (TCGPCardRef?)cardRef, Count: g.Count());
+                })
+                .Where(x => x.Ref is not null && x.Count > 0)
+                .ToDictionary(x => x.Ref!, x => x.Count);
+
+            TCGPCardsCache = new Dictionary<TCGPCardRef, int>(TCGPCards);
+        }
     }
 
     #endregion
@@ -284,7 +326,14 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             TagIds: []
         );
 
-        await _deckItemService.CreateAsync(dto);
+        if (_deckId.HasValue)
+        {
+            await _deckItemService.UpdateAsync(_deckId.Value, dto);
+        }
+        else
+        {
+            await _deckItemService.CreateAsync(dto);
+        }
         
         TCGPCardsCache = new Dictionary<TCGPCardRef, int>(TCGPCards);
         await GoBackAsync();
