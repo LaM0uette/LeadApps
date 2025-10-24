@@ -20,6 +20,12 @@ else
                 <div class="deck-details-header-top">
                     <div class="deck-details-title-panel-container">
                         <TitlePanel Name="@DeckDetails.Name" Width="200px" Height="35px" FontSize="1.1em"/>
+                        @if (!IsMobile && AuthenticatedUserUuid == DeckDetails.CreatorUui)
+                        {
+                            <button class="deck-details-title-panel-edit-deck-button-desktop" @onclick="EditDeck">
+                                <img class="deck-details-title-panel-edit-deck-button-desktop__icon" src="img/edit-icon.svg" alt="edit deck"/>
+                            </button>
+                        }
                     </div>
 
                     <div class="deck-details-vote-panel-container">
@@ -130,6 +136,13 @@ else
                 <a class="deck-details-back-button" href="/decks">
                     <img class="deck-details-back-button__icon" src="img/arrow-back-icon.svg" alt="back button"/>
                 </a>
+                
+                if (AuthenticatedUserUuid == DeckDetails.CreatorUui)
+                {
+                    <button class="deck-details-title-panel-edit-deck-button" @onclick="EditDeck">
+                        <img class="deck-details-title-panel-edit-deck-button__icon" src="img/edit-icon.svg" alt="edit deck"/>
+                    </button>
+                }
             
                 <div class="deck-details-tabs">
                     <button class="deck-details-tab-button @(CurrentTab is Tab.Cards ? "active" : "")" @onclick="() => SelectTab(Tab.Cards)">

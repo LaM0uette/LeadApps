@@ -5,6 +5,7 @@ using TopDeck.Domain.Models;
 using TopDeck.Shared.Components;
 using TopDeck.Shared.Models.TCGP;
 using TopDeck.Shared.Services;
+using TopDeck.Shared.UIStore.States.AuthenticatedUser;
 
 namespace TopDeck.Client.Pages;
 
@@ -52,6 +53,8 @@ public class DeckDetailsPagePresenter : PresenterBase
     protected Mode CurrentMode { get; set; } = Mode.View;
     protected Tab CurrentTab { get; set; } = Tab.Cards;
     
+    protected string? AuthenticatedUserUuid;
+    
     [Inject] private IJSRuntime _js { get; set; } = null!;
     [Inject] private NavigationManager _navigationManager { get; set; } = null!;
     [Inject] private IDeckDetailsService _deckDetailsService { get; set; } = null!;
@@ -68,6 +71,12 @@ public class DeckDetailsPagePresenter : PresenterBase
         }
         
         DeckDetails = deckDetails;
+
+        AuthenticatedUserState authenticatedUser = UIStore.GetState<AuthenticatedUserState>();
+        if (authenticatedUser.Id > 0)
+        {
+            AuthenticatedUserUuid = authenticatedUser.Uuid;
+        }
         
         List<TCGPCardRequest> tcgpCardRequests = DeckDetails.Cards
             .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
@@ -119,6 +128,12 @@ public class DeckDetailsPagePresenter : PresenterBase
             Tab.Overview => Tab.Cards,
             _ => CurrentTab
         };
+    }
+    
+    protected void EditDeck()
+    {
+        Console.WriteLine("EditDeck clicked");
+        //_navigationManager.NavigateTo($"/decks/{DeckDetails?.Code}/edit");
     }
 
     #endregion
