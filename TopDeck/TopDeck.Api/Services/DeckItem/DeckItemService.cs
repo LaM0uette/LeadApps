@@ -65,14 +65,17 @@ public class DeckItemService : IDeckItemService
 
     public async Task<DeckItemOutputDTO?> UpdateAsync(int id, DeckItemInputDTO dto, CancellationToken ct = default)
     {
-        Deck? existing = await _repo.GetByIdAsync(id, false, ct);
+        // Load tracked entity with related collections to allow proper replacement
+        Deck? existing = await _repo.DbSet
+            .Include(d => d.Cards)
+            .Include(d => d.DeckTags)
+            .FirstOrDefaultAsync(d => d.Id == id, ct);
         
-        if (existing is null) 
+        if (existing is null)
             return null;
 
         User? creator = await _users.GetByIdAsync(dto.CreatorId, ct);
-        
-        if (creator is null) 
+        if (creator is null)
             throw new InvalidOperationException($"Creator with id {dto.CreatorId} not found");
 
         if (existing.CreatorId != dto.CreatorId)
@@ -80,7 +83,38 @@ public class DeckItemService : IDeckItemService
 
         ValidateDeckLimits(dto);
 
-        existing.UpdateEntity(dto);
+        // Update scalar properties
+        existing.Name = dto.Name;
+        existing.EnergyIds = dto.EnergyIds.ToList();
+        existing.UpdatedAt = DateTime.UtcNow;
+
+        // Replace Cards: clear then add fresh items to avoid duplicates
+        existing.Cards.Clear();
+        foreach (DeckItemCardInputDTO c in dto.Cards)
+        {
+            existing.Cards.Add(new DeckCard
+            {
+                DeckId = existing.Id,
+                Deck = existing,
+                CollectionCode = c.CollectionCode,
+                CollectionNumber = c.CollectionNumber,
+                IsHighlighted = c.IsHighlighted
+            });
+        }
+
+        // Replace Tags ensuring uniqueness
+        existing.DeckTags.Clear();
+        foreach (int tagId in dto.TagIds.Distinct())
+        {
+            existing.DeckTags.Add(new DeckTag
+            {
+                DeckId = existing.Id,
+                Deck = existing,
+                TagId = tagId,
+                Tag = null!
+            });
+        }
+
         Deck updated = await _repo.UpdateAsync(existing, ct);
         return DeckItemMapper.MapToDTO(updated);
     }
