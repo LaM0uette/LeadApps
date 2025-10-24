@@ -90,12 +90,9 @@
             <div class="deck-details-edit-cards">
                 @if (TotalCardsInDeck > 0)
                 {
-                    foreach ((TCGPCardRef cardRef, int quantity) in TCGPCards)
+                    foreach (TCGPCard card in TCGPCards)
                     {
-                        for (int i = 0; i < quantity; i++)
-                        {
-                            <img class="deck-details-edit-cards__card" src="@cardRef.ImageUrl" alt="@cardRef.Name" loading="lazy" decoding="async" fetchpriority="low"/>
-                        }
+                        <img class="deck-details-edit-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
                     }
                 
                 }
@@ -122,12 +119,9 @@
                 }
                 else
                 {
-                    foreach ((TCGPCardRef cardRef, int quantity) in TCGPCards)
+                    foreach (TCGPCard card in TCGPCards)
                     {
-                        for (int i = 0; i < quantity; i++)
-                        {
-                            <img class="deck-details-edit-overview__card" src="@cardRef.ImageUrl" alt="@cardRef.Name" loading="lazy" decoding="async" fetchpriority="low"/>
-                        }
+                        <img class="deck-details-edit-overview__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
                     }
                 }
             </div>
@@ -167,13 +161,8 @@
             else
             {
                 <div class="deck-details-cards-picking-highlight-cards-cards">
-                    @foreach ((TCGPCardRef cardRef, int quantity) in TCGPCards)
+                    @foreach (TCGPCard card in TCGPCards.DistinctBy(c => new { c.Collection.Code, c.CollectionNumber }))
                     {
-                        TCGPCard? card = TCGPAllCards.FirstOrDefault(c => c.Collection.Code == cardRef.CollectionCode && c.CollectionNumber == cardRef.CollectionNumber);
-                        
-                        if (card == null)
-                            continue;
-                        
                         <button class="deck-details-cards-edit-card-button" 
                                 @onclick:preventDefault="true"
                                 @onclick:stopPropagation="true"
@@ -225,24 +214,22 @@
         <div class="deck-details-cards-edit">
             <div class="deck-details-cards-edit-header">
                 <div class="deck-details-cards-edit-cards-preview">
-                    @foreach ((TCGPCardRef cardRef, int quantity) in TCGPCards)
+                    @for (int i = 0; i < TCGPCards.Count; i++)
                     {
-                        for (int i = 0; i < quantity; i++)
-                        {
-                            string uniqueId = $"{cardRef.CollectionCode}-{cardRef.CollectionNumber}-{i}";
-                            
-                            <div class="deck-details-cards-edit-cards-preview__card-wrapper">
-                                <img class="deck-details-cards-edit-cards-preview__card @(SelectedCardId == uniqueId ? "deck-details-cards-edit-cards-preview__card--selected" : null)"
-                                     src="@cardRef.ImageUrl" alt="@cardRef.Name"
-                                     @onclick="() => SelectCard(uniqueId, cardRef)"/>
-                                @if (SelectedCardId == uniqueId)
-                                {
-                                    <button class="deck-details-cards-edit-cards-preview__remove" @onclick="() => RemoveFromDeckRef(cardRef)">
-                                        <img src="img/suggestion-minus-icon.svg" alt="minus"/> Remove
-                                    </button>
-                                }
-                            </div>
-                        }
+                        TCGPCard card = TCGPCards[i];
+                        string uniqueId = $"{card.Collection.Code}-{card.CollectionNumber}-{i}";
+                        
+                        <div class="deck-details-cards-edit-cards-preview__card-wrapper">
+                            <img class="deck-details-cards-edit-cards-preview__card @(SelectedCardId == uniqueId ? "deck-details-cards-edit-cards-preview__card--selected" : null)"
+                                 src="@card.ImageUrl" alt="@card.Name"
+                                 @onclick="() => SelectCard(uniqueId, card)"/>
+                            @if (SelectedCardId == uniqueId)
+                            {
+                                <button class="deck-details-cards-edit-cards-preview__remove" @onclick="() => RemoveFromDeckAt(i)" @onclick:preventDefault="true" @onclick:stopPropagation="true">
+                                    <img src="img/suggestion-minus-icon.svg" alt="minus"/> Remove
+                                </button>
+                            }
+                        </div>
                     }
                 </div>
                 <VerticalSpacer Value="8"/>
