@@ -197,9 +197,30 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         IsEditing = true;
     }
     
-    protected void ExitEditMode()
+    protected async Task ExitEditMode()
     {
         IsEditing = false;
+        
+        if (TCGPHighlightedCards.Count == 0)
+        {
+            TCGPHighlightedCards = TCGPCards
+                .DistinctBy(c => new { c.Collection.Code, c.CollectionNumber })
+                .Take(3)
+                .ToList();
+        }
+        
+        if (EnergyIds.Count == 0)
+        {
+            TCGPCardsRequest energyRequest = new(
+                TCGPCards
+                    .DistinctBy(c => new { c.Collection.Code, c.CollectionNumber })
+                    .Select(c => new TCGPCardRequest(c.Collection.Code, c.CollectionNumber))
+                    .ToList()
+            );
+            
+            List<int> energies = await _tcgpCardRequester.GetDeckPokemonTypesAsync(energyRequest);
+            EnergyIds = energies.Take(3).ToList();
+        }
     }
     
     protected string GetCardElementId(TCGPCard c)
@@ -241,7 +262,16 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         int index = TCGPCards.FindIndex(c => c.Collection.Code == card.Collection.Code && c.CollectionNumber == card.CollectionNumber);
         if (index >= 0)
         {
+            // remove one occurrence from deck
             TCGPCards.RemoveAt(index);
+            // if no more copies of this card remain in the deck, unhighlight it
+            string key = GetCardKey(card);
+            bool stillInDeck = TCGPCards.Any(c => GetCardKey(c) == key);
+            if (!stillInDeck)
+            {
+                TCGPHighlightedCards.RemoveAll(c => GetCardKey(c) == key);
+                _tcgpHighlightedCardsMapping[key] = false;
+            }
         }
     }
     
@@ -250,7 +280,16 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         SelectedCardId = null;
         _selectedCard = null;
         
+        // remove all copies from deck
         TCGPCards.RemoveAll(c => c.Collection.Code == card.Collection.Code && c.CollectionNumber == card.CollectionNumber);
+        // unhighlight if no copies remain
+        string key = GetCardKey(card);
+        bool stillInDeck = TCGPCards.Any(c => GetCardKey(c) == key);
+        if (!stillInDeck)
+        {
+            TCGPHighlightedCards.RemoveAll(c => GetCardKey(c) == key);
+            _tcgpHighlightedCardsMapping[key] = false;
+        }
     }
     
     protected void RemoveFromDeckAt(int index)
@@ -258,7 +297,20 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         if (index < 0 || index >= TCGPCards.Count)
             return;
         
+        // capture the card to evaluate highlight state after removal
+        TCGPCard removed = TCGPCards[index];
+        string key = GetCardKey(removed);
+        
         TCGPCards.RemoveAt(index);
+        
+        // if no more copies remain, unhighlight it
+        bool stillInDeck = TCGPCards.Any(c => GetCardKey(c) == key);
+        if (!stillInDeck)
+        {
+            TCGPHighlightedCards.RemoveAll(c => GetCardKey(c) == key);
+            _tcgpHighlightedCardsMapping[key] = false;
+        }
+        
         if (SelectedCardId is not null && _selectedCard is not null)
         {
             // clear selection if it no longer matches
