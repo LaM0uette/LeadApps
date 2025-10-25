@@ -37,4 +37,21 @@ public static class DeckDetailsMapper
             dto.UpdatedAt
         );
     }
+    
+    public static DeckDetailsSuggestion ToDomain(this DeckDetailsSuggestionOutputDTO dto)
+    {
+        return new DeckDetailsSuggestion(
+            dto.Id,
+            dto.SuggestorUuid,
+            dto.SuggestorUsername,
+            dto.AddedCards.Select(ac => new DeckDetailsCard(ac.CollectionCode, ac.CollectionNumber, ac.IsHighlighted)).ToList(),
+            dto.RemovedCards.Select(rc => new DeckDetailsCard(rc.CollectionCode, rc.CollectionNumber, rc.IsHighlighted)).ToList(),
+            dto.AddedEnergyIds.ToList(),
+            dto.RemovedEnergyIds.ToList(),
+            dto.LikeUserUuids.ToList(),
+            dto.DislikeUserUuids.ToList(),
+            dto.CreatedAt,
+            dto.UpdatedAt
+        );
+    }
 }

@@ -234,6 +234,106 @@ else
                 </div>
             }
         </div>
+        
+        @if (CurrentTab == Tab.Suggestions && CurrentMode == Mode.AddSuggestion)
+        {
+            <div class="deck-details-cards-edit">
+                <div class="deck-details-cards-edit-header">
+                    <div class="deck-details-cards-edit-cards-preview">
+                        @for (int i = 0; i < TCGPSuggestionsCards.Count; i++)
+                        {
+                            int index = i; // capture stable copy to avoid modified-closure issues
+                            TCGPCard card = TCGPSuggestionsCards[index];
+                            string uniqueId = $"{card.Collection.Code}-{card.CollectionNumber}-{index}";
+                            
+                            <div class="deck-details-cards-edit-cards-preview__card-wrapper">
+                                <img class="deck-details-cards-edit-cards-preview__card @(SelectedCardId == uniqueId ? "deck-details-cards-edit-cards-preview__card--selected" : null)"
+                                     src="@card.ImageUrl" alt="@card.Name"
+                                     @onclick="() => SelectCard(uniqueId, card)"/>
+                                @if (SelectedCardId == uniqueId)
+                                {
+                                    <button class="deck-details-cards-edit-cards-preview__remove" @onclick="() => RemoveFromDeckAt(index)" @onclick:preventDefault="true" @onclick:stopPropagation="true">
+                                        <img src="img/suggestion-minus-icon.svg" alt="minus"/> Remove
+                                    </button>
+                                }
+                            </div>
+                        }
+                    </div>
+                    <VerticalSpacer Value="8"/>
+                    <hr class="deck-details-cards-edit-header__separator">
+                    <div class="deck-details-cards-edit-header-deck-info">
+                        <div class="deck-details-cards-edit-header-deck-info__card-count @(TotalCardsInSuggestion > 20 ? "deck-details-cards-edit-header-deck-info__card-count--over-limit" : null)">
+                            @TotalCardsInSuggestion/20
+                        </div>
+                        <button class="deck-details-cards-edit-header-deck-info__filter-button">
+                            
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="deck-details-cards-edit-cards">
+                    @if (TCGPAllCards.Count <= 0)
+                    {
+                        <LoadingWheel/>
+                    }
+                    else
+                    {
+                        foreach (TCGPCard card in TCGPAllCards)
+                        {
+                            int cardQuantityInDeck = GetCardQuantityInSuggestion(card);
+                            
+                            <button id="@GetCardElementId(card)"
+                                    class="deck-details-cards-edit-card-button" 
+                                    @onclick:preventDefault="true"
+                                    @onclick:stopPropagation="true"
+                                    @onclick="() => AddToSuggestions(card)">
+                                <img class="deck-details-cards-edit-card-button__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                                @if (cardQuantityInDeck > 0)
+                                {
+                                    <div class="deck-details-cards-edit-card-button-overlay">
+                                        <button class="deck-details-cards-edit-card-button-overlay-remove-button" 
+                                                @onclick:preventDefault="true"
+                                                @onclick:stopPropagation="true"
+                                                @onclick="() => RemoveFromDeck(card)">
+                                            <img class="deck-details-cards-edit-card-button-overlay-remove-button__icon" src="img/suggestion-minus-icon.svg" alt="minus icon"/>
+                                        </button>
+                                        
+                                        <div class="deck-details-cards-edit-card-button-overlay-count">
+                                            @(cardQuantityInDeck)/2
+                                        </div>
+                                        
+                                        <div class="deck-details-cards-edit-card-button-overlay-controls">
+                                            <button class="deck-details-cards-edit-card-button-overlay-controls-btn" 
+                                                    @onclick:preventDefault="true"
+                                                    @onclick:stopPropagation="true"
+                                                    @onclick="() => RemoveOneFromDeck(card)">
+                                                <img src="img/suggestion-minus-icon.svg" alt="minus"/>
+                                            </button>
+                                            <button class="deck-details-cards-edit-card-button-overlay-controls-btn" 
+                                                    @onclick:preventDefault="true"
+                                                    @onclick:stopPropagation="true"
+                                                    @onclick="() => AddToSuggestions(card)" disabled="@(cardQuantityInDeck >= MAX_IDENTICAL_CARDS_IN_DECK)">
+                                                <img src="img/suggestion-plus-icon.svg" alt="plus"/>
+                                            </button>
+                                        </div>
+                                    </div>
+                                }
+                            </button>
+                        }
+                    }
+                </div>
+                
+                <div class="deck-details-cards-edit-cards-buttons-container">
+                    <button class="deck-details-cards-edit-cards-cancel-button" @onclick="Cancel">
+                        @Localizer.Localize("page.deckDetailEdit.cancelButton.text", "Cancel")
+                    </button>
+            
+                    <button class="deck-details-cards-edit-cards-save-button" @onclick="Save" disabled="@(NothingModified() || TotalCardsInSuggestion != MAX_CARDS_IN_DECK)">
+                        @Localizer.Localize("page.deckDetailEdit.saveButton.text", "Save")
+                    </button>
+                </div>
+            </div>
+        }
     </div>
 }
 

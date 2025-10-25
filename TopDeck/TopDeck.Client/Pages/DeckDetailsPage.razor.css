@@ -454,6 +454,431 @@
 .energy-10::before{background:var(--gradient-colorless)}
 
 
+
+.deck-details-cards-edit {
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--color-bg);
+
+    overflow: hidden;
+    z-index: 3;
+}
+
+
+
+.deck-details-cards-edit-header {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    background: var(--color-bg);
+
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.deck-details-cards-edit-header__separator {
+    width: 100%;
+
+    border: none;
+    border-top: 1px solid var(--color-border);
+
+    margin: 0;
+    box-shadow: var(--shadow-s);
+}
+
+
+.deck-details-cards-edit-header-deck-info {
+    width: 100%;
+
+    padding: 12px 22px;
+    box-sizing: border-box;
+    background: var(--color-border);
+    border-radius: 0 0 25px 25px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    z-index: 5;
+}
+
+.deck-details-cards-edit-header-deck-info__card-count {
+    font-family: var(--font-extra-bold), sans-serif;
+    font-size: 1.3em;
+    color: var(--color-text);
+}
+
+.deck-details-cards-edit-header-deck-info__card-count--over-limit {
+    color: var(--color-error);
+}
+
+
+.deck-details-cards-edit-header-deck-info__filter-button {
+    border: none;
+    visibility: hidden;
+}
+
+
+.deck-details-cards-edit-cards-preview {
+    width: 100%;
+    height: 275px;
+
+    display: grid;
+    grid-auto-flow: row;
+    grid-template-columns: repeat(15, 85px);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 3px;
+
+    padding: 8px;
+    box-sizing: border-box;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scrollbar-width: thin;
+}
+
+
+    .deck-details-cards-edit-cards-preview__card-wrapper {
+        position: relative;
+    }
+    
+    .deck-details-cards-edit-cards-preview__card {
+        width: 85px;
+        height: auto;
+        box-shadow: var(--shadow-l);
+    
+        user-select: none;
+        cursor: pointer;
+    }
+    
+    .deck-details-cards-edit-cards-preview__card--selected {
+        outline: 3px solid var(--color-outline);
+        border-radius: 6px;
+    }
+
+.deck-details-cards-edit-cards-preview__remove {
+    position: absolute;
+    top: -5px;
+    left: -6px;
+
+    width: 100px;
+    height: 30px;
+
+    border: 1px solid var(--color-outline);
+    background: var(--color-bg);
+    color: var(--color-cancel);
+
+    font-family: var(--font), sans-serif;
+    font-size: 0.9em;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    border-radius: 15px;
+    box-shadow: var(--shadow-l);
+
+    z-index: 4;
+
+    user-select: none;
+    cursor: var(--cursor-pointer);
+}
+
+    .deck-details-cards-edit-cards-preview__remove > img {
+        width: 16px;
+        height: 16px;
+    }
+
+
+.deck-details-cards-edit-cards {
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 115px);
+    justify-content: center;
+    align-content: start;
+    gap: 5px;
+
+    padding: 10px 5px 80px 5px;
+    box-sizing: border-box;
+
+    overflow-y: auto;
+}
+
+
+.deck-details-cards-edit-card-button {
+    position: relative;
+
+    width: 115px;
+    height: 165px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+    background: transparent;
+
+    padding: 0;
+
+    user-select: none;
+    cursor: var(--cursor-pointer);
+}
+
+    .deck-details-cards-edit-card-button__img {
+        width: 115px;
+        height: auto;
+        justify-self: center;
+        box-shadow: var(--shadow-l);
+    }
+
+
+.deck-details-cards-edit-card-button-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(to top, rgba(80,80,80,0.7) 2%, rgba(100,100,100,0.4) 50%, rgba(140,140,140,0.5) 85%, rgba(150,150,150,0.1) 100%);
+    border-radius: var(--radius-s);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.deck-details-cards-edit-card-button-overlay-remove-button {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+
+    background: var(--color-bg);
+    box-shadow: var(--shadow-l);
+
+    border-radius: 50%;
+
+    user-select: none;
+    cursor: var(--cursor-pointer);
+}
+
+    .deck-details-cards-edit-card-button-overlay-remove-button__icon {
+        width: 70%;
+        height: 70%;
+        justify-self: center;
+    }
+    
+    .deck-details-cards-edit-card-button-overlay-remove-button:hover {
+        opacity: 0.8;
+    }
+    
+    .deck-details-cards-edit-card-button-overlay-remove-button:active {
+        opacity: 0.6;
+    }
+
+
+.deck-details-cards-edit-card-button-overlay-count {
+    font-family: var(--font-bold), sans-serif;
+    font-size: 2rem;
+
+    color: var(--color-text-very-light);
+
+    pointer-events: none;
+}
+
+
+.deck-details-cards-edit-card-button-overlay-controls {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+
+    background: var(--color-bg);
+    border-radius: 20px;
+    padding: 2px 8px;
+    box-shadow: var(--shadow-s);
+}
+
+.deck-details-cards-edit-card-button-overlay-controls-btn {
+    width: 40px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+    
+    .deck-details-cards-edit-card-button-overlay-controls-btn img {
+        width: auto;
+        height: 70%;
+        object-fit: contain;
+    }
+    
+    .deck-details-cards-edit-card-button-overlay-controls-btn:hover img {
+        opacity: 0.8;
+    }
+    
+    .deck-details-cards-edit-card-button-overlay-controls-btn:active img {
+        opacity: 0.6;
+    }
+    
+    .deck-details-cards-edit-card-button-overlay-controls-btn:disabled {
+        cursor: default;
+    }
+    
+    .deck-details-cards-edit-card-button-overlay-controls-btn:disabled img {
+        opacity: 0.4;
+    }
+
+
+.flash {
+    outline: 3px solid rgba(255,255,255,.9);
+    border-radius: 8px;
+
+    transition: outline-color .6s;
+}
+
+
+.deck-details-cards-edit-cards-ok-button {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 180px;
+    height: 50px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+    background: var(--color-ok);
+    outline: 1px solid var(--color-outline);
+
+    border-radius: 25px;
+    box-shadow: var(--shadow-l);
+
+    font-family: var(--font-extra-bold), sans-serif;
+    font-size: 1.5em;
+    color: var(--color-bg);
+    text-align: center;
+
+    cursor: var(--cursor-pointer);
+
+    z-index: 3;
+    user-select: none;
+}
+
+    .deck-details-cards-edit-cards-ok-button:hover {
+        opacity: 0.9;
+    }
+    
+    .deck-details-cards-edit-cards-ok-button:active {
+        opacity: 0.75;
+    }
+
+
+.deck-details-cards-edit-cards-buttons-container {
+    position: absolute;
+    bottom: 55px;
+
+    width: 100%;
+
+    padding: 4px 12px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+
+    user-select: none;
+}
+
+
+.deck-details-cards-edit-cards-cancel-button,
+.deck-details-cards-edit-cards-save-button {
+    width: 40%;
+    height: 50px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+    outline: 1px solid var(--color-outline);
+
+    border-radius: 25px;
+    box-shadow: var(--shadow-l);
+
+    font-family: var(--font-extra-bold), sans-serif;
+    font-size: 1.5em;
+    color: var(--color-bg);
+    text-align: center;
+
+    cursor: var(--cursor-pointer);
+
+    user-select: none;
+}
+
+.deck-details-cards-edit-cards-cancel-button {
+    background: var(--color-cancel);
+}
+
+.deck-details-cards-edit-cards-save-button {
+    background: var(--color-ok);
+}
+
+.deck-details-cards-edit-cards-cancel-button:hover,
+.deck-details-cards-edit-cards-save-button:hover {
+    opacity: 0.9;
+}
+
+.deck-details-cards-edit-cards-cancel-button:active,
+.deck-details-cards-edit-cards-save-button:active {
+    opacity: 0.75;
+}
+
+.deck-details-cards-edit-cards-cancel-button:disabled,
+.deck-details-cards-edit-cards-save-button:disabled {
+    background: var(--color-border);
+    cursor: default;
+}
+
+
 @media (min-width: 1366px) {
     .deck-details-page-container {
         grid-template-columns: 0.9fr 2fr 0.9fr;
@@ -532,6 +957,16 @@
         right: auto;
         left: 50%;
         transform: translateX(-50%);
+    }
+
+    .deck-details-cards-edit {
+        outline: 1px solid var(--color-outline);
+        width: 56%;
+        left: 22%;
+    }
+
+    .deck-details-cards-edit-cards-buttons-container {
+        bottom: 25px;
     }
 }
 
