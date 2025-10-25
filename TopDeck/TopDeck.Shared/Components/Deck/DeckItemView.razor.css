@@ -109,22 +109,24 @@
 
 
 .deck-highlight-energies {
+    position: absolute;
+    bottom: 12px;
+    left: 5px;
+    
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 2px;
 
-    max-width: 100%;
+    width: 32%;
     overflow: hidden;
 
     z-index: 1;
 }
 
     .deck-highlight-energies__energy {
-        max-height: 24px;
-        max-width: 24px;
-        object-fit: contain;
+        max-height: 15px;
     }
 
 
@@ -182,12 +184,13 @@
     }
     
     .deck-highlight-energies {
-        gap: 15px;
+        bottom: 14px;
+        width: 45%;
+        gap: 6px;
     }
 
         .deck-highlight-energies__energy {
-            max-height: 34px;
-            max-width: 34px;
+            max-height: 30px;
         }
     
         

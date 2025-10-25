@@ -35,21 +35,19 @@
 
         </div>
         
-        <VerticalSpacer Value="14"/>
-        
-        <div class="deck-highlight-energies">
-            
-            @foreach (int energyId in DeckItem.EnergyIds)
-            { 
-                <img class="deck-highlight-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
-            }
-            
-        </div>
+    </div>
+    
+    <div class="deck-highlight-energies">
+        @foreach (int energyId in DeckItem.EnergyIds)
+        { 
+            <img class="deck-highlight-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"/>
+        }
     </div>
     
     <div class="deck-item-footer">
         <div class="deck-vote-panel-container">
-            <VotePanel DeckId="DeckItem.Id"
+            <VotePanel Width="94px" FontSize="0.6em"
+                       DeckId="DeckItem.Id"
                        LikeUserUuids="DeckItem.LikeUserUuids.ToList()"
                        DislikeUserUuids="DeckItem.DislikeUserUuids.ToList()"/>
         </div>
