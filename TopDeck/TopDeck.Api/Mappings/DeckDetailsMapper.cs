@@ -45,6 +45,30 @@ public static class DeckDetailsMapper
 
     public static DeckSuggestion ToSuggestionEntity(DeckSuggestionInputDTO dto)
     {
+        // Normalize inputs: distinct by card identity and remove overlaps between added and removed
+        var addedDistinct = dto.AddedCards
+            .GroupBy(c => new { c.CollectionCode, c.CollectionNumber })
+            .Select(g => g.First())
+            .ToList();
+        var removedDistinct = dto.RemovedCards
+            .GroupBy(c => new { c.CollectionCode, c.CollectionNumber })
+            .Select(g => g.First())
+            .ToList();
+
+        // Remove cards that appear in both lists (net-zero change) to avoid unique index violations
+        var overlapKeys = new HashSet<(string Code, int Number)>(addedDistinct
+            .Select(a => (a.CollectionCode, a.CollectionNumber))
+            .Intersect(removedDistinct.Select(r => (r.CollectionCode, r.CollectionNumber))));
+        if (overlapKeys.Count > 0)
+        {
+            addedDistinct = addedDistinct
+                .Where(c => !overlapKeys.Contains((c.CollectionCode, c.CollectionNumber)))
+                .ToList();
+            removedDistinct = removedDistinct
+                .Where(c => !overlapKeys.Contains((c.CollectionCode, c.CollectionNumber)))
+                .ToList();
+        }
+
         return new DeckSuggestion
         {
             SuggestorId = dto.SuggestorId,
@@ -52,22 +76,22 @@ public static class DeckDetailsMapper
             DeckId = dto.DeckId,
             Deck = null!,
 
-            AddedCards = dto.AddedCards.Select(c => new DeckSuggestionAddedCard
+            AddedCards = addedDistinct.Select(c => new DeckSuggestionAddedCard
             {
                 Suggestion = null!,
                 CollectionCode = c.CollectionCode,
                 CollectionNumber = c.CollectionNumber
             }).ToList(),
 
-            RemovedCards = dto.RemovedCards.Select(c => new DeckSuggestionRemovedCard
+            RemovedCards = removedDistinct.Select(c => new DeckSuggestionRemovedCard
             {
                 Suggestion = null!,
                 CollectionCode = c.CollectionCode,
                 CollectionNumber = c.CollectionNumber
             }).ToList(),
 
-            AddedEnergyIds = dto.AddedEnergyIds.ToList(),
-            RemovedEnergyIds = dto.RemovedEnergyIds.ToList(),
+            AddedEnergyIds = dto.AddedEnergyIds.Distinct().ToList(),
+            RemovedEnergyIds = dto.RemovedEnergyIds.Distinct().ToList(),
         };
     }
     
@@ -91,7 +115,30 @@ public static class DeckDetailsMapper
     
     public static void UpdateEntity(this DeckSuggestion entity, DeckSuggestionInputDTO dto)
     {
-        entity.AddedCards = dto.AddedCards.Select(c => new DeckSuggestionAddedCard
+        // Normalize inputs: distinct by card identity and remove overlaps between added and removed
+        var addedDistinct = dto.AddedCards
+            .GroupBy(c => new { c.CollectionCode, c.CollectionNumber })
+            .Select(g => g.First())
+            .ToList();
+        var removedDistinct = dto.RemovedCards
+            .GroupBy(c => new { c.CollectionCode, c.CollectionNumber })
+            .Select(g => g.First())
+            .ToList();
+
+        var overlapKeys = new HashSet<(string Code, int Number)>(addedDistinct
+            .Select(a => (a.CollectionCode, a.CollectionNumber))
+            .Intersect(removedDistinct.Select(r => (r.CollectionCode, r.CollectionNumber))));
+        if (overlapKeys.Count > 0)
+        {
+            addedDistinct = addedDistinct
+                .Where(c => !overlapKeys.Contains((c.CollectionCode, c.CollectionNumber)))
+                .ToList();
+            removedDistinct = removedDistinct
+                .Where(c => !overlapKeys.Contains((c.CollectionCode, c.CollectionNumber)))
+                .ToList();
+        }
+
+        entity.AddedCards = addedDistinct.Select(c => new DeckSuggestionAddedCard
         {
             Suggestion = entity,
             DeckSuggestionId = entity.Id,
@@ -99,7 +146,7 @@ public static class DeckDetailsMapper
             CollectionNumber = c.CollectionNumber
         }).ToList();
 
-        entity.RemovedCards = dto.RemovedCards.Select(c => new DeckSuggestionRemovedCard
+        entity.RemovedCards = removedDistinct.Select(c => new DeckSuggestionRemovedCard
         {
             Suggestion = entity,
             DeckSuggestionId = entity.Id,
@@ -107,7 +154,7 @@ public static class DeckDetailsMapper
             CollectionNumber = c.CollectionNumber
         }).ToList();
         
-        entity.AddedEnergyIds = dto.AddedEnergyIds.ToList();
-        entity.RemovedEnergyIds = dto.RemovedEnergyIds.ToList();
+        entity.AddedEnergyIds = dto.AddedEnergyIds.Distinct().ToList();
+        entity.RemovedEnergyIds = dto.RemovedEnergyIds.Distinct().ToList();
     }
 }
