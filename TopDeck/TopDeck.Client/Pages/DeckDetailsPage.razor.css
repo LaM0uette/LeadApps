@@ -370,6 +370,7 @@
 
     z-index: 3;
     user-select: none;
+    pointer-events: initial;
 }
 
     .deck-details-title-panel-edit-deck-button-desktop:hover {
