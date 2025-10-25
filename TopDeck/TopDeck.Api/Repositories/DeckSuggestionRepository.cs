@@ -52,6 +52,15 @@ public class DeckSuggestionRepository : IDeckSuggestionRepository
         return true;
     }
 
+    public async Task<int> DeleteByDeckIdAsync(int deckId, CancellationToken ct = default)
+    {
+        // Delete all suggestions for the given deck. Cascade will remove related children (Added/Removed cards, Likes/Dislikes)
+        var suggestions = await _db.DeckSuggestions.Where(s => s.DeckId == deckId).ToListAsync(ct);
+        if (suggestions.Count == 0) return 0;
+        _db.DeckSuggestions.RemoveRange(suggestions);
+        return await _db.SaveChangesAsync(ct);
+    }
+
     #endregion
 
     #region Methods

@@ -1,0 +1,28 @@
+﻿.plus-button {
+    position: relative;
+    
+    background: var(--color-bg);
+    text-decoration: none;
+    
+    border: none;
+    outline: 1px solid var(--color-outline);
+    border-radius: var(--radius-s);
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: var(--drop-shadow-s);
+
+    overflow: hidden;
+    
+    cursor: var(--cursor-pointer);
+    user-select: none;
+}
+
+    .plus-button__icon {
+        width: 40%;
+        height: auto;
+        max-height: 85%;
+    }
+    

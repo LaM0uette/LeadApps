@@ -22,4 +22,8 @@
             @onclick="OnDislikeClicked">
         <img class="vote-like-button__icon" src="img/@(IsDisliked ? "like-icon.svg" : "like-empty-icon.svg")" alt="dislike"/>
     </button>
+    @if (ShowDislikeCount)
+    {
+        <p class="vote-panel__like-count">@DislikeCountFormatted</p>
+    }
 </div>

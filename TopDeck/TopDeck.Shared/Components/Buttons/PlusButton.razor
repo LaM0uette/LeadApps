@@ -1,0 +1,11 @@
+﻿@namespace TopDeck.Shared.Components
+@inherits PlusButtonPresenter
+
+
+<button class="plus-button" 
+        style="width: @Width; height: @Height;" 
+        @onclick:preventDefault="true"
+        @onclick:stopPropagation="true"
+        @onclick="Clicked">
+   <img class="plus-button__icon" src="img/plus-icon.svg" alt="plus icon"/>
+</button>

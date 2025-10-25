@@ -9,4 +9,5 @@ public interface IDeckSuggestionRepository
     Task<DeckSuggestion> AddAsync(DeckSuggestion suggestion, CancellationToken ct = default);
     Task<DeckSuggestion> UpdateAsync(DeckSuggestion suggestion, CancellationToken ct = default);
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);
+    Task<int> DeleteByDeckIdAsync(int deckId, CancellationToken ct = default);
 }

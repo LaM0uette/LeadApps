@@ -14,6 +14,14 @@
         }
         else
         {
+            <AuthorizeView>
+                <Authorized>   
+                    <DeckItemAddButton/>
+                </Authorized>
+                <NotAuthorized>
+                </NotAuthorized>
+            </AuthorizeView>
+            
             foreach (DeckItem deckItem in DeckItems)
             {
                 <DeckItemView DeckItem="@deckItem"/>

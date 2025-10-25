@@ -13,8 +13,9 @@ public static class DeckDetailsMapper
         deck.Creator.Uuid.ToString(),
         deck.Name,
         deck.Code,
-        deck.Cards.Select(card => new DeckDetailsCardOutputDTO(card.CollectionCode, card.CollectionNumber)),
-        deck.Cards.Where(card => card.IsHighlighted).Select(card => new DeckDetailsCardOutputDTO(card.CollectionCode, card.CollectionNumber)),
+        deck.Cards
+            .OrderBy(card => card.Id)
+            .Select(card => new DeckDetailsCardOutputDTO(card.CollectionCode, card.CollectionNumber, card.IsHighlighted)),
         deck.EnergyIds,
         deck.DeckTags.Select(tag => tag.TagId),
         deck.Likes.Select(like => like.User.Uuid.ToString()),
@@ -26,8 +27,8 @@ public static class DeckDetailsMapper
                 s.Id,
                 s.Suggestor.Uuid.ToString(),
                 s.Suggestor.UserName,
-                s.AddedCards.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)),
-                s.RemovedCards.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)),
+                s.AddedCards.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber, false)),
+                s.RemovedCards.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber, false)),
                 s.AddedEnergyIds,
                 s.RemovedEnergyIds,
                 s.Likes.Select(l => l.User.Uuid.ToString()),
@@ -51,6 +52,7 @@ public static class DeckDetailsMapper
             DeckId = dto.DeckId,
             Deck = null!,
 
+            // Keep duplicates and overlaps as-is; quantity matters
             AddedCards = dto.AddedCards.Select(c => new DeckSuggestionAddedCard
             {
                 Suggestion = null!,
@@ -65,8 +67,9 @@ public static class DeckDetailsMapper
                 CollectionNumber = c.CollectionNumber
             }).ToList(),
 
-            AddedEnergyIds = dto.AddedEnergyIds.ToList(),
-            RemovedEnergyIds = dto.RemovedEnergyIds.ToList(),
+            // Energies: keep unique values (quantities not required per current feature)
+            AddedEnergyIds = dto.AddedEnergyIds.Distinct().ToList(),
+            RemovedEnergyIds = dto.RemovedEnergyIds.Distinct().ToList(),
         };
     }
     
@@ -76,8 +79,8 @@ public static class DeckDetailsMapper
             entity.Id,
             entity.Suggestor?.Uuid.ToString() ?? string.Empty,
             entity.Suggestor?.UserName ?? string.Empty,
-            entity.AddedCards?.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)) ?? [],
-            entity.RemovedCards?.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber)) ?? [],
+            entity.AddedCards?.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber, false)) ?? [],
+            entity.RemovedCards?.Select(c => new DeckDetailsCardOutputDTO(c.CollectionCode, c.CollectionNumber, false)) ?? [],
             entity.AddedEnergyIds ?? Enumerable.Empty<int>(),
             entity.RemovedEnergyIds ?? Enumerable.Empty<int>(),
             entity.Likes?.Select(l => l.User?.Uuid.ToString() ?? string.Empty) ?? [],
@@ -90,6 +93,7 @@ public static class DeckDetailsMapper
     
     public static void UpdateEntity(this DeckSuggestion entity, DeckSuggestionInputDTO dto)
     {
+        // Keep duplicates and overlaps as-is; quantity matters
         entity.AddedCards = dto.AddedCards.Select(c => new DeckSuggestionAddedCard
         {
             Suggestion = entity,
@@ -106,7 +110,7 @@ public static class DeckDetailsMapper
             CollectionNumber = c.CollectionNumber
         }).ToList();
         
-        entity.AddedEnergyIds = dto.AddedEnergyIds.ToList();
-        entity.RemovedEnergyIds = dto.RemovedEnergyIds.ToList();
+        entity.AddedEnergyIds = dto.AddedEnergyIds.Distinct().ToList();
+        entity.RemovedEnergyIds = dto.RemovedEnergyIds.Distinct().ToList();
     }
 }

@@ -2,5 +2,6 @@
 
 public record DeckDetailsCardOutputDTO(
     string CollectionCode,
-    int CollectionNumber
+    int CollectionNumber,
+    bool IsHighlighted
 );

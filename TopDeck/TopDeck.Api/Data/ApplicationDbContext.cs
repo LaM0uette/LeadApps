@@ -170,7 +170,8 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasKey(c => c.Id);
             entity.Property(c => c.CollectionCode).IsRequired();
-            entity.HasIndex(c => new { c.DeckSuggestionId, c.CollectionCode, c.CollectionNumber }).IsUnique();
+            // Allow duplicate rows per (DeckSuggestionId, CollectionCode, CollectionNumber): non-unique index for performance
+            entity.HasIndex(c => new { c.DeckSuggestionId, c.CollectionCode, c.CollectionNumber });
             entity.HasOne(c => c.Suggestion)
                 .WithMany(s => s.AddedCards)
                 .HasForeignKey(c => c.DeckSuggestionId)
@@ -182,7 +183,8 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasKey(c => c.Id);
             entity.Property(c => c.CollectionCode).IsRequired();
-            entity.HasIndex(c => new { c.DeckSuggestionId, c.CollectionCode, c.CollectionNumber }).IsUnique();
+            // Allow duplicate rows per (DeckSuggestionId, CollectionCode, CollectionNumber): non-unique index for performance
+            entity.HasIndex(c => new { c.DeckSuggestionId, c.CollectionCode, c.CollectionNumber });
             entity.HasOne(c => c.Suggestion)
                 .WithMany(s => s.RemovedCards)
                 .HasForeignKey(c => c.DeckSuggestionId)

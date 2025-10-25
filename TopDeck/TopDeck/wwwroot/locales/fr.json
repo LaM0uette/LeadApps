@@ -11,10 +11,15 @@
   "component.pageButton.previous.text": "Précédent",
   "component.pageButton.next.text": "Suivant",
   "component.loadingWheel.text": "Chargement…",
+  "component.titlePanel.placeholder": "Nom du deck",
   "feedback.text.copied": "Copié",
   "feedback.text.notFound": "Introuvable",
   "page.deckDetail.noSuggestions.text": "Aucune suggestion disponible pour ce deck.",
   "page.deckDetail.showAll.text": "Voir tout",
   "page.deckDetail.suggestion.title": "Suggestions :",
+  "page.deckDetailEdit.editButton.text": "Modifier",
+  "page.deckDetailEdit.cancelButton.text": "Annuler",
+  "page.deckDetailEdit.saveButton.text": "Sauvegarder",
+  "page.deckDetailEdit.noCardsInDeck.text": "Aucune carte dans ce deck.",
   "page.decksView.noCards.text": "Aucune carte trouvée."
 }

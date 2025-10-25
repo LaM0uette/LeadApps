@@ -11,24 +11,24 @@ public class FakeDeckDetailsService : IDeckDetailsService
         IReadOnlyList<DeckDetails> result = [];
         return Task.FromResult(result);
     }
-    
+
     public Task<DeckDetails?> GetByCodeAsync(string code, CancellationToken ct = default)
     {
         return Task.FromResult<DeckDetails?>(null);
     }
 
-    /*public Task<DeckDetails> CreateAsync(DeckDetailsInputDTO dto, CancellationToken ct = default)
+    public Task<DeckDetailsSuggestion?> CreateSuggestionAsync(DeckSuggestionInputDTO suggestion, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        return Task.FromResult<DeckDetailsSuggestion?>(null);
     }
-
-    public Task<DeckDetails?> UpdateAsync(int id, DeckDetailsInputDTO dto, CancellationToken ct = default)
+    
+    public Task<DeckDetailsSuggestion?> UpdateSuggestionAsync(int id, DeckSuggestionInputDTO suggestion, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        return Task.FromResult<DeckDetailsSuggestion?>(null);
     }
-
-    public Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+    
+    public Task<bool> DeleteSuggestionAsync(int id, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
-    }*/
+        return Task.FromResult(false);
+    }
 }

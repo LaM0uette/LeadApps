@@ -2,7 +2,7 @@
 
 public record TCGPCard(
     // int Id,
-    // TCGPCardType Type,
+    TCGPCardType Type,
     string Name,
     // string? Description,
     string? ImageUrl,

@@ -1,0 +1,308 @@
+﻿@page "/decks/edit"
+@page "/decks/{DeckCode}/edit"
+@inherits DeckDetailsEditPagePresenter
+@attribute [AllowAnonymous]
+
+<PageTitle>Deck edit</PageTitle>
+
+
+<div class="deck-details-edit-page-container">
+    <div class="deck-details-edit-left-side"></div>
+    
+    <div class="deck-details-edit-page">
+        <div class="deck-details-edit-header">
+            <div class="deck-details-edit-header-top">
+                <div class="deck-details-edit-title-panel-container">
+                    <TitleEditPanel @bind-Name="DeckName" Width="200px" Height="35px" FontSize="1.1em"/>
+                </div>
+            </div>
+
+            @if (IsMobile) { <VerticalSpacer Value="10"/> }
+            else { <VerticalSpacer Value="25"/> }
+
+            <div class="deck-details-edit-highlight">
+                <div class="deck-details-edit-highlighted-cards">
+                    
+                    @if (TCGPHighlightedCards.Count == 0)
+                    {
+                        <PlusButton Width="86px" Height="120px" Clicked="SetPickingHighlightCardsMode"/>
+                    }
+                    else
+                    {
+                        <img class="deck-details-edit-highlighted-cards__card" src="@TCGPHighlightedCards[0].ImageUrl" alt="img deck 1" loading="lazy" decoding="async" fetchpriority="low"
+                             @onclick="SetPickingHighlightCardsMode"/>
+                    }
+                    
+                    @if (TCGPHighlightedCards.Count <= 1)
+                    {
+                        <PlusButton Width="68px" Height="96px" Clicked="SetPickingHighlightCardsMode"/>
+                    }
+                    else
+                    {
+                        <img class="deck-details-edit-highlighted-cards__card" src="@TCGPHighlightedCards[1].ImageUrl" alt="img deck 2" loading="lazy" decoding="async" fetchpriority="low"
+                             @onclick="SetPickingHighlightCardsMode"/>
+                    }
+                    
+                    @if (TCGPHighlightedCards.Count <= 2)
+                    {
+                        <PlusButton Width="68px" Height="96px" Clicked="SetPickingHighlightCardsMode"/>
+                    }
+                    else
+                    {
+                        <img class="deck-details-edit-highlighted-cards__card" src="@TCGPHighlightedCards[2].ImageUrl" alt="img deck 3" loading="lazy" decoding="async" fetchpriority="low"
+                             @onclick="SetPickingHighlightCardsMode"/>
+                    }
+                    
+                </div>
+
+                <div class="deck-details-edit-energies">
+                    @if (EnergyIds.Count <= 0)
+                    {
+                        <RoundPlusButton Size="26px" Clicked="SetPickingEnergiesMode"/>
+                    }
+                    else
+                    {
+                        foreach (int energyId in EnergyIds)
+                        {
+                            <img class="deck-details-edit-energies__energy" src="https://tcgp-dex.com/energyTypes/@(EnergyTypes[energyId].ToLower()).webp" alt="energy " loading="lazy" decoding="async" fetchpriority="low"
+                                 @onclick="SetPickingEnergiesMode"/>
+                        }
+                    }
+                </div>
+            </div>
+                
+            <VerticalSpacer Value="8"/>
+            <hr class="deck-details-edit-header__separator">
+            
+            <div class="deck-details-edit-header-deck-info">
+                <div class="deck-details-edit-header-deck-info__card-count @(TotalCardsInDeck > 20 ? "deck-details-edit-header-deck-info__card-count--over-limit" : null)">
+                    @TotalCardsInDeck/20
+                </div>
+                <button class="deck-details-edit-header__edit-button" @onclick="SetEditMode">
+                    @Localizer.Localize("page.deckDetailEdit.editButton.text", "Edit")
+                </button>
+            </div>
+            
+        </div>
+        
+        @if (CurrentTab is Tab.Cards)
+        {
+            <div class="deck-details-edit-cards">
+                @if (TotalCardsInDeck > 0)
+                {
+                    foreach (TCGPCard card in TCGPCards)
+                    {
+                        <img class="deck-details-edit-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"
+                             @onclick="SetEditMode"/>
+                    }
+                
+                }
+
+                @if (TotalCardsInDeck < MAX_CARDS_IN_DECK)
+                {
+                    if (IsMobile)
+                    {
+                        <PlusButton Width="115px" Height="160px" Clicked="SetEditMode"/>
+                    }
+                    else
+                    {
+                        <PlusButton Width="192px" Height="267px" Clicked="SetEditMode"/>
+                    }
+                }
+            </div>
+        }
+        else if (CurrentTab is Tab.Overview)
+        {
+            <div class="deck-details-edit-overview">
+                @if (TotalCardsInDeck <= 0)
+                {
+                    @*<LoadingWheel/>*@
+                }
+                else
+                {
+                    foreach (TCGPCard card in TCGPCards)
+                    {
+                        <img class="deck-details-edit-overview__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                    }
+                }
+            </div>
+        }
+        
+        <div class="deck-details-cards-edit-cards-buttons-container">
+            <button class="deck-details-cards-edit-cards-cancel-button" @onclick="Cancel">
+                @Localizer.Localize("page.deckDetailEdit.cancelButton.text", "Cancel")
+            </button>
+            
+            <button class="deck-details-cards-edit-cards-save-button" @onclick="Save" disabled="@(NothingModified() || TotalCardsInDeck != MAX_CARDS_IN_DECK || string.IsNullOrEmpty(DeckName))">
+                @Localizer.Localize("page.deckDetailEdit.saveButton.text", "Save")
+            </button>
+        </div>
+        
+        @if (IsMobile)
+        {
+            <div class="deck-details-tabs">
+                <button class="deck-details-tab-button @(CurrentTab is Tab.Cards ? "active" : "")" @onclick="() => SelectTab(Tab.Cards)">
+                    <img class="deck-details-tab-button__icon" src="img/card-tab-icon@(CurrentTab is Tab.Cards ? "-active" : "").svg" alt="card tab button"/>
+                </button>
+
+                <button class="deck-details-tab-button @(CurrentTab is Tab.Overview ? "active" : "")" @onclick="() => SelectTab(Tab.Overview)">
+                    <img class="deck-details-tab-button__icon" src="img/overview-tab-icon@(CurrentTab is Tab.Overview ? "-active" : "").svg" alt="overview tab button"/>
+                </button>
+            </div>
+        }
+    </div>
+    
+    @if (CurrentTab == Tab.Cards && IsPickingHighlightCards)
+    {
+        <div class="deck-details-cards-picking-highlight-cards">
+            @if (TCGPCards.Count <= 0)
+            {
+                @Localizer.Localize("page.deckDetailEdit.noCardsInDeck.text", "No cards in deck.")
+            }
+            else
+            {
+                <div class="deck-details-cards-picking-highlight-cards-cards">
+                    @foreach (TCGPCard card in TCGPCards.DistinctBy(c => new { c.Collection.Code, c.CollectionNumber }))
+                    {
+                        <button class="deck-details-cards-edit-card-button" 
+                                @onclick:preventDefault="true"
+                                @onclick:stopPropagation="true"
+                                @onclick="() => AddToHighlightCards(card)">
+                            <img class="deck-details-cards-edit-card-button__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                            @if (IsCardInHighlightCards(card))
+                            {
+                                <div class="deck-details-cards-edit-card-button-overlay">
+                                    <div class="deck-details-cards-edit-card-button-overlay-count">
+                                        @(TCGPHighlightedCards.FindIndex(h => h.Collection.Code == card.Collection.Code && h.CollectionNumber == card.CollectionNumber) + 1)
+                                    </div>
+                                </div>
+                            }
+                        </button>
+                    }
+                </div>
+            }
+            
+            <button class="deck-details-cards-edit-cards-ok-button" @onclick="ExitPickingHighlightCardsMode">
+                X
+            </button>
+        </div>
+    }
+    
+    @if (CurrentTab == Tab.Cards && IsPickingEnergies)
+    {
+        <div class="deck-details-cards-picking-energies">
+            <div class="deck-details-cards-picking-energies-energies">
+                @foreach ((int id, string name) in EnergyTypes)
+                {
+                    <button class="deck-details-cards-edit-energy @(IsEnergySelected(id) ? "deck-details-cards-edit-energy--toggled" : null)"
+                            @onclick:preventDefault="true"
+                            @onclick:stopPropagation="true"
+                            @onclick="() => ToggleEnergyType(id)">
+                        <img class="deck-details-cards-edit-energy__img" src="https://tcgp-dex.com/energyTypes/@(name.ToLower()).webp" alt="@name" loading="lazy" decoding="async" fetchpriority="low"/>
+                        <p class="deck-details-cards-edit-energy__name">@name</p>
+                    </button>
+                }
+            </div>
+            
+            <button class="deck-details-cards-edit-cards-ok-button" @onclick="ExitPickingEnergiesMode">
+                X
+            </button>
+        </div>
+    }
+
+    @if (CurrentTab == Tab.Cards && IsEditing)
+    {
+        <div class="deck-details-cards-edit">
+            <div class="deck-details-cards-edit-header">
+                <div class="deck-details-cards-edit-cards-preview">
+                    @for (int i = 0; i < TCGPCards.Count; i++)
+                    {
+                        int index = i; // capture stable copy to avoid modified-closure issues
+                        TCGPCard card = TCGPCards[index];
+                        string uniqueId = $"{card.Collection.Code}-{card.CollectionNumber}-{index}";
+                        
+                        <div class="deck-details-cards-edit-cards-preview__card-wrapper">
+                            <img class="deck-details-cards-edit-cards-preview__card @(SelectedCardId == uniqueId ? "deck-details-cards-edit-cards-preview__card--selected" : null)"
+                                 src="@card.ImageUrl" alt="@card.Name"
+                                 @onclick="() => SelectCard(uniqueId, card)"/>
+                            @if (SelectedCardId == uniqueId)
+                            {
+                                <button class="deck-details-cards-edit-cards-preview__remove" @onclick="() => RemoveFromDeckAt(index)" @onclick:preventDefault="true" @onclick:stopPropagation="true">
+                                    <img src="img/suggestion-minus-icon.svg" alt="minus"/> Remove
+                                </button>
+                            }
+                        </div>
+                    }
+                </div>
+                <VerticalSpacer Value="8"/>
+                <hr class="deck-details-cards-edit-header__separator">
+                <div class="deck-details-cards-edit-header-deck-info">
+                    <div class="deck-details-cards-edit-header-deck-info__card-count @(TotalCardsInDeck > 20 ? "deck-details-cards-edit-header-deck-info__card-count--over-limit" : null)">
+                        @TotalCardsInDeck/20
+                    </div>
+                    <button class="deck-details-cards-edit-header-deck-info__filter-button">
+                        
+                    </button>
+                </div>
+            </div>
+            
+            <div class="deck-details-cards-edit-cards">
+                @if (TCGPAllCards.Count <= 0)
+                {
+                    <LoadingWheel/>
+                }
+                else
+                {
+                    foreach (TCGPCard card in TCGPAllCards)
+                    {
+                        int cardQuantityInDeck = GetCardQuantityInDeck(card);
+                        
+                        <button id="@GetCardElementId(card)"
+                                class="deck-details-cards-edit-card-button" 
+                                @onclick:preventDefault="true"
+                                @onclick:stopPropagation="true"
+                                @onclick="() => AddToDeck(card)">
+                            <img class="deck-details-cards-edit-card-button__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
+                            @if (cardQuantityInDeck > 0)
+                            {
+                                <div class="deck-details-cards-edit-card-button-overlay">
+                                    <button class="deck-details-cards-edit-card-button-overlay-remove-button" 
+                                            @onclick:preventDefault="true"
+                                            @onclick:stopPropagation="true"
+                                            @onclick="() => RemoveFromDeck(card)">
+                                        <img class="deck-details-cards-edit-card-button-overlay-remove-button__icon" src="img/suggestion-minus-icon.svg" alt="minus icon"/>
+                                    </button>
+                                    
+                                    <div class="deck-details-cards-edit-card-button-overlay-count">
+                                        @(cardQuantityInDeck)/2
+                                    </div>
+                                    
+                                    <div class="deck-details-cards-edit-card-button-overlay-controls">
+                                        <button class="deck-details-cards-edit-card-button-overlay-controls-btn" 
+                                                @onclick:preventDefault="true"
+                                                @onclick:stopPropagation="true"
+                                                @onclick="() => RemoveOneFromDeck(card)">
+                                            <img src="img/suggestion-minus-icon.svg" alt="minus"/>
+                                        </button>
+                                        <button class="deck-details-cards-edit-card-button-overlay-controls-btn" 
+                                                @onclick:preventDefault="true"
+                                                @onclick:stopPropagation="true"
+                                                @onclick="() => AddToDeck(card)" disabled="@(cardQuantityInDeck >= MAX_IDENTICAL_CARDS_IN_DECK)">
+                                            <img src="img/suggestion-plus-icon.svg" alt="plus"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </button>
+                    }
+                }
+            </div>
+            
+            <button class="deck-details-cards-edit-cards-ok-button" @onclick="ExitEditMode">
+                OK
+            </button>
+        </div>
+    }
+    
+    <div class="deck-details-edit-right-side"></div>
+</div>

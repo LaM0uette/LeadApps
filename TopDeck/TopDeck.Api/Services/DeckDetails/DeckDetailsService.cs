@@ -43,7 +43,9 @@ public class DeckDetailsService : IDeckDetailsService
 
         DeckSuggestion entity = DeckDetailsMapper.ToSuggestionEntity(dto);
         await _repoSuggestions.AddAsync(entity, ct);
-        return entity.ToSuggestionDTO();
+        // Reload with relations to ensure Suggestor and related data are populated for the DTO
+        DeckSuggestion? loaded = await _repoSuggestions.GetByIdAsync(entity.Id, includeRelations: true, ct);
+        return (loaded ?? entity).ToSuggestionDTO();
     }
     
     public async Task<DeckDetailsSuggestionOutputDTO?> UpdateSuggestionAsync(int id, DeckSuggestionInputDTO dto, CancellationToken ct = default)

@@ -13,8 +13,7 @@ public static class DeckDetailsMapper
             dto.CreatorUuid,
             dto.Name,
             dto.Code,
-            dto.Cards.Select(c => new DeckDetailsCard(c.CollectionCode, c.CollectionNumber)).ToList(),
-            dto.HighlightedCards.Select(c => new DeckDetailsCard(c.CollectionCode, c.CollectionNumber)).ToList(),
+            dto.Cards.Select(c => new DeckDetailsCard(c.CollectionCode, c.CollectionNumber, c.IsHighlighted)).ToList(),
             dto.EnergyIds.ToList(),
             dto.TagIds.ToList(),
             dto.LikeUserUuids.ToList(),
@@ -24,8 +23,8 @@ public static class DeckDetailsMapper
                 s.Id,
                 s.SuggestorUuid,
                 s.SuggestorUsername,
-                s.AddedCards.Select(ac => new DeckDetailsCard(ac.CollectionCode, ac.CollectionNumber)).ToList(),
-                s.RemovedCards.Select(rc => new DeckDetailsCard(rc.CollectionCode, rc.CollectionNumber)).ToList(),
+                s.AddedCards.Select(ac => new DeckDetailsCard(ac.CollectionCode, ac.CollectionNumber, ac.IsHighlighted)).ToList(),
+                s.RemovedCards.Select(rc => new DeckDetailsCard(rc.CollectionCode, rc.CollectionNumber, rc.IsHighlighted)).ToList(),
                 s.AddedEnergyIds.ToList(),
                 s.RemovedEnergyIds.ToList(),
                 s.LikeUserUuids.ToList(),
@@ -34,6 +33,23 @@ public static class DeckDetailsMapper
                 s.UpdatedAt
                 )).ToList(),
             
+            dto.CreatedAt,
+            dto.UpdatedAt
+        );
+    }
+    
+    public static DeckDetailsSuggestion ToDomain(this DeckDetailsSuggestionOutputDTO dto)
+    {
+        return new DeckDetailsSuggestion(
+            dto.Id,
+            dto.SuggestorUuid,
+            dto.SuggestorUsername,
+            dto.AddedCards.Select(ac => new DeckDetailsCard(ac.CollectionCode, ac.CollectionNumber, ac.IsHighlighted)).ToList(),
+            dto.RemovedCards.Select(rc => new DeckDetailsCard(rc.CollectionCode, rc.CollectionNumber, rc.IsHighlighted)).ToList(),
+            dto.AddedEnergyIds.ToList(),
+            dto.RemovedEnergyIds.ToList(),
+            dto.LikeUserUuids.ToList(),
+            dto.DislikeUserUuids.ToList(),
             dto.CreatedAt,
             dto.UpdatedAt
         );

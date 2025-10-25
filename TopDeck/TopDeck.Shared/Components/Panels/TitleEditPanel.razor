@@ -1,0 +1,26 @@
+﻿@namespace TopDeck.Shared.Components
+@inherits TitleEditPanelBase
+
+
+<div class="title-panel"
+     style="width: @Width; height: @Height; font-size: @FontSize;"
+     @onclick:preventDefault 
+     @onclick:stopPropagation>
+
+    @if (IsEditing)
+    {
+        <input @ref="InputElement"
+               class="title-panel__input"
+               value="@EditableName"
+               maxlength="14"
+               @oninput="OnNameChanged"
+               @onblur="StopEditing"
+               @onkeydown="HandleKeyDown" />
+    }
+    else
+    {
+        <p class="title-panel__text" @onclick="@StartEditing">
+            @(string.IsNullOrWhiteSpace(Name) ? Localizer.Localize("component.titlePanel.placeholder", "Deck name") : Name)
+        </p>
+    }
+</div>
