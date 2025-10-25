@@ -65,6 +65,13 @@ public class DeckDetailsPagePresenter : PresenterBase
         { 10, "Colorless" }
     };
     
+    // TODO: Get tags fron api
+    protected readonly Dictionary<int, string> TagNames = new()
+    {
+        { 1, "Meta" },
+        { 2, "Fun" }
+    };
+    
     protected Mode CurrentMode { get; set; } = Mode.View;
     protected Tab CurrentTab { get; set; } = Tab.Cards;
     

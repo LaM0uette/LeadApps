@@ -79,6 +79,17 @@ else
                 
                 <VerticalSpacer Value="8"/>
                 <hr class="deck-details-header__separator">
+                
+                <div class="deck-item-tags">
+                    @foreach(int tag in DeckDetails.TagIds)
+                    {
+                        string? tagName = TagNames.GetValueOrDefault(tag);
+                        if (tagName is null)
+                            continue;
+                
+                        <Tag Name="@tagName"/>
+                    }
+                </div>
             </div>
             
             @if (CurrentTab is Tab.Cards)
