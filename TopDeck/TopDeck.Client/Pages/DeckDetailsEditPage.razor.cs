@@ -6,7 +6,9 @@ using TopDeck.Shared.Components;
 using TopDeck.Shared.Models.TCGP;
 using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore.States.AuthenticatedUser;
-using TopDeck.Domain.Models;
+using TopDeck.Shared.UIStore.States.Tags;
+using DomainTag = TopDeck.Domain.Models.Tag;
+using DomainDeckDetails = TopDeck.Domain.Models.DeckDetails;
 
 namespace TopDeck.Client.Pages;
 
@@ -68,23 +70,38 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     protected bool IsPickingHighlightCards { get; private set; }
     protected bool IsPickingEnergies { get; private set; }
+    protected bool IsPickingTags { get; private set; }
     
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
     [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
     [Inject] private IDeckDetailsService _deckDetailsService { get; set; } = null!;
+    [Inject] private ITagService _tagService { get; set; } = null!;
 
     [Parameter] public string? DeckCode { get; set; }
     
     private int? _deckId;
     private TCGPCard? _selectedCard { get; set; }
 
+    protected IReadOnlyList<DomainTag> AvailableTags => UIStore.GetState<TagsState>().Tags;
+
+    protected List<int> TagIds { get; set; } = [];
+    protected List<int> TagIdsCache { get; set; } = [];
+
     protected override async Task OnInitializedAsync()
     {
         TCGPAllCards = await _tcgpCardRequester.GetAllTCGPCardsAsync(loadThumbnail:true);
 
+        // Load Tags into UIStore if empty
+        TagsState tagsState = UIStore.GetState<TagsState>();
+        if (tagsState.Tags.Count == 0)
+        {
+            IReadOnlyList<DomainTag> tags = await _tagService.GetAllAsync();
+            UIStore.Dispatch(new SetTagsAction(tags));
+        }
+
         if (!string.IsNullOrWhiteSpace(DeckCode))
         {
-            DeckDetails? existing = await _deckDetailsService.GetByCodeAsync(DeckCode);
+            DomainDeckDetails? existing = await _deckDetailsService.GetByCodeAsync(DeckCode);
             if (existing is null)
             {
                 await GoBackAsync();
@@ -95,6 +112,8 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             DeckName = existing.Name;
             EnergyIds = existing.EnergyIds.ToList();
             EnergyIdsCache = existing.EnergyIds.ToList();
+            TagIds = existing.TagIds.ToList();
+            TagIdsCache = existing.TagIds.ToList();
 
             // Map highlighted cards
             TCGPHighlightedCards = existing.Cards
@@ -151,6 +170,16 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         IsPickingEnergies = false;
     }
     
+    protected void SetPickingTagsMode()
+    {
+        IsPickingTags = true;
+    }
+    
+    protected void ExitPickingTagsMode()
+    {
+        IsPickingTags = false;
+    }
+    
     protected void AddToHighlightCards(TCGPCard card)
     {
         string key = GetCardKey(card);
@@ -187,6 +216,23 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             return;
         
         EnergyIds.Add(energyId);
+    }
+
+    protected bool IsTagSelected(int tagId)
+    {
+        return TagIds.Contains(tagId);
+    }
+
+    protected void ToggleTag(int tagId)
+    {
+        if (TagIds.Contains(tagId))
+        {
+            TagIds.Remove(tagId);
+        }
+        else
+        {
+            TagIds.Add(tagId);
+        }
     }
     
     protected bool IsEnergySelected(int energyId)
@@ -395,7 +441,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             DeckName,
             dtoCards,
             EnergyIds: EnergyIds,
-            TagIds: []
+            TagIds: TagIds
         );
 
         if (_deckId.HasValue)
@@ -409,6 +455,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         
         TCGPCardsCache = new List<TCGPCard>(TCGPCards);
         EnergyIdsCache = new List<int>(EnergyIds);
+        TagIdsCache = new List<int>(TagIds);
         TCGPHighlightedCardsCache = new List<TCGPCard>(TCGPHighlightedCards);
         await GoBackAsync();
     }
@@ -417,6 +464,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     {
         return SortCards(TCGPCards).SequenceEqual(SortCards(TCGPCardsCache))
                && EnergyIds.OrderBy(id => id).SequenceEqual(EnergyIdsCache.OrderBy(id => id))
+               && TagIds.OrderBy(id => id).SequenceEqual(TagIdsCache.OrderBy(id => id))
                && TCGPHighlightedCards.Select(GetCardKey).OrderBy(k => k).SequenceEqual(TCGPHighlightedCardsCache.Select(GetCardKey).OrderBy(k => k));
     }
     

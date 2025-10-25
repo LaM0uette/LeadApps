@@ -69,6 +69,29 @@
                         }
                     }
                 </div>
+
+                <div class="deck-details-edit-tags">
+                    @if (TagIds.Count <= 0)
+                    {
+                        <RoundPlusButton Size="26px" Clicked="SetPickingTagsMode"/>
+                    }
+                    else
+                    {
+                        foreach (var tagId in TagIds)
+                        {
+                            var tag = AvailableTags.FirstOrDefault(t => t.Id == tagId);
+                            if (tag is null) { continue; }
+                            <button class="deck-details-edit-tag deck-details-edit-tag--selected"
+                                    style="border-color:@tag.ColorHex"
+                                    title="@tag.Name"
+                                    @onclick="SetPickingTagsMode">
+                                <span class="deck-details-edit-tag__dot" style="background-color:@tag.ColorHex"></span>
+                                <span class="deck-details-edit-tag__name">@tag.Name</span>
+                            </button>
+                        }
+                        <RoundPlusButton Size="26px" Clicked="SetPickingTagsMode"/>
+                    }
+                </div>
             </div>
                 
             <VerticalSpacer Value="8"/>
@@ -205,6 +228,28 @@
             </div>
             
             <button class="deck-details-cards-edit-cards-ok-button" @onclick="ExitPickingEnergiesMode">
+                X
+            </button>
+        </div>
+    }
+    
+    @if (CurrentTab == Tab.Cards && IsPickingTags)
+    {
+        <div class="deck-details-cards-picking-energies">
+            <div class="deck-details-cards-picking-energies-energies">
+                @foreach (var tag in AvailableTags)
+                {
+                    <button class="deck-details-cards-edit-energy @(IsTagSelected(tag.Id) ? "deck-details-cards-edit-energy--toggled" : null)"
+                            @onclick:preventDefault="true"
+                            @onclick:stopPropagation="true"
+                            @onclick="() => ToggleTag(tag.Id)">
+                        <span class="deck-details-cards-edit-energy__img" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background-color:@tag.ColorHex;color:#000;font-weight:700;">T</span>
+                        <p class="deck-details-cards-edit-energy__name">@tag.Name</p>
+                    </button>
+                }
+            </div>
+            
+            <button class="deck-details-cards-edit-cards-ok-button" @onclick="ExitPickingTagsMode">
                 X
             </button>
         </div>

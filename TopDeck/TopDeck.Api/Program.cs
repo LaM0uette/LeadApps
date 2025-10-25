@@ -97,5 +97,6 @@ app.MapUserEndpoints();
 app.MapDeckItemEndpoints();
 app.MapVoteEndpoints();
 app.MapDeckDetailsEndpoints();
+app.MapTagsEndpoints();
 
 app.Run();
