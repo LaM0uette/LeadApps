@@ -159,9 +159,9 @@ else
             
             @if (IsMobile)
             {
-                <a class="deck-details-back-button" href="/decks">
+                <button class="deck-details-back-button" @onclick="GoBackAsync">
                     <img class="deck-details-back-button__icon" src="img/arrow-back-icon.svg" alt="back button"/>
-                </a>
+                </button>
                 
                 if (AuthenticatedUserUuid == DeckDetails.CreatorUui)
                 {

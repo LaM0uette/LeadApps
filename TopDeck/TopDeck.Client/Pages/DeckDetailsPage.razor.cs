@@ -299,6 +299,11 @@ public class DeckDetailsPagePresenter : PresenterBase
         return SortCards(TCGPCards).SequenceEqual(SortCards(TCGPSuggestionsCards));
     }
     
+    protected async Task GoBackAsync()
+    {
+        await JS.InvokeVoidAsync("historyBack", NavigationManager.BaseUri + "decks");
+    }
+    
     
     private static IEnumerable<TCGPCard> SortCards(IEnumerable<TCGPCard> cards)
     {
