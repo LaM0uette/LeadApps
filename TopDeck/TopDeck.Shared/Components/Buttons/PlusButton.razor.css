@@ -23,5 +23,6 @@
     .plus-button__icon {
         width: 40%;
         height: auto;
+        max-height: 85%;
     }
     

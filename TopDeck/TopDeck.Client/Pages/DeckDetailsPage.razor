@@ -119,6 +119,18 @@ else
                     @if (DeckDetails.Suggestions.Count <= 0)
                     {
                         <p class="deck-details-suggestions__no-suggestions-text">@Localizer.Localize("page.deckDetail.noSuggestions.text", "No suggestions available for this deck.")</p>
+                        
+                        <VerticalSpacer Value="10"/>
+                        
+                        <AuthorizeView>
+                            <Authorized>   
+                                <div class="deck-details-suggestions-add-container">
+                                    <PlusButton Width="100%" Height="28px" Clicked="AddSuggestion"/>
+                                </div>
+                            </Authorized>
+                            <NotAuthorized>
+                            </NotAuthorized>
+                        </AuthorizeView>
                     }
                     else
                     {
@@ -129,6 +141,16 @@ else
                             
                             <SuggestionAccordion Suggestion="suggestion"/>
                         }
+                        
+                        <AuthorizeView>
+                            <Authorized>   
+                                <div class="deck-details-suggestions-add-container">
+                                    <PlusButton Width="100%" Height="28px" Clicked="AddSuggestion"/>
+                                </div>
+                            </Authorized>
+                            <NotAuthorized>
+                            </NotAuthorized>
+                        </AuthorizeView>
                         
                         <VerticalSpacer Value="80"/>
                     }
@@ -174,6 +196,18 @@ else
                     @if (DeckDetails.Suggestions.Count <= 0)
                     {
                         <p class="deck-details-suggestions__no-suggestions-text">@Localizer.Localize("page.deckDetail.noSuggestions.text", "No suggestions available for this deck.")</p>
+
+                        <VerticalSpacer Value="10"/>
+                        
+                        <AuthorizeView>
+                            <Authorized>   
+                                <div class="deck-details-suggestions-add-container">
+                                    <PlusButton Width="100%" Height="28px" Clicked="AddSuggestion"/>
+                                </div>
+                            </Authorized>
+                            <NotAuthorized>
+                            </NotAuthorized>
+                        </AuthorizeView>
                     }
                     else
                     {
@@ -184,6 +218,16 @@ else
                             
                             <SuggestionAccordion Suggestion="suggestion"/>
                         }
+                        
+                        <AuthorizeView>
+                            <Authorized>   
+                                <div class="deck-details-suggestions-add-container">
+                                    <PlusButton Width="100%" Height="28px" Clicked="AddSuggestion"/>
+                                </div>
+                            </Authorized>
+                            <NotAuthorized>
+                            </NotAuthorized>
+                        </AuthorizeView>
                         
                         <VerticalSpacer Value="80"/>
                     }

@@ -267,10 +267,20 @@
 }
 
     .deck-details-suggestions__no-suggestions-text {
+        width: 100%;
+        text-align: center;
+        
         font-family: var(--font-bold), sans-serif;
         font-size: 1.2em;
     }
 
+    
+.deck-details-suggestions-add-container {
+    width: 100%;
+    padding: 8px 12px;
+    box-sizing: border-box;
+}
+    
 
 .deck-details-back-button {
     position: absolute;

@@ -16,7 +16,8 @@ public class DeckDetailsPagePresenter : PresenterBase
     protected enum Mode
     {
         View,
-        Edit
+        Edit,
+        AddSuggestion
     }
     
     protected enum Tab
@@ -137,6 +138,12 @@ public class DeckDetailsPagePresenter : PresenterBase
         if (DeckDetails is null)
             return;
         _navigationManager.NavigateTo($"/decks/{DeckDetails.Code}/edit");
+    }
+
+
+    protected void AddSuggestion()
+    {
+        CurrentMode = Mode.AddSuggestion;
     }
 
     #endregion
