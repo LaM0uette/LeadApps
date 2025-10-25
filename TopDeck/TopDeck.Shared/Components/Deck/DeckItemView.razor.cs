@@ -29,6 +29,13 @@ public class DeckItemPresenter : PresenterBase
         { 10, "Colorless" }
     };
     
+    // TODO: Get tags fron api
+    protected readonly Dictionary<int, string> TagNames = new()
+    {
+        { 1, "Meta" },
+        { 2, "Fun" }
+    };
+    
     [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
 

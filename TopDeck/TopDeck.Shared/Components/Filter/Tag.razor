@@ -1,0 +1,12 @@
+﻿@namespace TopDeck.Shared.Components
+@inherits TagBase
+
+
+<div class="tag"
+     @onclick:preventDefault 
+     @onclick:stopPropagation>
+
+    <p class="tag__text">
+        @Name
+    </p>
+</div>
