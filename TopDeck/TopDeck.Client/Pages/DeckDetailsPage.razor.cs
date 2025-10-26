@@ -44,12 +44,23 @@ public class DeckDetailsPagePresenter : PresenterBase
     protected IReadOnlyList<TCGPCard> TCGPHighlightedCards { get; set; } = [];
     
     protected IReadOnlyList<TCGPCard> TCGPAllCards { get; set; } = [];
+    protected IReadOnlyList<TCGPCard> FilteredTCGPAllCards { get; private set; } = [];
     protected List<TCGPCard> TCGPSuggestionsCards { get; set; } = [];
     protected List<TCGPCard> TCGPSuggestionsAddedCards { get; set; } = [];
     protected List<TCGPCard> TCGPSuggestionsRemovedCards { get; set; } = [];
     protected string? SelectedCardId { get; private set; }
     private TCGPCard? _selectedCard { get; set; }
     protected int TotalCardsInSuggestion => TCGPSuggestionsCards.Count;
+
+    // Filter popup state for TCGPAllCards (suggestion mode & edit deck if applicable)
+    protected bool IsFilterOpen { get; private set; }
+    protected string? SearchInput { get; set; }
+    protected string? OrderByInput { get; set; } = "collectionCode"; // name | collectionCode | typeName
+    protected bool AscInput { get; set; } = true;
+    protected List<string> AllTypeNames { get; private set; } = [];
+    protected List<string> AllCollectionCodes { get; private set; } = [];
+    protected HashSet<string> SelectedTypeNames { get; private set; } = [];
+    protected HashSet<string> SelectedCollectionCodes { get; private set; } = [];
     
     protected readonly Dictionary<int, string> EnergyTypes = new()
     {
@@ -85,6 +96,9 @@ public class DeckDetailsPagePresenter : PresenterBase
     protected override async Task OnInitializedAsync()
     {
         TCGPAllCards = await _tcgpCardRequester.GetAllTCGPCardsAsync(loadThumbnail:true);
+        AllTypeNames = TCGPAllCards.Select(c => c.Type.Name).Where(n => !string.IsNullOrWhiteSpace(n)).Distinct().OrderBy(n => n).ToList();
+        AllCollectionCodes = TCGPAllCards.Select(c => c.Collection.Code).Where(c => !string.IsNullOrWhiteSpace(c)).Distinct().OrderBy(c => c).ToList();
+        ApplyTCGPCardsFilter();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -315,6 +329,103 @@ public class DeckDetailsPagePresenter : PresenterBase
     private static IEnumerable<TCGPCard> SortCards(IEnumerable<TCGPCard> cards)
     {
         return cards.OrderBy(c => c.Collection.Code).ThenBy(c => c.CollectionNumber).ThenBy(c => c.Name);
+    }
+
+    private static readonly Dictionary<string, int> _collectionOrder = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["A1"] = 1,
+        ["A1a"] = 2,
+        ["A2"] = 3,
+        ["A2a"] = 4,
+        ["A2b"] = 5,
+        ["A3"] = 6,
+        ["A3a"] = 7,
+        ["A3b"] = 8,
+        ["A4"] = 9,
+        ["A4a"] = 10,
+        ["A4b"] = 11,
+        ["P-A"] = 12
+    };
+
+    private static int GetCollectionIndex(string code)
+    {
+        return _collectionOrder.TryGetValue(code, out int idx) ? idx : int.MaxValue;
+    }
+
+    private void ApplyTCGPCardsFilter()
+    {
+        IEnumerable<TCGPCard> query = TCGPAllCards;
+        if (!string.IsNullOrWhiteSpace(SearchInput))
+        {
+            string s = SearchInput.Trim().ToLowerInvariant();
+            query = query.Where(c => (c.Name ?? string.Empty).ToLowerInvariant().Contains(s));
+        }
+        if (SelectedTypeNames.Count > 0)
+        {
+            query = query.Where(c => SelectedTypeNames.Contains(c.Type.Name));
+        }
+        if (SelectedCollectionCodes.Count > 0)
+        {
+            query = query.Where(c => SelectedCollectionCodes.Contains(c.Collection.Code));
+        }
+        bool asc = AscInput;
+        switch ((OrderByInput ?? "collectionCode").ToLowerInvariant())
+        {
+            case "collectioncode":
+                query = asc
+                    ? query.OrderBy(c => GetCollectionIndex(c.Collection.Code)).ThenBy(c => c.CollectionNumber).ThenBy(c => c.Name)
+                    : query.OrderByDescending(c => GetCollectionIndex(c.Collection.Code)).ThenByDescending(c => c.CollectionNumber).ThenByDescending(c => c.Name);
+                break;
+            case "typename":
+                query = asc
+                    ? query.OrderBy(c => c.Type.Name).ThenBy(c => c.Name)
+                    : query.OrderByDescending(c => c.Type.Name).ThenByDescending(c => c.Name);
+                break;
+            case "name":
+            default:
+                query = asc
+                    ? query.OrderBy(c => c.Name).ThenBy(c => GetCollectionIndex(c.Collection.Code)).ThenBy(c => c.CollectionNumber)
+                    : query.OrderByDescending(c => c.Name).ThenByDescending(c => GetCollectionIndex(c.Collection.Code)).ThenByDescending(c => c.CollectionNumber);
+                break;
+        }
+        FilteredTCGPAllCards = query.ToList();
+    }
+
+    protected void OpenFilter()
+    {
+        IsFilterOpen = true;
+    }
+
+    protected void CloseFilter()
+    {
+        IsFilterOpen = false;
+    }
+
+    protected void ToggleTypeName(string name)
+    {
+        if (SelectedTypeNames.Contains(name)) SelectedTypeNames.Remove(name); else SelectedTypeNames.Add(name);
+    }
+
+    protected void ToggleCollectionCode(string collectionCode)
+    {
+        if (SelectedCollectionCodes.Contains(collectionCode)) SelectedCollectionCodes.Remove(collectionCode); else SelectedCollectionCodes.Add(collectionCode);
+    }
+
+    protected void ResetFilter()
+    {
+        SearchInput = null;
+        OrderByInput = "collectionCode";
+        AscInput = true;
+        SelectedTypeNames.Clear();
+        SelectedCollectionCodes.Clear();
+        ApplyTCGPCardsFilter();
+    }
+
+    protected void ApplyFilter()
+    {
+        ApplyTCGPCardsFilter();
+        IsFilterOpen = false;
+        StateHasChanged();
     }
 
     #endregion

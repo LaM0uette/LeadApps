@@ -284,8 +284,8 @@
                     <div class="deck-details-cards-edit-header-deck-info__card-count @(TotalCardsInDeck > 20 ? "deck-details-cards-edit-header-deck-info__card-count--over-limit" : null)">
                         @TotalCardsInDeck/20
                     </div>
-                    <button class="deck-details-cards-edit-header-deck-info__filter-button">
-                        
+                    <button class="deck-details-cards-edit-header-deck-info__filter-button" title="Filtrer les cartes" @onclick="OpenFilter">
+                        🔎 Filtrer
                     </button>
                 </div>
             </div>
@@ -297,10 +297,10 @@
                 }
                 else
                 {
-                    foreach (TCGPCard card in TCGPAllCards)
+                    foreach (TCGPCard card in FilteredTCGPAllCards)
                     {
                         int cardQuantityInDeck = GetCardQuantityInDeck(card);
-                        
+                            
                         <button id="@GetCardElementId(card)"
                                 class="deck-details-cards-edit-card-button" 
                                 @onclick:preventDefault="true"
@@ -316,11 +316,11 @@
                                             @onclick="() => RemoveFromDeck(card)">
                                         <img class="deck-details-cards-edit-card-button-overlay-remove-button__icon" src="img/suggestion-minus-icon.svg" alt="minus icon"/>
                                     </button>
-                                    
+                                        
                                     <div class="deck-details-cards-edit-card-button-overlay-count">
                                         @(cardQuantityInDeck)/2
                                     </div>
-                                    
+                                        
                                     <div class="deck-details-cards-edit-card-button-overlay-controls">
                                         <button class="deck-details-cards-edit-card-button-overlay-controls-btn" 
                                                 @onclick:preventDefault="true"
@@ -341,10 +341,75 @@
                     }
                 }
             </div>
-            
+                
             <button class="deck-details-cards-edit-cards-ok-button" @onclick="ExitEditMode">
                 OK
             </button>
+
+            @if (IsFilterOpen)
+            {
+                <div class="filter-modal__overlay" @onclick="CloseFilter">
+                    <div class="filter-modal" @onclick:stopPropagation>
+                        <div class="filter-modal__header">
+                            <h3>Filtrer les cartes</h3>
+                            <button class="filter-modal__close" @onclick="CloseFilter">✕</button>
+                        </div>
+
+                        <div class="filter-modal__section">
+                            <label>Recherche</label>
+                            <input class="filter-input" placeholder="Nom de carte" @bind="SearchInput" />
+                        </div>
+
+                        <div class="filter-modal__section">
+                            <label>Types (OR)</label>
+                            <div class="filter-tags">
+                                @foreach (var name in AllTypeNames)
+                                {
+                                    var checkedVal = SelectedTypeNames.Contains(name);
+                                    <label class="filter-tag">
+                                        <input type="checkbox" checked="@checkedVal" @onclick="@(() => ToggleTypeName(name))" />
+                                        <span class="filter-tag__name">@name</span>
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="filter-modal__section">
+                            <label>Collections (OR)</label>
+                            <div class="filter-tags">
+                                @foreach (var collectionCode in AllCollectionCodes)
+                                    {
+                                        var checkedVal = SelectedCollectionCodes.Contains(collectionCode);
+                                        <label class="filter-tag">
+                                            <input type="checkbox" checked="@checkedVal" @onclick="@(() => ToggleCollectionCode(collectionCode))" />
+                                            <span class="filter-tag__name">@collectionCode</span>
+                                        </label>
+                                    }
+                            </div>
+                        </div>
+
+                        <div class="filter-modal__section">
+                            <label>Tri</label>
+                            <div class="filter-order">
+                                <select class="filter-select" @bind="OrderByInput">
+                                    <option value="name">Nom</option>
+                                    <option value="collectionCode">Code collection</option>
+                                    <option value="typeName">Type</option>
+                                </select>
+                                <label class="filter-order__asc">
+                                    <input type="checkbox" @bind="AscInput" /> Ascendant (décocher pour Z–A)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="filter-modal__footer">
+                            <button class="btn btn--ghost" @onclick="ResetFilter">Réinitialiser</button>
+                            <span class="spacer"></span>
+                            <button class="btn btn--primary" @onclick="ApplyFilter">Appliquer</button>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     }
     
