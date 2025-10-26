@@ -948,3 +948,119 @@
         width: 160px;
     }
 }
+.order-fab, .filter-fab {
+    position: fixed;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    background: var(--color-primary, #1e88e5);
+    color: #fff;
+    font-size: 22px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+    cursor: var(--cursor-pointer);
+    z-index: 5;
+}
+
+.filter-fab { bottom: 20px; }
+.filter-fab:hover { opacity: 0.9; }
+.filter-fab:active { opacity: 0.8; }
+
+.order-fab { bottom: 86px; }
+.order-fab:hover { opacity: 0.9; }
+.order-fab:active { opacity: 0.8; }
+
+.filter-modal__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.filter-modal {
+    width: min(700px, 92%);
+    max-height: 80vh;
+    overflow: auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.filter-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.filter-modal__close {
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    cursor: var(--cursor-pointer);
+}
+
+.filter-modal__section { 
+    margin: 14px 0; 
+}
+
+.filter-input, .filter-select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filter-tag__name::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--tag-color, #888);
+    margin-right: 6px;
+}
+
+.filter-order {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filter-order__asc { display: inline-flex; align-items: center; gap: 6px; }
+
+.filter-modal__footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.filter-modal__footer .spacer { flex: 1 1 auto; }
+
+.btn { 
+    padding: 8px 14px; 
+    border-radius: 8px; 
+    border: 1px solid transparent; 
+    cursor: var(--cursor-pointer); 
+}
+.btn--primary { background: var(--color-primary, #1e88e5); color: #fff; }
+.btn--ghost { background: transparent; border-color: #ddd; }

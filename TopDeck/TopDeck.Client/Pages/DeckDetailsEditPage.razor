@@ -284,12 +284,6 @@
                     <div class="deck-details-cards-edit-header-deck-info__card-count @(TotalCardsInDeck > 20 ? "deck-details-cards-edit-header-deck-info__card-count--over-limit" : null)">
                         @TotalCardsInDeck/20
                     </div>
-                    <button class="deck-details-cards-edit-header-deck-info__filter-button" title="Trier les cartes" @onclick="OpenOrder">
-                        ⇅ Trier
-                    </button>
-                    <button class="deck-details-cards-edit-header-deck-info__filter-button" title="Filtrer les cartes" @onclick="OpenFilter">
-                        🔎 Filtrer
-                    </button>
                 </div>
             </div>
             
@@ -344,6 +338,9 @@
                     }
                 }
             </div>
+                
+            <button class="order-fab" @onclick="OpenOrder" title="Trier">⇅</button>
+            <button class="filter-fab" @onclick="OpenFilter" title="Filtrer">🔎</button>
                 
             <button class="deck-details-cards-edit-cards-ok-button" @onclick="ExitEditMode">
                 OK
