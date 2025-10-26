@@ -373,6 +373,20 @@ else
                             </div>
 
                             <div class="filter-modal__section">
+                                <label>Types Pokémon (OR)</label>
+                                <div class="filter-tags">
+                                    @foreach (var name in AllPokemonTypeNames)
+                                    {
+                                        var checkedVal = SelectedPokemonTypeNames.Contains(name);
+                                        <label class="filter-tag">
+                                            <input type="checkbox" checked="@checkedVal" @onclick="@(() => TogglePokemonTypeName(name))" />
+                                            <span class="filter-tag__name">@name</span>
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="filter-modal__section">
                                 <label>Collections (OR)</label>
                                 <div class="filter-tags">
                                     @foreach (var collectionCode in AllCollectionCodes)

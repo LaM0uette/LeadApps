@@ -65,8 +65,10 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected bool AscInput { get; set; } = true; // default A-Z
     protected List<string> AllTypeNames { get; private set; } = [];
     protected List<string> AllCollectionCodes { get; private set; } = [];
+    protected List<string> AllPokemonTypeNames { get; private set; } = [];
     protected HashSet<string> SelectedTypeNames { get; private set; } = [];
     protected HashSet<string> SelectedCollectionCodes { get; private set; } = [];
+    protected HashSet<string> SelectedPokemonTypeNames { get; private set; } = [];
     
     protected List<int> EnergyIds { get; set; } = [];
     protected List<int> EnergyIdsCache { get; set; } = [];
@@ -105,6 +107,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         // Build distinct filters lists from all cards
         AllTypeNames = TCGPAllCards.Select(c => c.Type.Name).Where(n => !string.IsNullOrWhiteSpace(n)).Distinct().OrderBy(n => n).ToList();
         AllCollectionCodes = TCGPAllCards.Select(c => c.Collection.Code).Where(c => !string.IsNullOrWhiteSpace(c)).Distinct().OrderBy(c => c).ToList();
+        AllPokemonTypeNames = TCGPAllCards.OfType<TCGPPokemonCard>().Select(c => c.PokemonType.Name).Where(n => !string.IsNullOrWhiteSpace(n)).Distinct().OrderBy(n => n).ToList();
         ApplyTCGPCardsFilter();
 
         // Load Tags into UIStore if empty
@@ -196,6 +199,12 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         {
             query = query.Where(c => SelectedCollectionCodes.Contains(c.Collection.Code));
         }
+        if (SelectedPokemonTypeNames.Count > 0)
+        {
+            var pokemonFiltered = query.OfType<TCGPPokemonCard>().Where(p => SelectedPokemonTypeNames.Contains(p.PokemonType.Name));
+            var nonPokemon = query.Where(c => c is not TCGPPokemonCard);
+            query = nonPokemon.Concat<TCGPCard>(pokemonFiltered);
+        }
         // Sorting
         bool asc = AscInput;
         switch ((OrderByInput ?? "collectionCode").ToLowerInvariant())
@@ -240,6 +249,11 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         if (SelectedCollectionCodes.Contains(code)) SelectedCollectionCodes.Remove(code); else SelectedCollectionCodes.Add(code);
     }
 
+    protected void TogglePokemonTypeName(string name)
+    {
+        if (SelectedPokemonTypeNames.Contains(name)) SelectedPokemonTypeNames.Remove(name); else SelectedPokemonTypeNames.Add(name);
+    }
+
     protected void ResetFilter()
     {
         SearchInput = null;
@@ -247,6 +261,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         AscInput = true; // A-Z by default
         SelectedTypeNames.Clear();
         SelectedCollectionCodes.Clear();
+        SelectedPokemonTypeNames.Clear();
         ApplyTCGPCardsFilter();
     }
 
