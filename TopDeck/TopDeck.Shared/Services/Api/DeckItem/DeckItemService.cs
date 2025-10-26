@@ -14,9 +14,23 @@ public class DeckItemService : ApiService, IDeckItemService
 
     #region ApiService
 
-    public async Task<IReadOnlyList<DeckItem>> GetPageAsync(int skip, int take, CancellationToken ct = default)
+    public async Task<IReadOnlyList<DeckItem>> GetPageAsync(int skip, int take, string? search = null, IReadOnlyList<int>? tagIds = null, string? orderBy = null, bool asc = false, CancellationToken ct = default)
     {
-        string url = $"{_route}/page?skip={skip}&take={take}";
+        var query = new List<string>
+        {
+            $"skip={skip}",
+            $"take={take}"
+        };
+        if (!string.IsNullOrWhiteSpace(search)) query.Add($"search={Uri.EscapeDataString(search)}");
+        if (tagIds is { Count: > 0 })
+        {
+            foreach (int id in tagIds.Distinct())
+                query.Add($"tagIds={id}");
+        }
+        if (!string.IsNullOrWhiteSpace(orderBy)) query.Add($"orderBy={orderBy}");
+        if (asc) query.Add("asc=true");
+
+        string url = $"{_route}/page?{string.Join("&", query)}";
         IReadOnlyList<DeckItemOutputDTO>? result = await GetJsonAsync<IReadOnlyList<DeckItemOutputDTO>>(url, ct);
         return result?.ToDomain() ?? [];
     }
@@ -44,9 +58,17 @@ public class DeckItemService : ApiService, IDeckItemService
         return base.DeleteAsync($"{_route}/{id}", ct);
     }
     
-    public async Task<int> GetDeckItemCountAsync(CancellationToken ct = default)
+    public async Task<int> GetDeckItemCountAsync(string? search = null, IReadOnlyList<int>? tagIds = null, CancellationToken ct = default)
     {
-        int? count = await GetJsonAsync<int>($"{_route}/count", ct);
+        var query = new List<string>();
+        if (!string.IsNullOrWhiteSpace(search)) query.Add($"search={Uri.EscapeDataString(search)}");
+        if (tagIds is { Count: > 0 })
+        {
+            foreach (int id in tagIds.Distinct())
+                query.Add($"tagIds={id}");
+        }
+        string url = query.Count == 0 ? $"{_route}/count" : $"{_route}/count?{string.Join("&", query)}";
+        int? count = await GetJsonAsync<int>(url, ct);
         return count ?? 0;
     }
 

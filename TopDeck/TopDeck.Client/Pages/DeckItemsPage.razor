@@ -49,4 +49,57 @@
             </div>
         }
     </div>
+    
+    <button class="filter-fab" @onclick="OpenFilter" title="Filtrer">🔎</button>
+
+    @if (IsFilterOpen)
+    {
+        <div class="filter-modal__overlay" @onclick="CloseFilter">
+            <div class="filter-modal" @onclick:stopPropagation>
+                <div class="filter-modal__header">
+                    <h3>Filtrer les decks</h3>
+                    <button class="filter-modal__close" @onclick="CloseFilter">✕</button>
+                </div>
+                <div class="filter-modal__section">
+                    <label>Recherche</label>
+                    <input class="filter-input" placeholder="Nom, code ou créateur" @bind="SearchInput" />
+                </div>
+
+                <div class="filter-modal__section">
+                    <label>Tags (OR)</label>
+                    <div class="filter-tags">
+                        @foreach (var tag in AllTags)
+                        {
+                            var checkedVal = SelectedTagIds.Contains(tag.Id);
+                            <label class="filter-tag">
+                                <input type="checkbox" checked="@checkedVal" @onchange="(_)=>ToggleTag(tag.Id)" />
+                                <span class="filter-tag__name" style="--tag-color:@tag.ColorHex">@tag.Name</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+
+                <div class="filter-modal__section">
+                    <label>Tri</label>
+                    <div class="filter-order">
+                        <select class="filter-select" @bind="OrderByInput">
+                            <option value="updatedAt">Mis à jour</option>
+                            <option value="name">Nom</option>
+                            <option value="createdAt">Créé le</option>
+                            <option value="likes">Likes</option>
+                        </select>
+                        <label class="filter-order__asc">
+                            <input type="checkbox" @bind="AscInput" /> Ascendant
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filter-modal__footer">
+                    <button class="btn btn--ghost" @onclick="ResetFilter">Réinitialiser</button>
+                    <span class="spacer"></span>
+                    <button class="btn btn--primary" @onclick="ApplyFilter">Appliquer</button>
+                </div>
+            </div>
+        </div>
+    }
 </div>

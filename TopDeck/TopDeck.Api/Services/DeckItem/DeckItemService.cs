@@ -26,11 +26,46 @@ public class DeckItemService : IDeckItemService
 
     #region IService
     
-    public async Task<IReadOnlyList<DeckItemOutputDTO>> GetPageAsync(int skip, int take, CancellationToken ct = default)
+    public async Task<IReadOnlyList<DeckItemOutputDTO>> GetPageAsync(int skip, int take, string? search = null, IReadOnlyList<int>? tagIds = null, string? orderBy = null, bool asc = false, CancellationToken ct = default)
     {
-        return await _repo.DbSet
-            .AsNoTracking().AsSplitQuery()
-            .OrderByDescending(d => d.UpdatedAt).ThenByDescending(d => d.CreatedAt)
+        IQueryable<Deck> query = _repo.DbSet.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            string s = search.Trim().ToLower();
+            query = query.Where(d =>
+                d.Name.ToLower().Contains(s) ||
+                d.Code.ToLower().Contains(s) ||
+                d.Creator.UserName.ToLower().Contains(s));
+        }
+
+        if (tagIds is { Count: > 0 })
+        {
+            var tagSet = tagIds.Distinct().ToList();
+            query = query.Where(d => d.DeckTags.Any(dt => tagSet.Contains(dt.TagId)));
+        }
+
+        // Sorting
+        IOrderedQueryable<Deck> ordered;
+        switch (orderBy?.ToLowerInvariant())
+        {
+            case "name":
+                ordered = asc ? query.OrderBy(d => d.Name) : query.OrderByDescending(d => d.Name);
+                break;
+            case "createdat":
+                ordered = asc ? query.OrderBy(d => d.CreatedAt) : query.OrderByDescending(d => d.CreatedAt);
+                break;
+            case "likes":
+                ordered = asc ? query.OrderBy(d => d.Likes.Count) : query.OrderByDescending(d => d.Likes.Count);
+                break;
+            case "updatedat":
+            default:
+                ordered = asc ? query.OrderBy(d => d.UpdatedAt) : query.OrderByDescending(d => d.UpdatedAt);
+                break;
+        }
+
+        return await ordered
+            .ThenByDescending(d => d.CreatedAt)
             .Skip(skip).Take(take)
             .Select(DeckItemMapper.Expression)
             .ToListAsync(ct);
@@ -152,9 +187,26 @@ public class DeckItemService : IDeckItemService
         return await _repo.DeleteAsync(id, ct);
     }
 
-    public async Task<int> GetTotalCountAsync(CancellationToken ct = default)
+    public async Task<int> GetTotalCountAsync(string? search = null, IReadOnlyList<int>? tagIds = null, CancellationToken ct = default)
     {
-        return await _repo.CountAsync(ct);
+        IQueryable<Deck> query = _repo.DbSet.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            string s = search.Trim().ToLower();
+            query = query.Where(d =>
+                d.Name.ToLower().Contains(s) ||
+                d.Code.ToLower().Contains(s) ||
+                d.Creator.UserName.ToLower().Contains(s));
+        }
+
+        if (tagIds is { Count: > 0 })
+        {
+            var tagSet = tagIds.Distinct().ToList();
+            query = query.Where(d => d.DeckTags.Any(dt => tagSet.Contains(dt.TagId)));
+        }
+
+        return await query.CountAsync(ct);
     }
 
     #endregion

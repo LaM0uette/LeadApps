@@ -26,15 +26,23 @@ public static class DeckItemEndpoints
 
     #region Endpoints
     
-    private static async Task<IResult> GetPageAsync([FromServices] IDeckItemService service, [FromQuery] int skip = 0, [FromQuery] int take = 20, CancellationToken ct = default)
+    private static async Task<IResult> GetPageAsync(
+        [FromServices] IDeckItemService service,
+        [FromQuery] int skip = 0,
+        [FromQuery] int take = 20,
+        [FromQuery] string? search = null,
+        [FromQuery] int[]? tagIds = null,
+        [FromQuery] string? orderBy = null,
+        [FromQuery] bool asc = false,
+        CancellationToken ct = default)
     {
-        if (take <= 0) 
+        if (take <= 0)
             take = 20;
-        
-        if (skip < 0) 
+
+        if (skip < 0)
             skip = 0;
-        
-        IReadOnlyList<DeckItemOutputDTO> items = await service.GetPageAsync(skip, take, ct);
+
+        IReadOnlyList<DeckItemOutputDTO> items = await service.GetPageAsync(skip, take, search, tagIds, orderBy, asc, ct);
         return Results.Ok(items);
     }
     
@@ -76,9 +84,13 @@ public static class DeckItemEndpoints
         return ok ? Results.NoContent() : Results.NotFound();
     }
     
-    private static async Task<IResult> GetCountAsync([FromServices] IDeckItemService service, CancellationToken ct)
+    private static async Task<IResult> GetCountAsync(
+        [FromServices] IDeckItemService service,
+        [FromQuery] string? search = null,
+        [FromQuery] int[]? tagIds = null,
+        CancellationToken ct = default)
     {
-        int count = await service.GetTotalCountAsync(ct);
+        int count = await service.GetTotalCountAsync(search, tagIds, ct);
         return Results.Ok(count);
     }
     
