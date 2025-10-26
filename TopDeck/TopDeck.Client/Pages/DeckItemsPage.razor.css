@@ -96,11 +96,10 @@
     }
 }
 
-/* Floating filter action button */
-.filter-fab {
+/* Floating action buttons (Order above Filter) */
+.order-fab, .filter-fab {
     position: fixed;
     right: 20px;
-    bottom: 20px;
     width: 56px;
     height: 56px;
     border-radius: 50%;
@@ -113,8 +112,15 @@
     z-index: 5;
 }
 
+/* Filter button at the very bottom-right */
+.filter-fab { bottom: 20px; }
 .filter-fab:hover { opacity: 0.9; }
 .filter-fab:active { opacity: 0.8; }
+
+/* Order button stacked above the filter button */
+.order-fab { bottom: 86px; }
+.order-fab:hover { opacity: 0.9; }
+.order-fab:active { opacity: 0.8; }
 
 /* Filter modal */
 .filter-modal__overlay {

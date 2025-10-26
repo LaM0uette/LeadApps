@@ -39,8 +39,9 @@ public class DeckItemsPagePresenter : PresenterBase
     private int _deckItemCount;
     private int _maxPage;
 
-    // Filter popup state
+    // Filter and Order popup state
     protected bool IsFilterOpen { get; private set; }
+    protected bool IsOrderOpen { get; private set; }
     protected string? SearchInput { get; set; }
     protected string? OrderByInput { get; set; }
     protected bool AscInput { get; set; }
@@ -252,8 +253,6 @@ public class DeckItemsPagePresenter : PresenterBase
     protected void ResetFilter()
     {
         SearchInput = null;
-        OrderByInput = "updatedAt";
-        AscInput = false;
         SelectedTagIds.Clear();
     }
 
@@ -261,10 +260,35 @@ public class DeckItemsPagePresenter : PresenterBase
     {
         // Update query-bound properties and navigate to page 1
         Search = string.IsNullOrWhiteSpace(SearchInput) ? null : SearchInput;
-        OrderBy = string.IsNullOrWhiteSpace(OrderByInput) ? null : OrderByInput;
-        Asc = AscInput;
+        // Do not touch order here; only tags and search
         TagIds = SelectedTagIds.Count > 0 ? SelectedTagIds.ToArray() : Array.Empty<int>();
         IsFilterOpen = false;
+        NavigateToPage(1);
+    }
+
+    protected void OpenOrder()
+    {
+        IsOrderOpen = true;
+    }
+
+    protected void CloseOrder()
+    {
+        IsOrderOpen = false;
+    }
+
+    protected void ResetOrder()
+    {
+        // Reset to default sorting: updatedAt desc
+        OrderByInput = "updatedAt";
+        AscInput = false;
+    }
+
+    protected void ApplyOrder()
+    {
+        // Update order query-bound properties and navigate to page 1
+        OrderBy = string.IsNullOrWhiteSpace(OrderByInput) ? null : OrderByInput;
+        Asc = AscInput;
+        IsOrderOpen = false;
         NavigateToPage(1);
     }
 

@@ -284,6 +284,9 @@
                     <div class="deck-details-cards-edit-header-deck-info__card-count @(TotalCardsInDeck > 20 ? "deck-details-cards-edit-header-deck-info__card-count--over-limit" : null)">
                         @TotalCardsInDeck/20
                     </div>
+                    <button class="deck-details-cards-edit-header-deck-info__filter-button" title="Trier les cartes" @onclick="OpenOrder">
+                        ⇅ Trier
+                    </button>
                     <button class="deck-details-cards-edit-header-deck-info__filter-button" title="Filtrer les cartes" @onclick="OpenFilter">
                         🔎 Filtrer
                     </button>
@@ -392,16 +395,32 @@
                             <label>Collections (OR)</label>
                             <div class="filter-tags">
                                 @foreach (var collectionCode in AllCollectionCodes)
-                                    {
-                                        var checkedVal = SelectedCollectionCodes.Contains(collectionCode);
-                                        <label class="filter-tag">
-                                            <input type="checkbox" checked="@checkedVal" @onclick="@(() => ToggleCollectionCode(collectionCode))" />
-                                            <span class="filter-tag__name">@collectionCode</span>
-                                        </label>
-                                    }
+                                {
+                                    var checkedVal = SelectedCollectionCodes.Contains(collectionCode);
+                                    <label class="filter-tag">
+                                        <input type="checkbox" checked="@checkedVal" @onclick="@(() => ToggleCollectionCode(collectionCode))" />
+                                        <span class="filter-tag__name">@collectionCode</span>
+                                    </label>
+                                }
                             </div>
                         </div>
 
+                        <div class="filter-modal__footer">
+                            <button class="btn btn--ghost" @onclick="ResetFilter">Réinitialiser</button>
+                            <span class="spacer"></span>
+                            <button class="btn btn--primary" @onclick="ApplyFilter">Appliquer</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (IsOrderOpen)
+            {
+                <div class="filter-modal__overlay" @onclick="CloseOrder">
+                    <div class="filter-modal" @onclick:stopPropagation>
+                        <div class="filter-modal__header">
+                            <h3>Trier les cartes</h3>
+                            <button class="filter-modal__close" @onclick="CloseOrder">✕</button>
+                        </div>
                         <div class="filter-modal__section">
                             <label>Tri</label>
                             <div class="filter-order">
@@ -415,11 +434,10 @@
                                 </label>
                             </div>
                         </div>
-
                         <div class="filter-modal__footer">
-                            <button class="btn btn--ghost" @onclick="ResetFilter">Réinitialiser</button>
+                            <button class="btn btn--ghost" @onclick="ResetOrder">Réinitialiser</button>
                             <span class="spacer"></span>
-                            <button class="btn btn--primary" @onclick="ApplyFilter">Appliquer</button>
+                            <button class="btn btn--primary" @onclick="ApplyOrder">Appliquer</button>
                         </div>
                     </div>
                 </div>

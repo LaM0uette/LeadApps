@@ -54,6 +54,7 @@ public class DeckDetailsPagePresenter : PresenterBase
 
     // Filter popup state for TCGPAllCards (suggestion mode & edit deck if applicable)
     protected bool IsFilterOpen { get; private set; }
+    protected bool IsOrderOpen { get; private set; }
     protected string? SearchInput { get; set; }
     protected string? OrderByInput { get; set; } = "collectionCode"; // name | collectionCode | typeName
     protected bool AscInput { get; set; } = true;
@@ -411,6 +412,16 @@ public class DeckDetailsPagePresenter : PresenterBase
         IsFilterOpen = false;
     }
 
+    protected void OpenOrder()
+    {
+        IsOrderOpen = true;
+    }
+
+    protected void CloseOrder()
+    {
+        IsOrderOpen = false;
+    }
+
     protected void ToggleTypeName(string name)
     {
         if (SelectedTypeNames.Contains(name)) SelectedTypeNames.Remove(name); else SelectedTypeNames.Add(name);
@@ -429,8 +440,6 @@ public class DeckDetailsPagePresenter : PresenterBase
     protected void ResetFilter()
     {
         SearchInput = null;
-        OrderByInput = "collectionCode";
-        AscInput = true;
         SelectedTypeNames.Clear();
         SelectedCollectionCodes.Clear();
         SelectedPokemonTypeNames.Clear();
@@ -441,6 +450,20 @@ public class DeckDetailsPagePresenter : PresenterBase
     {
         ApplyTCGPCardsFilter();
         IsFilterOpen = false;
+        StateHasChanged();
+    }
+
+    protected void ResetOrder()
+    {
+        OrderByInput = "collectionCode";
+        AscInput = true;
+        ApplyTCGPCardsFilter();
+    }
+
+    protected void ApplyOrder()
+    {
+        ApplyTCGPCardsFilter();
+        IsOrderOpen = false;
         StateHasChanged();
     }
 

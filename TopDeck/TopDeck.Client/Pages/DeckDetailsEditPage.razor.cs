@@ -60,6 +60,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
 
     // Filter popup state for TCGPAllCards
     protected bool IsFilterOpen { get; private set; }
+    protected bool IsOrderOpen { get; private set; }
     protected string? SearchInput { get; set; }
     protected string? OrderByInput { get; set; } = "collectionCode"; // name | collectionCode | typeName
     protected bool AscInput { get; set; } = true; // default A-Z
@@ -239,6 +240,16 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         IsFilterOpen = false;
     }
 
+    protected void OpenOrder()
+    {
+        IsOrderOpen = true;
+    }
+
+    protected void CloseOrder()
+    {
+        IsOrderOpen = false;
+    }
+
     protected void ToggleTypeName(string name)
     {
         if (SelectedTypeNames.Contains(name)) SelectedTypeNames.Remove(name); else SelectedTypeNames.Add(name);
@@ -257,8 +268,6 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected void ResetFilter()
     {
         SearchInput = null;
-        OrderByInput = "collectionCode";
-        AscInput = true; // A-Z by default
         SelectedTypeNames.Clear();
         SelectedCollectionCodes.Clear();
         SelectedPokemonTypeNames.Clear();
@@ -269,6 +278,20 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     {
         ApplyTCGPCardsFilter();
         IsFilterOpen = false;
+        StateHasChanged();
+    }
+
+    protected void ResetOrder()
+    {
+        OrderByInput = "collectionCode";
+        AscInput = true; // A-Z by default
+        ApplyTCGPCardsFilter();
+    }
+
+    protected void ApplyOrder()
+    {
+        ApplyTCGPCardsFilter();
+        IsOrderOpen = false;
         StateHasChanged();
     }
 

@@ -50,6 +50,7 @@
         }
     </div>
     
+    <button class="order-fab" @onclick="OpenOrder" title="Trier">⇅</button>
     <button class="filter-fab" @onclick="OpenFilter" title="Filtrer">🔎</button>
 
     @if (IsFilterOpen)
@@ -79,6 +80,23 @@
                     </div>
                 </div>
 
+                <div class="filter-modal__footer">
+                    <button class="btn btn--ghost" @onclick="ResetFilter">Réinitialiser</button>
+                    <span class="spacer"></span>
+                    <button class="btn btn--primary" @onclick="ApplyFilter">Appliquer</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (IsOrderOpen)
+    {
+        <div class="filter-modal__overlay" @onclick="CloseOrder">
+            <div class="filter-modal" @onclick:stopPropagation>
+                <div class="filter-modal__header">
+                    <h3>Trier les decks</h3>
+                    <button class="filter-modal__close" @onclick="CloseOrder">✕</button>
+                </div>
                 <div class="filter-modal__section">
                     <label>Tri</label>
                     <div class="filter-order">
@@ -93,11 +111,10 @@
                         </label>
                     </div>
                 </div>
-
                 <div class="filter-modal__footer">
-                    <button class="btn btn--ghost" @onclick="ResetFilter">Réinitialiser</button>
+                    <button class="btn btn--ghost" @onclick="ResetOrder">Réinitialiser</button>
                     <span class="spacer"></span>
-                    <button class="btn btn--primary" @onclick="ApplyFilter">Appliquer</button>
+                    <button class="btn btn--primary" @onclick="ApplyOrder">Appliquer</button>
                 </div>
             </div>
         </div>
