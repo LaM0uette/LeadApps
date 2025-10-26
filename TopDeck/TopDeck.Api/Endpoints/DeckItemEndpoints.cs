@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TopDeck.Api.DTO;
 using TopDeck.Api.Services;
 using TopDeck.Contracts.DTO;
 
@@ -42,7 +43,16 @@ public static class DeckItemEndpoints
         if (skip < 0)
             skip = 0;
 
-        IReadOnlyList<DeckItemOutputDTO> items = await service.GetPageAsync(skip, take, search, tagIds, orderBy, asc, ct);
+        var filter = new DeckItemsFilterDTO
+        {
+            Skip = skip,
+            Take = take,
+            Search = search,
+            TagIds = tagIds,
+            OrderBy = orderBy,
+            Asc = asc
+        };
+        IReadOnlyList<DeckItemOutputDTO> items = await service.GetPageAsync(filter, ct);
         return Results.Ok(items);
     }
     
@@ -90,7 +100,16 @@ public static class DeckItemEndpoints
         [FromQuery] int[]? tagIds = null,
         CancellationToken ct = default)
     {
-        int count = await service.GetTotalCountAsync(search, tagIds, ct);
+        var filter = new DeckItemsFilterDTO
+        {
+            Skip = 0,
+            Take = 0,
+            Search = search,
+            TagIds = tagIds,
+            OrderBy = null,
+            Asc = false
+        };
+        int count = await service.GetTotalCountAsync(filter, ct);
         return Results.Ok(count);
     }
     

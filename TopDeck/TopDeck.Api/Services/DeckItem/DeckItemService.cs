@@ -26,47 +26,47 @@ public class DeckItemService : IDeckItemService
 
     #region IService
     
-    public async Task<IReadOnlyList<DeckItemOutputDTO>> GetPageAsync(int skip, int take, string? search = null, IReadOnlyList<int>? tagIds = null, string? orderBy = null, bool asc = false, CancellationToken ct = default)
+    public async Task<IReadOnlyList<DeckItemOutputDTO>> GetPageAsync(TopDeck.Api.DTO.DeckItemsFilterDTO filter, CancellationToken ct = default)
     {
         IQueryable<Deck> query = _repo.DbSet.AsNoTracking();
 
-        if (!string.IsNullOrWhiteSpace(search))
+        if (!string.IsNullOrWhiteSpace(filter.Search))
         {
-            string s = search.Trim().ToLower();
+            string s = filter.Search.Trim().ToLower();
             query = query.Where(d =>
                 d.Name.ToLower().Contains(s) ||
                 d.Code.ToLower().Contains(s) ||
                 d.Creator.UserName.ToLower().Contains(s));
         }
 
-        if (tagIds is { Count: > 0 })
+        if (filter.TagIds is { Count: > 0 })
         {
-            var tagSet = tagIds.Distinct().ToList();
+            var tagSet = filter.TagIds.Distinct().ToList();
             query = query.Where(d => d.DeckTags.Any(dt => tagSet.Contains(dt.TagId)));
         }
 
         // Sorting
         IOrderedQueryable<Deck> ordered;
-        switch (orderBy?.ToLowerInvariant())
+        switch (filter.OrderBy?.ToLowerInvariant())
         {
             case "name":
-                ordered = asc ? query.OrderBy(d => d.Name) : query.OrderByDescending(d => d.Name);
+                ordered = filter.Asc ? query.OrderBy(d => d.Name) : query.OrderByDescending(d => d.Name);
                 break;
             case "createdat":
-                ordered = asc ? query.OrderBy(d => d.CreatedAt) : query.OrderByDescending(d => d.CreatedAt);
+                ordered = filter.Asc ? query.OrderBy(d => d.CreatedAt) : query.OrderByDescending(d => d.CreatedAt);
                 break;
             case "likes":
-                ordered = asc ? query.OrderBy(d => d.Likes.Count) : query.OrderByDescending(d => d.Likes.Count);
+                ordered = filter.Asc ? query.OrderBy(d => d.Likes.Count) : query.OrderByDescending(d => d.Likes.Count);
                 break;
             case "updatedat":
             default:
-                ordered = asc ? query.OrderBy(d => d.UpdatedAt) : query.OrderByDescending(d => d.UpdatedAt);
+                ordered = filter.Asc ? query.OrderBy(d => d.UpdatedAt) : query.OrderByDescending(d => d.UpdatedAt);
                 break;
         }
 
         return await ordered
             .ThenByDescending(d => d.CreatedAt)
-            .Skip(skip).Take(take)
+            .Skip(filter.Skip).Take(filter.Take)
             .Select(DeckItemMapper.Expression)
             .ToListAsync(ct);
     }
@@ -187,22 +187,22 @@ public class DeckItemService : IDeckItemService
         return await _repo.DeleteAsync(id, ct);
     }
 
-    public async Task<int> GetTotalCountAsync(string? search = null, IReadOnlyList<int>? tagIds = null, CancellationToken ct = default)
+    public async Task<int> GetTotalCountAsync(TopDeck.Api.DTO.DeckItemsFilterDTO filter, CancellationToken ct = default)
     {
         IQueryable<Deck> query = _repo.DbSet.AsNoTracking();
 
-        if (!string.IsNullOrWhiteSpace(search))
+        if (!string.IsNullOrWhiteSpace(filter.Search))
         {
-            string s = search.Trim().ToLower();
+            string s = filter.Search.Trim().ToLower();
             query = query.Where(d =>
                 d.Name.ToLower().Contains(s) ||
                 d.Code.ToLower().Contains(s) ||
                 d.Creator.UserName.ToLower().Contains(s));
         }
 
-        if (tagIds is { Count: > 0 })
+        if (filter.TagIds is { Count: > 0 })
         {
-            var tagSet = tagIds.Distinct().ToList();
+            var tagSet = filter.TagIds.Distinct().ToList();
             query = query.Where(d => d.DeckTags.Any(dt => tagSet.Contains(dt.TagId)));
         }
 
