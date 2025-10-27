@@ -1,5 +1,4 @@
 using TopDeck.Contracts.DTO;
-using TopDeck.Api.DTO;
 
 namespace TopDeck.Api.Services;
 

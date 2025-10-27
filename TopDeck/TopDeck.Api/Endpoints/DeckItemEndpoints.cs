@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TopDeck.Api.DTO;
+using Microsoft.AspNetCore.Http;
 using TopDeck.Api.Services;
 using TopDeck.Contracts.DTO;
 
@@ -13,7 +13,7 @@ public static class DeckItemEndpoints
     {
         RouteGroupBuilder group = app.MapGroup("/api/deckItems");
 
-        group.MapGet("page", GetPageAsync);
+        group.MapPost("page", GetPageAsync);
         group.MapGet("count", GetCountAsync);
         group.MapGet("deckItem/{code}", GetByCodeAsync);
         group.MapPost("", CreateAsync);
@@ -29,30 +29,19 @@ public static class DeckItemEndpoints
     
     private static async Task<IResult> GetPageAsync(
         [FromServices] IDeckItemService service,
-        [FromQuery] int skip = 0,
-        [FromQuery] int take = 20,
-        [FromQuery] string? search = null,
-        [FromQuery] int[]? tagIds = null,
-        [FromQuery] string? orderBy = null,
-        [FromQuery] bool asc = false,
+        [FromBody] DeckItemsFilterDTO filter,
         CancellationToken ct = default)
     {
-        if (take <= 0)
-            take = 20;
-
-        if (skip < 0)
-            skip = 0;
-
-        var filter = new DeckItemsFilterDTO
+        var safeFilter = new DeckItemsFilterDTO
         {
-            Skip = skip,
-            Take = take,
-            Search = search,
-            TagIds = tagIds,
-            OrderBy = orderBy,
-            Asc = asc
+            Skip = filter.Skip < 0 ? 0 : filter.Skip,
+            Take = filter.Take <= 0 ? 20 : filter.Take,
+            Search = filter.Search,
+            TagIds = filter.TagIds,
+            OrderBy = filter.OrderBy,
+            Asc = filter.Asc
         };
-        IReadOnlyList<DeckItemOutputDTO> items = await service.GetPageAsync(filter, ct);
+        IReadOnlyList<DeckItemOutputDTO> items = await service.GetPageAsync(safeFilter, ct);
         return Results.Ok(items);
     }
     

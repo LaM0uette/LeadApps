@@ -52,10 +52,9 @@ public class DeckItemsPagePresenter : PresenterBase
     // Order options (single-select)
     protected readonly List<OrderOption> OrderOptions =
     [
-        new("updatedAt", "Mis à jour", defaultAsc: false),
-        new("name", "Nom", defaultAsc: true),
-        new("createdAt", "Créé le", defaultAsc: false),
-        new("likes", "Likes", defaultAsc: true)
+        new("Recent", "Mis à jour", defaultAsc: false),
+        new("Name", "Nom", defaultAsc: true),
+        new("Likes", "Likes", defaultAsc: true)
     ];
     
     protected override async Task OnParametersSetAsync()
@@ -78,7 +77,7 @@ public class DeckItemsPagePresenter : PresenterBase
 
         // Sync popup inputs from current query-bound filters
         SearchInput = Search;
-        OrderByInput = string.IsNullOrWhiteSpace(OrderBy) ? "updatedAt" : OrderBy;
+        OrderByInput = string.IsNullOrWhiteSpace(OrderBy) ? "Recent" : OrderBy;
         AscInput = Asc;
         SelectedTagIds = TagIds.Length > 0 ? TagIds.ToHashSet() : [];
 
@@ -209,13 +208,24 @@ public class DeckItemsPagePresenter : PresenterBase
             if (skip < 0) 
                 skip = 0;
             
-            IReadOnlyList<DeckItem> items = await _deckItemService.GetPageAsync(
-                skip,
-                Size,
-                Search,
-                TagIds,
-                string.IsNullOrWhiteSpace(OrderBy) ? "updatedAt" : OrderBy,
-                Asc);
+            // Build filter DTO to send in body
+            var orderKey = string.IsNullOrWhiteSpace(OrderBy) ? "Recent" : OrderBy;
+            TopDeck.Contracts.Enums.DeckItemsOrderBy orderEnum;
+            if (!Enum.TryParse(orderKey, ignoreCase: true, out orderEnum))
+            {
+                orderEnum = TopDeck.Contracts.Enums.DeckItemsOrderBy.Recent;
+            }
+
+            var filter = new TopDeck.Contracts.DTO.DeckItemsFilterDTO
+            {
+                Skip = skip,
+                Take = Size,
+                Search = Search,
+                TagIds = TagIds is { Length: > 0 } ? TagIds.Distinct().ToArray() : null,
+                OrderBy = orderEnum,
+                Asc = Asc
+            };
+            IReadOnlyList<DeckItem> items = await _deckItemService.GetPageAsync(filter);
             DeckItems.AddRange(items);
             HasNextPage = Page < _maxPage;
         }
@@ -289,9 +299,9 @@ public class DeckItemsPagePresenter : PresenterBase
     protected void ResetOrder()
     {
         // Reset to default sorting based on option defaults
-        var option = OrderOptions.FirstOrDefault(o => string.Equals(o.Key, "updatedAt", StringComparison.OrdinalIgnoreCase));
-        OrderByInput = option?.Key ?? "updatedAt";
-        AscInput = option?.DefaultAsc ?? false; // updatedAt defaults to desc
+        var option = OrderOptions.FirstOrDefault(o => string.Equals(o.Key, "Recent", StringComparison.OrdinalIgnoreCase));
+        OrderByInput = option?.Key ?? "Recent";
+        AscInput = option?.DefaultAsc ?? false; // Recent defaults to desc
     }
 
     protected bool IsOrderSelected(string key) => string.Equals(OrderByInput, key, StringComparison.OrdinalIgnoreCase);

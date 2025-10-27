@@ -14,24 +14,19 @@ public class DeckItemService : ApiService, IDeckItemService
 
     #region ApiService
 
-    public async Task<IReadOnlyList<DeckItem>> GetPageAsync(int skip, int take, string? search = null, IReadOnlyList<int>? tagIds = null, string? orderBy = null, bool asc = false, CancellationToken ct = default)
+    public async Task<IReadOnlyList<DeckItem>> GetPageAsync(DeckItemsFilterDTO filter, CancellationToken ct = default)
     {
-        var query = new List<string>
+        // Server expects POST body for paging/filtering
+        var safe = new DeckItemsFilterDTO
         {
-            $"skip={skip}",
-            $"take={take}"
+            Skip = filter.Skip < 0 ? 0 : filter.Skip,
+            Take = filter.Take <= 0 ? 20 : filter.Take,
+            Search = filter.Search,
+            TagIds = filter.TagIds is { Count: > 0 } ? filter.TagIds.Distinct().ToList() : null,
+            OrderBy = filter.OrderBy,
+            Asc = filter.Asc
         };
-        if (!string.IsNullOrWhiteSpace(search)) query.Add($"search={Uri.EscapeDataString(search)}");
-        if (tagIds is { Count: > 0 })
-        {
-            foreach (int id in tagIds.Distinct())
-                query.Add($"tagIds={id}");
-        }
-        if (!string.IsNullOrWhiteSpace(orderBy)) query.Add($"orderBy={orderBy}");
-        if (asc) query.Add("asc=true");
-
-        string url = $"{_route}/page?{string.Join("&", query)}";
-        IReadOnlyList<DeckItemOutputDTO>? result = await GetJsonAsync<IReadOnlyList<DeckItemOutputDTO>>(url, ct);
+        IReadOnlyList<DeckItemOutputDTO>? result = await PostJsonAsync<DeckItemsFilterDTO, IReadOnlyList<DeckItemOutputDTO>>($"{_route}/page", safe, ct);
         return result?.ToDomain() ?? [];
     }
     

@@ -1,6 +1,6 @@
 ﻿using TopDeck.Contracts.Enums;
 
-namespace TopDeck.Api.DTO;
+namespace TopDeck.Contracts.DTO;
 
 public class DeckItemsFilterDTO
 {

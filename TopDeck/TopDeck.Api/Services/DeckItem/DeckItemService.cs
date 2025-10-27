@@ -26,7 +26,7 @@ public class DeckItemService : IDeckItemService
 
     #region IService
     
-    public async Task<IReadOnlyList<DeckItemOutputDTO>> GetPageAsync(TopDeck.Api.DTO.DeckItemsFilterDTO filter, CancellationToken ct = default)
+    public async Task<IReadOnlyList<DeckItemOutputDTO>> GetPageAsync(DeckItemsFilterDTO filter, CancellationToken ct = default)
     {
         IQueryable<Deck> query = _repo.DbSet.AsNoTracking();
 
@@ -46,23 +46,13 @@ public class DeckItemService : IDeckItemService
         }
 
         // Sorting
-        IOrderedQueryable<Deck> ordered;
-        switch (filter.OrderBy?.ToLowerInvariant())
+        IOrderedQueryable<Deck> ordered = filter.OrderBy switch
         {
-            case "name":
-                ordered = filter.Asc ? query.OrderBy(d => d.Name) : query.OrderByDescending(d => d.Name);
-                break;
-            case "createdat":
-                ordered = filter.Asc ? query.OrderBy(d => d.CreatedAt) : query.OrderByDescending(d => d.CreatedAt);
-                break;
-            case "likes":
-                ordered = filter.Asc ? query.OrderBy(d => d.Likes.Count) : query.OrderByDescending(d => d.Likes.Count);
-                break;
-            case "updatedat":
-            default:
-                ordered = filter.Asc ? query.OrderBy(d => d.UpdatedAt) : query.OrderByDescending(d => d.UpdatedAt);
-                break;
-        }
+            TopDeck.Contracts.Enums.DeckItemsOrderBy.Name => filter.Asc ? query.OrderBy(d => d.Name) : query.OrderByDescending(d => d.Name),
+            TopDeck.Contracts.Enums.DeckItemsOrderBy.Likes => filter.Asc ? query.OrderBy(d => d.Likes.Count) : query.OrderByDescending(d => d.Likes.Count),
+            // Recent (default) -> UpdatedAt
+            _ => filter.Asc ? query.OrderBy(d => d.UpdatedAt) : query.OrderByDescending(d => d.UpdatedAt)
+        };
 
         return await ordered
             .ThenByDescending(d => d.CreatedAt)
@@ -187,7 +177,7 @@ public class DeckItemService : IDeckItemService
         return await _repo.DeleteAsync(id, ct);
     }
 
-    public async Task<int> GetTotalCountAsync(TopDeck.Api.DTO.DeckItemsFilterDTO filter, CancellationToken ct = default)
+    public async Task<int> GetTotalCountAsync(TopDeck.Contracts.DTO.DeckItemsFilterDTO filter, CancellationToken ct = default)
     {
         IQueryable<Deck> query = _repo.DbSet.AsNoTracking();
 
