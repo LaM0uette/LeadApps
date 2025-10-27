@@ -981,7 +981,7 @@
     }
 
 .filter-modal__section {
-    margin: 14px 0;
+    margin: 32px 0;
 }
 
 
@@ -1044,6 +1044,51 @@
     }
 
 
+.filter-input {
+    width: 100%;
+
+    padding: 8px 10px 6px 40px;
+    box-sizing: border-box;
+
+    border: none;
+    outline: 1px solid var(--color-outline);
+
+    background: var(--color-bg);
+    color: var(--color-text);
+
+    border-radius: var(--radius-m);
+
+    font-family: var(--font), sans-serif;
+    font-size: 1rem;
+
+    cursor: var(--cursor-text);
+}
+    .filter-input::placeholder {
+        color: var(--color-text-muted);
+    }
+    
+    .filter-input__icon {
+        position: absolute;
+        left: 4px;
+        top: 55%;
+        transform: translateY(-50%);
+    
+        width: 32px;
+        height: 32px;
+    
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    
+        pointer-events: none;
+    }
+    
+    .filter-input__icon img {
+        width: 80%;
+        height: 80%;
+    }
+    
+
 .filter-modal-footer {
     display: flex;
     justify-content: center;
@@ -1078,13 +1123,6 @@
 
 
 
-.filter-input, .filter-select {
-    width: 100%;
-    padding: 8px 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 0.95rem;
-}
 
 .filter-tags {
     display: flex;

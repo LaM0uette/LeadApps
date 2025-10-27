@@ -103,9 +103,12 @@
                         <img src="img/close-icon.svg" alt="close"/>
                     </button>
                 </div>
-                <div class="filter-modal__section">
-                    <label>Recherche</label>
-                    <input class="filter-input" placeholder="Nom, code ou créateur" @bind="SearchInput" />
+                
+                <div class="filter-modal__section" style="position: relative">
+                    <input class="filter-input" placeholder="@Localizer.Localize("component.deckFilter.search.placeholder", "Search by name, code, or author")" @bind="SearchInput" />
+                    <div class="filter-input__icon">
+                        <img src="img/search-icon.svg" alt="search"/>
+                    </div>
                 </div>
 
                 <div class="filter-modal__section">

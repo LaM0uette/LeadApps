@@ -390,15 +390,17 @@
                 <div class="filter-modal__overlay" @onclick="CloseFilter">
                     <div class="filter-modal" @onclick:stopPropagation>
                         <div class="filter-modal__header">
-                            <h3>Filtrer les cartes</h3>
+                            <h3>@Localizer.Localize("component.cardFilter.header.title", "Filter decks")</h3>
                             <button class="filter-modal__close" @onclick="CloseFilter">
                                 <img src="img/close-icon.svg" alt="close"/>
                             </button>
                         </div>
 
-                        <div class="filter-modal__section">
-                            <label>Recherche</label>
-                            <input class="filter-input" placeholder="Nom de carte" @bind="SearchInput" />
+                        <div class="filter-modal__section" style="position: relative">
+                            <input class="filter-input" placeholder="@Localizer.Localize("component.deckFilter.search.placeholder", "Search by name, code, or author")" @bind="SearchInput" />
+                            <div class="filter-input__icon">
+                                <img src="img/search-icon.svg" alt="search"/>
+                            </div>
                         </div>
 
                         <div class="filter-modal__section">
