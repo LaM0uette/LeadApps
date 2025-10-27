@@ -389,7 +389,9 @@ else
                         <div class="filter-modal" @onclick:stopPropagation>
                             <div class="filter-modal__header">
                                 <h3>Filtrer les cartes</h3>
-                                <button class="filter-modal__close" @onclick="CloseFilter">✕</button>
+                                <button class="filter-modal__close" @onclick="CloseFilter">
+                                    <img src="img/close-icon.svg" alt="close"/>
+                                </button>
                             </div>
 
                             <div class="filter-modal__section">
@@ -439,10 +441,10 @@ else
                                 </div>
                             </div>
 
-                            <div class="filter-modal__footer">
-                                <button class="btn btn--ghost" @onclick="ResetFilter">Réinitialiser</button>
-                                <span class="spacer"></span>
-                                <button class="btn btn--primary" @onclick="ApplyFilter">Appliquer</button>
+                            <div class="filter-modal-footer">
+                                <button class="filter-modal-footer__close" @onclick="ApplyFilter">
+                                    <img src="img/close-icon.svg" alt="close"/>
+                                </button>
                             </div>
                         </div>
                     </div>
