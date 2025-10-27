@@ -49,14 +49,15 @@ public class DeckItemsPagePresenter : PresenterBase
     protected List<DomainTag> AllTags { get; private set; } = [];
     protected HashSet<int> SelectedTagIds { get; private set; } = [];
 
-    // Order options (single-select)
-    protected readonly List<OrderOption> OrderOptions =
-    [
-        new("Recent", "Mis à jour", defaultAsc: false),
-        new("Name", "Nom", defaultAsc: true),
-        new("Likes", "Likes", defaultAsc: true)
-    ];
-    
+    protected readonly List<OrderOption> OrderOptions = [];
+
+    protected override void OnInitialized()
+    {
+        OrderOptions.Add(new OrderOption("Recent", Localizer.Localize("component.deckOrder.orderBy.recent.text", "Recent"), defaultAsc: false));
+        OrderOptions.Add(new OrderOption("Name", Localizer.Localize("component.deckOrder.orderBy.name.text", "Name"), defaultAsc: true));
+        OrderOptions.Add(new OrderOption("Likes", Localizer.Localize("component.deckOrder.orderBy.likes.text", "Likes"), defaultAsc: false));
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         if (Page <= 0)

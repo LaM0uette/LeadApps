@@ -66,14 +66,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected string? SearchInput { get; set; }
     protected string? OrderByInput { get; set; } = "collectionCode"; // name | collectionCode | typeName
     protected bool AscInput { get; set; } = true; // default A-Z
-
-    // Order options (single-select)
-    protected readonly List<OrderOption> OrderOptions =
-    [
-        new("name", "Nom"),
-        new("collectionCode", "Code collection"),
-        new("typeName", "Type")
-    ];
+    
     protected List<string> AllTypeNames { get; private set; } = [];
     protected List<string> AllCollectionCodes { get; private set; } = [];
     protected List<string> AllPokemonTypeNames { get; private set; } = [];
@@ -110,6 +103,15 @@ public class DeckDetailsEditPagePresenter : PresenterBase
 
     protected List<int> TagIds { get; set; } = [];
     protected List<int> TagIdsCache { get; set; } = [];
+    
+    protected readonly List<OrderOption> OrderOptions = [];
+
+    protected override void OnInitialized()
+    {
+        OrderOptions.Add(new OrderOption("collectionCode", Localizer.Localize("component.cardOrder.orderBy.collection.text", "Recent"), defaultAsc: true));
+        OrderOptions.Add(new OrderOption("name", Localizer.Localize("component.cardOrder.orderBy.name.text", "Name"), defaultAsc: true));
+        OrderOptions.Add(new OrderOption("typeName", Localizer.Localize("component.cardOrder.orderBy.type.text", "Likes"), defaultAsc: true));
+    }
 
     protected override async Task OnInitializedAsync()
     {
