@@ -159,6 +159,11 @@
     .filter-modal__section {
         margin: 32px 0;
     }
+    
+    .filter-modal__section__title {
+        font-family: var(--font-bold), sans-serif;
+        font-size: 1.2rem;
+    }
 
 
 .filter-order-list {
@@ -263,6 +268,46 @@
     width: 80%;
     height: 80%;
 }
+
+
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin-top: 12px;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font), sans-serif;
+    font-size: 0.9rem;
+    cursor: var(--cursor-pointer);
+}
+    .filter-tag input {
+        display: none;
+    }
+    
+    .filter-tag__name {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        border-radius: 80px;
+        background: transparent;
+        outline: 1px solid var(--color-outline);
+        color: var(--color-text);
+        user-select: none;
+    }
+    
+    .filter-tag:hover .filter-tag__name { opacity: 0.9; }
+    .filter-tag:active .filter-tag__name { opacity: 0.8; }
+    
+    .filter-tag input:checked + .filter-tag__name {
+        background: var(--color-text);
+        color: var(--color-bg);
+        outline: none;
+    }
     
     
 .filter-modal-footer {
@@ -295,70 +340,7 @@
         width: 20px;
         height: 20px;
     }
-
-
-
     
-    
-    
-    
-.filter-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 12px;
-}
-
-/* Tag item styled like order pills */
-.filter-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    cursor: var(--cursor-pointer);
-}
-
-/* Hide native checkbox, we style the label instead */
-.filter-tag input {
-    display: none;
-}
-
-/* Visual pill */
-.filter-tag__name {
-    display: inline-flex;
-    align-items: center;
-    padding: 8px 16px;
-    border-radius: 80px;
-    background: transparent;
-    outline: 1px solid var(--color-outline);
-    color: var(--color-text);
-    font-family: var(--font-bold), sans-serif;
-    user-select: none;
-}
-
-/* Colored dot kept from previous design */
-.filter-tag__name::before {
-    content: '';
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--tag-color, #888);
-    margin-right: 6px;
-}
-
-/* Hover/active feedback similar to order items */
-.filter-tag:hover .filter-tag__name { opacity: 0.9; }
-.filter-tag:active .filter-tag__name { opacity: 0.8; }
-
-/* Toggled style like selected order item */
-.filter-tag input:checked + .filter-tag__name {
-    background: var(--color-text);
-    color: var(--color-bg);
-    outline: none;
-}
-
-
-
-
 
 @media (min-width: 1366px) {
     .deck-items {

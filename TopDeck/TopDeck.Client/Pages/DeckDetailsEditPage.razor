@@ -397,14 +397,14 @@
                         </div>
 
                         <div class="filter-modal__section" style="position: relative">
-                            <input class="filter-input" placeholder="@Localizer.Localize("component.deckFilter.search.placeholder", "Search by name, code, or author")" @bind="SearchInput" />
+                            <input class="filter-input" placeholder="@Localizer.Localize("component.cardFilter.search.placeholder", "Search by name, code, or author")" @bind="SearchInput" />
                             <div class="filter-input__icon">
                                 <img src="img/search-icon.svg" alt="search"/>
                             </div>
                         </div>
 
                         <div class="filter-modal__section">
-                            <label>Types (OR)</label>
+                            <label class="filter-modal__section__title">Types</label>
                             <div class="filter-tags">
                                 @foreach (string name in AllTypeNames)
                                 {
@@ -418,7 +418,7 @@
                         </div>
 
                         <div class="filter-modal__section">
-                            <label>Types Pokémon (OR)</label>
+                            <label class="filter-modal__section__title">Types Pokémon</label>
                             <div class="filter-tags">
                                 @foreach (string name in AllPokemonTypeNames)
                                 {
@@ -432,7 +432,7 @@
                         </div>
 
                         <div class="filter-modal__section">
-                            <label>Collections (OR)</label>
+                            <label class="filter-modal__section__title">Collections</label>
                             <div class="filter-tags">
                                 @foreach (string collectionCode in AllCollectionCodes)
                                 {

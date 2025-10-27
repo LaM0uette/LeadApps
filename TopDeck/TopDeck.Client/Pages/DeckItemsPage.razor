@@ -112,14 +112,14 @@
                 </div>
 
                 <div class="filter-modal__section">
-                    <label>Tags (OR)</label>
+                    <label class="filter-modal__section__title">Tags</label>
                     <div class="filter-tags">
                         @foreach (Tag tag in AllTags)
                         {
                             bool checkedVal = SelectedTagIds.Contains(tag.Id);
                             <label class="filter-tag">
-                                <input type="checkbox" checked="@checkedVal" @onchange="(_)=>ToggleTag(tag.Id)" />
-                                <span class="filter-tag__name" style="--tag-color:@tag.ColorHex">@tag.Name</span>
+                                <input type="checkbox" checked="@checkedVal" @onchange="(_) => ToggleTag(tag.Id)" />
+                                <span class="filter-tag__name">@tag.Name</span>
                             </label>
                         }
                     </div>

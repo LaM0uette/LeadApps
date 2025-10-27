@@ -21,6 +21,7 @@
   "component.deckOrder.orderBy.name.text": "A-Z",
   "component.deckOrder.orderBy.likes.text": "Likes",
   "component.cardFilter.header.title": "Filter cards",
+  "component.cardFilter.search.placeholder": "Pokémon name",
   "component.deckFilter.header.title": "Filter decks",
   "component.deckFilter.search.placeholder": "Name, code, or author",
   "feedback.text.copied": "Copied",
