@@ -199,6 +199,63 @@
 
 .filter-order__asc { display: inline-flex; align-items: center; gap: 6px; }
 
+/* New order toggles */
+.filter-order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-order-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 6px 8px 6px 10px;
+    background: #fff;
+}
+
+.filter-order-item--toggled {
+    outline: 2px solid var(--color-outline);
+    background: var(--color-bg-weak, #fafafa);
+}
+
+.filter-order-item__btn {
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 8px 4px;
+    font-size: 0.95rem;
+    cursor: var(--cursor-pointer);
+}
+
+.filter-order-item__label {
+    font-family: var(--font-bold), sans-serif;
+}
+
+.filter-order-item__dir {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    border: none;
+    cursor: var(--cursor-pointer);
+}
+
+.filter-order-item__dir-icon {
+    width: 18px;
+    height: 18px;
+    transition: transform .15s ease-in-out;
+}
+
+/* When asc, point arrow up via 180deg rotation */
+.filter-order-item__dir-icon--asc {
+    transform: rotate(180deg);
+}
+
 
 .filter-modal-footer {
     display: flex;

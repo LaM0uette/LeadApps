@@ -11,6 +11,17 @@ namespace TopDeck.Client.Pages;
 public class DeckItemsPagePresenter : PresenterBase
 {
     #region Statements
+
+    protected sealed class OrderOption
+    {
+        public string Key { get; }
+        public string Label { get; }
+        public OrderOption(string key, string label)
+        {
+            Key = key;
+            Label = label;
+        }
+    }
     
     private const int MAX_PAGE_SIZE = 100;
     private const int DEFAULT_PAGE_SIZE = 40;
@@ -47,6 +58,15 @@ public class DeckItemsPagePresenter : PresenterBase
     protected bool AscInput { get; set; }
     protected List<DomainTag> AllTags { get; private set; } = [];
     protected HashSet<int> SelectedTagIds { get; private set; } = [];
+
+    // Order options (single-select)
+    protected readonly List<OrderOption> OrderOptions =
+    [
+        new("updatedAt", "Mis à jour"),
+        new("name", "Nom"),
+        new("createdAt", "Créé le"),
+        new("likes", "Likes")
+    ];
     
     protected override async Task OnParametersSetAsync()
     {
@@ -281,6 +301,29 @@ public class DeckItemsPagePresenter : PresenterBase
         // Reset to default sorting: updatedAt desc
         OrderByInput = "updatedAt";
         AscInput = false;
+    }
+
+    protected bool IsOrderSelected(string key) => string.Equals(OrderByInput, key, StringComparison.OrdinalIgnoreCase);
+
+    protected void SelectOrder(string key)
+    {
+        // Selecting the same order keeps AscInput as is; selecting a new order resets to descending by default
+        if (!IsOrderSelected(key))
+        {
+            OrderByInput = key;
+            AscInput = false;
+        }
+    }
+
+    protected void ToggleOrderDirection(string key)
+    {
+        // If toggling direction on a non-selected order, select it first and default to descending, then flip
+        if (!IsOrderSelected(key))
+        {
+            OrderByInput = key;
+            AscInput = false;
+        }
+        AscInput = !AscInput;
     }
 
     protected void ApplyOrder()
