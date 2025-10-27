@@ -1,4 +1,5 @@
 ﻿@page "/decks"
+@using Tag = TopDeck.Domain.Models.Tag
 @inherits DeckItemsPagePresenter
 @attribute [AllowAnonymous]
 
@@ -49,4 +50,87 @@
             </div>
         }
     </div>
+    
+    <button class="order-fab" @onclick="OpenOrder">
+        <img src="img/order-icon.svg" alt="order"/>
+    </button>
+    <button class="filter-fab" @onclick="OpenFilter">
+        <img src="img/filter-icon.svg" alt="filter"/>
+    </button>
+    
+    @if (IsOrderOpen)
+    {
+        <div class="filter-modal__overlay" @onclick="CloseOrder">
+            <div class="filter-modal" @onclick:stopPropagation>
+                <div class="filter-modal__header">
+                    <h3>@Localizer.Localize("component.deckOrder.header.title", "Order decks")</h3>
+                    <button class="filter-modal__close" @onclick="CloseOrder">
+                        <img src="img/close-icon.svg" alt="close"/>
+                    </button>
+                </div>
+                <div class="filter-modal__section">
+                    <div class="filter-order-list">
+                        @foreach (OrderOption order in OrderOptions)
+                        {
+                            bool selected = IsOrderSelected(order.Key);
+                            <div class="filter-order-item @(selected ? "filter-order-item--toggled" : null)">
+                                <button class="filter-order-item__btn" @onclick="() => SelectOrder(order.Key)">
+                                    <span class="filter-order-item__label">@order.Label</span>
+                                </button>
+                                <button class="filter-order-item__dir @(!selected ? "filter-order-item__dir--hideed" : null)" title="Asc/Desc" @onclick="() => ToggleOrderDirection(order.Key)" @onclick:stopPropagation="true">
+                                    <img class="filter-order-item__dir-icon @(AscInput ? "filter-order-item__dir-icon--asc" : null)" src="img/order-downArrow-icon.svg" alt="asc/desc"/>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="filter-modal-footer">
+                    <button class="filter-modal-footer__close" @onclick="ApplyOrder">
+                        <img src="img/close-icon.svg" alt="close"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (IsFilterOpen)
+    {
+        <div class="filter-modal__overlay" @onclick="CloseFilter">
+            <div class="filter-modal" @onclick:stopPropagation>
+                <div class="filter-modal__header">
+                    <h3>@Localizer.Localize("component.deckFilter.header.title", "Filter decks")</h3>
+                    <button class="filter-modal__close" @onclick="CloseFilter">
+                        <img src="img/close-icon.svg" alt="close"/>
+                    </button>
+                </div>
+                
+                <div class="filter-modal__section" style="position: relative">
+                    <input class="filter-input" placeholder="@Localizer.Localize("component.deckFilter.search.placeholder", "Search by name, code, or author")" @bind="SearchInput" />
+                    <div class="filter-input__icon">
+                        <img src="img/search-icon.svg" alt="search"/>
+                    </div>
+                </div>
+
+                <div class="filter-modal__section">
+                    <label class="filter-modal__section__title">Tags</label>
+                    <div class="filter-tags">
+                        @foreach (Tag tag in AllTags)
+                        {
+                            bool checkedVal = SelectedTagIds.Contains(tag.Id);
+                            <label class="filter-tag">
+                                <input type="checkbox" checked="@checkedVal" @onchange="(_) => ToggleTag(tag.Id)" />
+                                <span class="filter-tag__name">@tag.Name</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+
+                <div class="filter-modal-footer">
+                    <button class="filter-modal-footer__close" @onclick="ApplyFilter">
+                        <img src="img/close-icon.svg" alt="close"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
 </div>

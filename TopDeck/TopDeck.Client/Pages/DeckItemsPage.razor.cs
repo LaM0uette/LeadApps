@@ -4,33 +4,60 @@ using TopDeck.Domain.Models;
 using TopDeck.Shared.Components;
 using TopDeck.Shared.Models;
 using TopDeck.Shared.Services;
+using DomainTag = TopDeck.Domain.Models.Tag;
 
 namespace TopDeck.Client.Pages;
 
 public class DeckItemsPagePresenter : PresenterBase
 {
     #region Statements
+
     
     private const int MAX_PAGE_SIZE = 100;
     private const int DEFAULT_PAGE_SIZE = 40;
     
     [SupplyParameterFromQuery] public int Page { get; set; } = 1;
     [SupplyParameterFromQuery] public int Size { get; set; } = DEFAULT_PAGE_SIZE;
+
+    // Filters bound to query string
+    [SupplyParameterFromQuery] public string? Search { get; set; }
+    [SupplyParameterFromQuery] public int[] TagIds { get; set; } = Array.Empty<int>();
+    [SupplyParameterFromQuery] public string? OrderBy { get; set; }
+    [SupplyParameterFromQuery] public bool Asc { get; set; }
      
     protected List<DeckItem> DeckItems { get; } = [];
     protected bool HasNextPage { get; private set; }
     protected bool IsLoading { get; private set; }
 
     [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
+    [Inject] private ITagService _tagService { get; set; } = null!;
     [Inject] private NavigationManager _nav { get; set; } = null!;
 
     private DotNetObjectReference<DeckItemsPagePresenter>? _presenterRef;
     private bool _restoreScrollPending;
-    private string _scrollKey => $"decks:p{Page}:s{Size}";
+    private string _scrollKey => $"decks:p{Page}:s{Size}:q{Search}:t{string.Join('-', TagIds)}:o{OrderBy}:a{Asc}";
 
     private int _deckItemCount;
     private int _maxPage;
-    
+
+    // Filter and Order popup state
+    protected bool IsFilterOpen { get; private set; }
+    protected bool IsOrderOpen { get; private set; }
+    protected string? SearchInput { get; set; }
+    protected string? OrderByInput { get; set; }
+    protected bool AscInput { get; set; }
+    protected List<DomainTag> AllTags { get; private set; } = [];
+    protected HashSet<int> SelectedTagIds { get; private set; } = [];
+
+    protected readonly List<OrderOption> OrderOptions = [];
+
+    protected override void OnInitialized()
+    {
+        OrderOptions.Add(new OrderOption("Recent", Localizer.Localize("component.deckOrder.orderBy.recent.text", "Recent"), defaultAsc: false));
+        OrderOptions.Add(new OrderOption("Name", Localizer.Localize("component.deckOrder.orderBy.name.text", "Name"), defaultAsc: true));
+        OrderOptions.Add(new OrderOption("Likes", Localizer.Localize("component.deckOrder.orderBy.likes.text", "Likes"), defaultAsc: false));
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         if (Page <= 0)
@@ -43,7 +70,19 @@ public class DeckItemsPagePresenter : PresenterBase
             Size = DEFAULT_PAGE_SIZE;
         }
 
-        _deckItemCount = await _deckItemService.GetDeckItemCountAsync();
+        // Load tags once
+        if (AllTags.Count == 0)
+        {
+            AllTags = (await _tagService.GetAllAsync())?.ToList() ?? [];
+        }
+
+        // Sync popup inputs from current query-bound filters
+        SearchInput = Search;
+        OrderByInput = string.IsNullOrWhiteSpace(OrderBy) ? "Recent" : OrderBy;
+        AscInput = Asc;
+        SelectedTagIds = TagIds.Length > 0 ? TagIds.ToHashSet() : [];
+
+        _deckItemCount = await _deckItemService.GetDeckItemCountAsync(Search, SelectedTagIds.ToList(), default);
         _maxPage = Math.Max(1, (int)Math.Ceiling(_deckItemCount / (double)Size));
         
         if (Page > _maxPage)
@@ -103,7 +142,19 @@ public class DeckItemsPagePresenter : PresenterBase
     {
         Uri uri = new(_nav.Uri);
         string basePath = uri.GetLeftPart(UriPartial.Path);
-        string target = $"{basePath}?page={page}&size={Size}";
+        var query = new List<string>
+        {
+            $"page={page}",
+            $"size={Size}"
+        };
+        if (!string.IsNullOrWhiteSpace(Search)) query.Add($"search={Uri.EscapeDataString(Search)}");
+        if (TagIds is { Length: > 0 })
+        {
+            foreach (int id in TagIds.Distinct()) query.Add($"tagIds={id}");
+        }
+        if (!string.IsNullOrWhiteSpace(OrderBy)) query.Add($"orderBy={OrderBy}");
+        if (Asc) query.Add("asc=true");
+        string target = $"{basePath}?{string.Join("&", query)}";
         
         _nav.NavigateTo(target);
     }
@@ -158,7 +209,24 @@ public class DeckItemsPagePresenter : PresenterBase
             if (skip < 0) 
                 skip = 0;
             
-            IReadOnlyList<DeckItem> items = await _deckItemService.GetPageAsync(skip, Size);
+            // Build filter DTO to send in body
+            var orderKey = string.IsNullOrWhiteSpace(OrderBy) ? "Recent" : OrderBy;
+            TopDeck.Contracts.Enums.DeckItemsOrderBy orderEnum;
+            if (!Enum.TryParse(orderKey, ignoreCase: true, out orderEnum))
+            {
+                orderEnum = TopDeck.Contracts.Enums.DeckItemsOrderBy.Recent;
+            }
+
+            var filter = new TopDeck.Contracts.DTO.DeckItemsFilterDTO
+            {
+                Skip = skip,
+                Take = Size,
+                Search = Search,
+                TagIds = TagIds is { Length: > 0 } ? TagIds.Distinct().ToArray() : null,
+                OrderBy = orderEnum,
+                Asc = Asc
+            };
+            IReadOnlyList<DeckItem> items = await _deckItemService.GetPageAsync(filter);
             DeckItems.AddRange(items);
             HasNextPage = Page < _maxPage;
         }
@@ -184,6 +252,91 @@ public class DeckItemsPagePresenter : PresenterBase
         }
     }
     
+    #endregion
+
+    #region Filter UI
+
+    protected void OpenFilter()
+    {
+        IsFilterOpen = true;
+    }
+
+    protected void CloseFilter()
+    {
+        IsFilterOpen = false;
+    }
+
+    protected void ToggleTag(int id)
+    {
+        if (SelectedTagIds.Contains(id)) SelectedTagIds.Remove(id); else SelectedTagIds.Add(id);
+    }
+
+    protected void ResetFilter()
+    {
+        SearchInput = null;
+        SelectedTagIds.Clear();
+    }
+
+    protected void ApplyFilter()
+    {
+        // Update query-bound properties and navigate to page 1
+        Search = string.IsNullOrWhiteSpace(SearchInput) ? null : SearchInput;
+        // Do not touch order here; only tags and search
+        TagIds = SelectedTagIds.Count > 0 ? SelectedTagIds.ToArray() : Array.Empty<int>();
+        IsFilterOpen = false;
+        NavigateToPage(1);
+    }
+
+    protected void OpenOrder()
+    {
+        IsOrderOpen = true;
+    }
+
+    protected void CloseOrder()
+    {
+        IsOrderOpen = false;
+    }
+
+    protected void ResetOrder()
+    {
+        // Reset to default sorting based on option defaults
+        var option = OrderOptions.FirstOrDefault(o => string.Equals(o.Key, "Recent", StringComparison.OrdinalIgnoreCase));
+        OrderByInput = option?.Key ?? "Recent";
+        AscInput = option?.DefaultAsc ?? false; // Recent defaults to desc
+    }
+
+    protected bool IsOrderSelected(string key) => string.Equals(OrderByInput, key, StringComparison.OrdinalIgnoreCase);
+
+    protected void SelectOrder(string key)
+    {
+        if (!IsOrderSelected(key))
+        {
+            OrderByInput = key;
+            var option = OrderOptions.FirstOrDefault(o => string.Equals(o.Key, key, StringComparison.OrdinalIgnoreCase));
+            AscInput = option?.DefaultAsc ?? true;
+        }
+    }
+
+    protected void ToggleOrderDirection(string key)
+    {
+        if (!IsOrderSelected(key))
+        {
+            OrderByInput = key;
+            var option = OrderOptions.FirstOrDefault(o => string.Equals(o.Key, key, StringComparison.OrdinalIgnoreCase));
+            AscInput = option?.DefaultAsc ?? true;
+        }
+        AscInput = !AscInput;
+    }
+
+    protected void ApplyOrder()
+    {
+        // Update order query-bound properties and navigate to page 1
+        OrderBy = string.IsNullOrWhiteSpace(OrderByInput) ? null : OrderByInput;
+        Asc = AscInput;
+        IsOrderOpen = false;
+        NavigateToPage(1);
+    }
+
     #endregion
 
     #region IAsyncDisposable

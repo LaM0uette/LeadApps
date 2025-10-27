@@ -1,8 +1,9 @@
 ﻿using System.Globalization;
-using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using TopDeck.Shared.Models.TCGP;
+using TopDeck.Contracts.DTO;
+using TopDeck.Shared.Mappings;
 
 namespace TCGPCardRequester;
 
@@ -29,10 +30,30 @@ public class TCGPCardRequester : ITCGPCardRequester
         string culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
         string urlParams = $"?lng={cultureOverride ?? culture}";
         string loadThumbnailParam = $"&thumbnail={(loadThumbnail ? "true" : "false")}";
-        
-        List<TCGPCard>? tcgCards = await GetJsonAsync<List<TCGPCard>>($"/cards{urlParams}{loadThumbnailParam}", ct);
-        
-        return tcgCards ?? [];
+
+        // Call each per-type endpoint
+        var pokemonsTask = GetJsonAsync<List<CardPokemonOutputDTO>>($"/cards/pokemon{urlParams}{loadThumbnailParam}", ct);
+        var itemsTask = GetJsonAsync<List<CardItemOutputDTO>>($"/cards/item{urlParams}{loadThumbnailParam}", ct);
+        var toolsTask = GetJsonAsync<List<CardToolOutputDTO>>($"/cards/tool{urlParams}{loadThumbnailParam}", ct);
+        var supportersTask = GetJsonAsync<List<CardSupporterOutputDTO>>($"/cards/supporter{urlParams}{loadThumbnailParam}", ct);
+        var fossilsTask = GetJsonAsync<List<CardFossilOutputDTO>>($"/cards/fossil{urlParams}{loadThumbnailParam}", ct);
+
+        await Task.WhenAll(pokemonsTask!, itemsTask!, toolsTask!, supportersTask!, fossilsTask!);
+
+        List<TCGPCard> all = new();
+
+        if (pokemonsTask.Result is { } pkmDtos)
+            all.AddRange(pkmDtos.ToDomain()); // returns List<TCGPPokemonCard> which is TCGPCard
+        if (itemsTask.Result is { } itemDtos)
+            all.AddRange(itemDtos.ToDomain());
+        if (toolsTask.Result is { } toolDtos)
+            all.AddRange(toolDtos.ToDomain());
+        if (supportersTask.Result is { } supDtos)
+            all.AddRange(supDtos.ToDomain());
+        if (fossilsTask.Result is { } fosDtos)
+            all.AddRange(fosDtos.ToDomain());
+
+        return all;
     }
 
     public async Task<List<TCGPCard>> GetTCGPCardsByRequestAsync(TCGPCardsRequest deck, string? cultureOverride = null, bool loadThumbnail = false, CancellationToken ct = default)
@@ -58,7 +79,10 @@ public class TCGPCardRequester : ITCGPCardRequester
     
     private async Task<T?> GetJsonAsync<T>(string requestUri, CancellationToken ct = default)
     {
-        return await _http.GetFromJsonAsync<T>(requestUri, ct);
+        using HttpResponseMessage response = await _http.GetAsync(requestUri, ct).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        string json = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+        return JsonSerializer.Deserialize<T>(json, _jsonOptions);
     }
 
     private async Task<T> PostAsync<T>(string path, object? body = null, CancellationToken cancellationToken = default)

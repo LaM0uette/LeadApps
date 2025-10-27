@@ -25,6 +25,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDeckItemService, DeckItemService>();
 builder.Services.AddScoped<IDeckDetailsService, DeckDetailsService>();
 builder.Services.AddScoped<IVoteService, VoteService>();
+builder.Services.AddScoped<ITagService, TagService>();
 
 builder.Services.AddScoped<ITCGPCardRequester, TCGPCardRequester.TCGPCardRequester>();
 

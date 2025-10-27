@@ -3,10 +3,13 @@ using Microsoft.JSInterop;
 using TCGPCardRequester;
 using TopDeck.Contracts.DTO;
 using TopDeck.Shared.Components;
+using TopDeck.Shared.Models;
 using TopDeck.Shared.Models.TCGP;
 using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore.States.AuthenticatedUser;
-using TopDeck.Domain.Models;
+using TopDeck.Shared.UIStore.States.Tags;
+using DomainTag = TopDeck.Domain.Models.Tag;
+using DomainDeckDetails = TopDeck.Domain.Models.DeckDetails;
 
 namespace TopDeck.Client.Pages;
 
@@ -28,6 +31,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected const int MAX_IDENTICAL_CARDS_IN_DECK = 2;
     private const int MAX_CARDS_DURING_BUILD_DECK = 30;
     private const int MAX_HIGHLIGHT_CARDS = 3;
+    
     
     protected readonly Dictionary<int, string> EnergyTypes = new()
     {
@@ -54,6 +58,21 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     private Dictionary<string, bool> _tcgpHighlightedCardsMapping { get; set; } = new();
     
     protected IReadOnlyList<TCGPCard> TCGPAllCards { get; set; } = [];
+    protected IReadOnlyList<TCGPCard> FilteredTCGPAllCards { get; private set; } = [];
+
+    // Filter popup state for TCGPAllCards
+    protected bool IsFilterOpen { get; private set; }
+    protected bool IsOrderOpen { get; private set; }
+    protected string? SearchInput { get; set; }
+    protected string? OrderByInput { get; set; } = "collectionCode"; // name | collectionCode | typeName
+    protected bool AscInput { get; set; } = true; // default A-Z
+    
+    protected List<string> AllTypeNames { get; private set; } = [];
+    protected List<string> AllCollectionCodes { get; private set; } = [];
+    protected List<string> AllPokemonTypeNames { get; private set; } = [];
+    protected HashSet<string> SelectedTypeNames { get; private set; } = [];
+    protected HashSet<string> SelectedCollectionCodes { get; private set; } = [];
+    protected HashSet<string> SelectedPokemonTypeNames { get; private set; } = [];
     
     protected List<int> EnergyIds { get; set; } = [];
     protected List<int> EnergyIdsCache { get; set; } = [];
@@ -68,23 +87,53 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     
     protected bool IsPickingHighlightCards { get; private set; }
     protected bool IsPickingEnergies { get; private set; }
+    protected bool IsPickingTags { get; private set; }
     
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
     [Inject] private IDeckItemService _deckItemService { get; set; } = null!;
     [Inject] private IDeckDetailsService _deckDetailsService { get; set; } = null!;
+    [Inject] private ITagService _tagService { get; set; } = null!;
 
     [Parameter] public string? DeckCode { get; set; }
     
     private int? _deckId;
     private TCGPCard? _selectedCard { get; set; }
 
+    protected IReadOnlyList<DomainTag> AvailableTags => UIStore.GetState<TagsState>().Tags;
+
+    protected List<int> TagIds { get; set; } = [];
+    protected List<int> TagIdsCache { get; set; } = [];
+    
+    protected readonly List<OrderOption> OrderOptions = [];
+
+    protected override void OnInitialized()
+    {
+        OrderOptions.Add(new OrderOption("collectionCode", Localizer.Localize("component.cardOrder.orderBy.collection.text", "Recent"), defaultAsc: true));
+        OrderOptions.Add(new OrderOption("name", Localizer.Localize("component.cardOrder.orderBy.name.text", "Name"), defaultAsc: true));
+        OrderOptions.Add(new OrderOption("typeName", Localizer.Localize("component.cardOrder.orderBy.type.text", "Likes"), defaultAsc: true));
+    }
+
     protected override async Task OnInitializedAsync()
     {
         TCGPAllCards = await _tcgpCardRequester.GetAllTCGPCardsAsync(loadThumbnail:true);
 
+        // Build distinct filters lists from all cards
+        AllTypeNames = TCGPAllCards.Select(c => c.Type.Name).Where(n => !string.IsNullOrWhiteSpace(n)).Distinct().OrderBy(n => n).ToList();
+        AllCollectionCodes = TCGPAllCards.Select(c => c.Collection.Code).Where(c => !string.IsNullOrWhiteSpace(c)).Distinct().OrderBy(c => c).ToList();
+        AllPokemonTypeNames = TCGPAllCards.OfType<TCGPPokemonCard>().Select(c => c.PokemonType.Name).Where(n => !string.IsNullOrWhiteSpace(n)).Distinct().OrderBy(n => n).ToList();
+        ApplyTCGPCardsFilter();
+
+        // Load Tags into UIStore if empty
+        TagsState tagsState = UIStore.GetState<TagsState>();
+        if (tagsState.Tags.Count == 0)
+        {
+            IReadOnlyList<DomainTag> tags = await _tagService.GetAllAsync();
+            UIStore.Dispatch(new SetTagsAction(tags));
+        }
+
         if (!string.IsNullOrWhiteSpace(DeckCode))
         {
-            DeckDetails? existing = await _deckDetailsService.GetByCodeAsync(DeckCode);
+            DomainDeckDetails? existing = await _deckDetailsService.GetByCodeAsync(DeckCode);
             if (existing is null)
             {
                 await GoBackAsync();
@@ -95,6 +144,8 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             DeckName = existing.Name;
             EnergyIds = existing.EnergyIds.ToList();
             EnergyIdsCache = existing.EnergyIds.ToList();
+            TagIds = existing.TagIds.ToList();
+            TagIdsCache = existing.TagIds.ToList();
 
             // Map highlighted cards
             TCGPHighlightedCards = existing.Cards
@@ -124,6 +175,199 @@ public class DeckDetailsEditPagePresenter : PresenterBase
 
     #region Methods
 
+    private static readonly Dictionary<string, int> _collectionOrder = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["A1"] = 1,
+        ["A1a"] = 2,
+        ["A2"] = 3,
+        ["A2a"] = 4,
+        ["A2b"] = 5,
+        ["A3"] = 6,
+        ["A3a"] = 7,
+        ["A3b"] = 8,
+        ["A4"] = 9,
+        ["A4a"] = 10,
+        ["A4b"] = 11,
+        ["P-A"] = 12
+    };
+
+    private static int GetCollectionIndex(string code)
+    {
+        return _collectionOrder.TryGetValue(code, out int idx) ? idx : int.MaxValue;
+    }
+
+    private static readonly Dictionary<string, int> _pokemonTypeOrder = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Grass"] = 1,
+        ["Fire"] = 2,
+        ["Water"] = 3,
+        ["Lightning"] = 4,
+        ["Psychic"] = 5,
+        ["Fighting"] = 6,
+        ["Darkness"] = 7,
+        ["Metal"] = 8,
+        ["Dragon"] = 9,
+        ["Colorless"] = 10
+    };
+
+    private static int GetPokemonTypeIndex(string typeName)
+    {
+        return _pokemonTypeOrder.TryGetValue(typeName, out int idx) ? idx : int.MaxValue;
+    }
+
+    private void ApplyTCGPCardsFilter()
+    {
+        IEnumerable<TCGPCard> query = TCGPAllCards;
+        if (!string.IsNullOrWhiteSpace(SearchInput))
+        {
+            string s = SearchInput.Trim().ToLowerInvariant();
+            query = query.Where(c => (c.Name ?? string.Empty).ToLowerInvariant().Contains(s));
+        }
+        if (SelectedTypeNames.Count > 0)
+        {
+            query = query.Where(c => SelectedTypeNames.Contains(c.Type.Name));
+        }
+        if (SelectedCollectionCodes.Count > 0)
+        {
+            query = query.Where(c => SelectedCollectionCodes.Contains(c.Collection.Code));
+        }
+        if (SelectedPokemonTypeNames.Count > 0)
+        {
+            var pokemonFiltered = query.OfType<TCGPPokemonCard>().Where(p => SelectedPokemonTypeNames.Contains(p.PokemonType.Name));
+            var nonPokemon = query.Where(c => c is not TCGPPokemonCard);
+            query = nonPokemon.Concat<TCGPCard>(pokemonFiltered);
+        }
+        // Sorting
+        bool asc = AscInput;
+        switch ((OrderByInput ?? "collectionCode").ToLowerInvariant())
+        {
+            case "collectioncode":
+                query = asc
+                    ? query.OrderBy(c => GetCollectionIndex(c.Collection.Code)).ThenBy(c => c.CollectionNumber).ThenBy(c => c.Name)
+                    : query.OrderByDescending(c => GetCollectionIndex(c.Collection.Code)).ThenByDescending(c => c.CollectionNumber).ThenByDescending(c => c.Name);
+                break;
+            case "typename":
+                if (asc)
+                {
+                    // Ascending: Pokémon first, then by Pokémon type index (custom order),
+                    // non‑Pokémon ordered by their card type name; tie‑breaker by card name
+                    query = query
+                        .OrderBy(c => c is not TCGPPokemonCard ? 1 : 0)
+                        .ThenBy(c => c is TCGPPokemonCard p ? GetPokemonTypeIndex(p.PokemonType.Name) : int.MaxValue)
+                        .ThenBy(c => c is TCGPPokemonCard ? string.Empty : c.Type.Name)
+                        .ThenBy(c => c.Name);
+                }
+                else
+                {
+                    // Descending: non‑Pokémon first; Pokémon ordered by descending type index,
+                    // non‑Pokémon by type name descending; tie‑breaker by name desc
+                    query = query
+                        .OrderBy(c => c is not TCGPPokemonCard ? 0 : 1)
+                        .ThenByDescending(c => c is TCGPPokemonCard p ? GetPokemonTypeIndex(p.PokemonType.Name) : int.MinValue)
+                        .ThenByDescending(c => c is TCGPPokemonCard ? string.Empty : c.Type.Name)
+                        .ThenByDescending(c => c.Name);
+                }
+                break;
+            case "name":
+            default:
+                query = asc
+                    ? query.OrderBy(c => c.Name).ThenBy(c => GetCollectionIndex(c.Collection.Code)).ThenBy(c => c.CollectionNumber)
+                    : query.OrderByDescending(c => c.Name).ThenByDescending(c => GetCollectionIndex(c.Collection.Code)).ThenByDescending(c => c.CollectionNumber);
+                break;
+        }
+        FilteredTCGPAllCards = query.ToList();
+    }
+
+    protected void OpenFilter()
+    {
+        IsFilterOpen = true;
+    }
+
+    protected void CloseFilter()
+    {
+        IsFilterOpen = false;
+    }
+
+    protected void OpenOrder()
+    {
+        IsOrderOpen = true;
+    }
+
+    protected void CloseOrder()
+    {
+        IsOrderOpen = false;
+    }
+
+    protected void ToggleTypeName(string name)
+    {
+        if (SelectedTypeNames.Contains(name)) SelectedTypeNames.Remove(name); else SelectedTypeNames.Add(name);
+    }
+
+    protected void ToggleCollectionCode(string code)
+    {
+        if (SelectedCollectionCodes.Contains(code)) SelectedCollectionCodes.Remove(code); else SelectedCollectionCodes.Add(code);
+    }
+
+    protected void TogglePokemonTypeName(string name)
+    {
+        if (SelectedPokemonTypeNames.Contains(name)) SelectedPokemonTypeNames.Remove(name); else SelectedPokemonTypeNames.Add(name);
+    }
+
+    protected void ResetFilter()
+    {
+        SearchInput = null;
+        SelectedTypeNames.Clear();
+        SelectedCollectionCodes.Clear();
+        SelectedPokemonTypeNames.Clear();
+        ApplyTCGPCardsFilter();
+    }
+
+    protected void ApplyFilter()
+    {
+        ApplyTCGPCardsFilter();
+        IsFilterOpen = false;
+        StateHasChanged();
+    }
+
+    protected void ResetOrder()
+    {
+        OrderByInput = "collectionCode";
+        AscInput = true; // A-Z by default
+        ApplyTCGPCardsFilter();
+    }
+
+    protected bool IsOrderSelected(string key) => string.Equals(OrderByInput, key, StringComparison.OrdinalIgnoreCase);
+
+    protected void SelectOrder(string key)
+    {
+        // Selecting the same order keeps AscInput as is; selecting a new order resets to ascending by default
+        if (!IsOrderSelected(key))
+        {
+            OrderByInput = key;
+            AscInput = true;
+            ApplyTCGPCardsFilter();
+        }
+    }
+
+    protected void ToggleOrderDirection(string key)
+    {
+        // If toggling direction on a non-selected order, select it first and default to ascending, then flip
+        if (!IsOrderSelected(key))
+        {
+            OrderByInput = key;
+            AscInput = true;
+        }
+        AscInput = !AscInput;
+        ApplyTCGPCardsFilter();
+    }
+
+    protected void ApplyOrder()
+    {
+        ApplyTCGPCardsFilter();
+        IsOrderOpen = false;
+        StateHasChanged();
+    }
+
     protected void SelectTab(Tab tab)
     {
         CurrentTab = tab;
@@ -149,6 +393,16 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected void ExitPickingEnergiesMode()
     {
         IsPickingEnergies = false;
+    }
+    
+    protected void SetPickingTagsMode()
+    {
+        IsPickingTags = true;
+    }
+    
+    protected void ExitPickingTagsMode()
+    {
+        IsPickingTags = false;
     }
     
     protected void AddToHighlightCards(TCGPCard card)
@@ -187,6 +441,23 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             return;
         
         EnergyIds.Add(energyId);
+    }
+
+    protected bool IsTagSelected(int tagId)
+    {
+        return TagIds.Contains(tagId);
+    }
+
+    protected void ToggleTag(int tagId)
+    {
+        if (TagIds.Contains(tagId))
+        {
+            TagIds.Remove(tagId);
+        }
+        else
+        {
+            TagIds.Add(tagId);
+        }
     }
     
     protected bool IsEnergySelected(int energyId)
@@ -395,7 +666,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             DeckName,
             dtoCards,
             EnergyIds: EnergyIds,
-            TagIds: []
+            TagIds: TagIds
         );
 
         if (_deckId.HasValue)
@@ -409,6 +680,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         
         TCGPCardsCache = new List<TCGPCard>(TCGPCards);
         EnergyIdsCache = new List<int>(EnergyIds);
+        TagIdsCache = new List<int>(TagIds);
         TCGPHighlightedCardsCache = new List<TCGPCard>(TCGPHighlightedCards);
         await GoBackAsync();
     }
@@ -417,6 +689,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     {
         return SortCards(TCGPCards).SequenceEqual(SortCards(TCGPCardsCache))
                && EnergyIds.OrderBy(id => id).SequenceEqual(EnergyIdsCache.OrderBy(id => id))
+               && TagIds.OrderBy(id => id).SequenceEqual(TagIdsCache.OrderBy(id => id))
                && TCGPHighlightedCards.Select(GetCardKey).OrderBy(k => k).SequenceEqual(TCGPHighlightedCardsCache.Select(GetCardKey).OrderBy(k => k));
     }
     

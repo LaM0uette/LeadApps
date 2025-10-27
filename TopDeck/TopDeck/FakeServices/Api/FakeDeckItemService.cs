@@ -6,13 +6,13 @@ namespace TopDeck.FakeServices;
 
 public class FakeDeckItemService : IDeckItemService
 {
-    public Task<IReadOnlyList<DeckItem>> GetPageAsync(int skip, int take, CancellationToken ct = default)
+    public Task<IReadOnlyList<DeckItem>> GetPageAsync(DeckItemsFilterDTO filter, CancellationToken ct = default)
     {
         IReadOnlyList<DeckItem> result = [];
         return Task.FromResult(result);
     }
 
-    public Task<int> GetDeckItemCountAsync(CancellationToken ct = default)
+    public Task<int> GetDeckItemCountAsync(string? search = null, IReadOnlyList<int>? tagIds = null, CancellationToken ct = default)
     {
         return Task.FromResult(0);
     }

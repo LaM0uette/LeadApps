@@ -26,12 +26,37 @@ public class DeckItemService : IDeckItemService
 
     #region IService
     
-    public async Task<IReadOnlyList<DeckItemOutputDTO>> GetPageAsync(int skip, int take, CancellationToken ct = default)
+    public async Task<IReadOnlyList<DeckItemOutputDTO>> GetPageAsync(DeckItemsFilterDTO filter, CancellationToken ct = default)
     {
-        return await _repo.DbSet
-            .AsNoTracking().AsSplitQuery()
-            .OrderByDescending(d => d.UpdatedAt).ThenByDescending(d => d.CreatedAt)
-            .Skip(skip).Take(take)
+        IQueryable<Deck> query = _repo.DbSet.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(filter.Search))
+        {
+            string s = filter.Search.Trim().ToLower();
+            query = query.Where(d =>
+                d.Name.ToLower().Contains(s) ||
+                d.Code.ToLower().Contains(s) ||
+                d.Creator.UserName.ToLower().Contains(s));
+        }
+
+        if (filter.TagIds is { Count: > 0 })
+        {
+            var tagSet = filter.TagIds.Distinct().ToList();
+            query = query.Where(d => d.DeckTags.Any(dt => tagSet.Contains(dt.TagId)));
+        }
+
+        // Sorting
+        IOrderedQueryable<Deck> ordered = filter.OrderBy switch
+        {
+            TopDeck.Contracts.Enums.DeckItemsOrderBy.Name => filter.Asc ? query.OrderBy(d => d.Name) : query.OrderByDescending(d => d.Name),
+            TopDeck.Contracts.Enums.DeckItemsOrderBy.Likes => filter.Asc ? query.OrderBy(d => d.Likes.Count) : query.OrderByDescending(d => d.Likes.Count),
+            // Recent (default) -> UpdatedAt
+            _ => filter.Asc ? query.OrderBy(d => d.UpdatedAt) : query.OrderByDescending(d => d.UpdatedAt)
+        };
+
+        return await ordered
+            .ThenByDescending(d => d.CreatedAt)
+            .Skip(filter.Skip).Take(filter.Take)
             .Select(DeckItemMapper.Expression)
             .ToListAsync(ct);
     }
@@ -152,9 +177,26 @@ public class DeckItemService : IDeckItemService
         return await _repo.DeleteAsync(id, ct);
     }
 
-    public async Task<int> GetTotalCountAsync(CancellationToken ct = default)
+    public async Task<int> GetTotalCountAsync(TopDeck.Contracts.DTO.DeckItemsFilterDTO filter, CancellationToken ct = default)
     {
-        return await _repo.CountAsync(ct);
+        IQueryable<Deck> query = _repo.DbSet.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(filter.Search))
+        {
+            string s = filter.Search.Trim().ToLower();
+            query = query.Where(d =>
+                d.Name.ToLower().Contains(s) ||
+                d.Code.ToLower().Contains(s) ||
+                d.Creator.UserName.ToLower().Contains(s));
+        }
+
+        if (filter.TagIds is { Count: > 0 })
+        {
+            var tagSet = filter.TagIds.Distinct().ToList();
+            query = query.Where(d => d.DeckTags.Any(dt => tagSet.Contains(dt.TagId)));
+        }
+
+        return await query.CountAsync(ct);
     }
 
     #endregion

@@ -1,5 +1,6 @@
 ﻿@page "/decks/edit"
 @page "/decks/{DeckCode}/edit"
+@using Tag = TopDeck.Domain.Models.Tag
 @inherits DeckDetailsEditPagePresenter
 @attribute [AllowAnonymous]
 
@@ -81,6 +82,28 @@
                 <button class="deck-details-edit-header__edit-button" @onclick="SetEditMode">
                     @Localizer.Localize("page.deckDetailEdit.editButton.text", "Edit")
                 </button>
+            </div>
+            
+            <div class="deck-item-tags">
+                @if (TagIds.Count <= 0)
+                {
+                    <RoundPlusButton Size="20px" Clicked="SetPickingTagsMode"/>
+                }
+                else
+                {
+                    <RoundPlusButton Size="20px" Clicked="SetPickingTagsMode"/>
+                    
+                    foreach (int tagId in TagIds)
+                    {
+                        Tag? tag = AvailableTags.FirstOrDefault(t => t.Id == tagId);
+                        if (tag is null)
+                            continue;
+
+                        <div @onclick="SetPickingTagsMode">
+                            <Tag Name="@tag.Name"/>
+                        </div>
+                    }
+                }
             </div>
             
         </div>
@@ -209,6 +232,27 @@
             </button>
         </div>
     }
+    
+    @if (CurrentTab == Tab.Cards && IsPickingTags)
+    {
+        <div class="deck-details-cards-picking-energies">
+            <div class="deck-details-cards-picking-energies-energies">
+                @foreach (Tag tag in AvailableTags)
+                {
+                    <button class="deck-details-cards-edit-energy @(IsTagSelected(tag.Id) ? "deck-details-cards-edit-energy--toggled" : null)"
+                            @onclick:preventDefault="true"
+                            @onclick:stopPropagation="true"
+                            @onclick="() => ToggleTag(tag.Id)">
+                        <p class="deck-details-cards-edit-energy__name">@tag.Name</p>
+                    </button>
+                }
+            </div>
+            
+            <button class="deck-details-cards-edit-cards-ok-button" @onclick="ExitPickingTagsMode">
+                X
+            </button>
+        </div>
+    }
 
     @if (CurrentTab == Tab.Cards && IsEditing)
     {
@@ -240,9 +284,6 @@
                     <div class="deck-details-cards-edit-header-deck-info__card-count @(TotalCardsInDeck > 20 ? "deck-details-cards-edit-header-deck-info__card-count--over-limit" : null)">
                         @TotalCardsInDeck/20
                     </div>
-                    <button class="deck-details-cards-edit-header-deck-info__filter-button">
-                        
-                    </button>
                 </div>
             </div>
             
@@ -253,10 +294,10 @@
                 }
                 else
                 {
-                    foreach (TCGPCard card in TCGPAllCards)
+                    foreach (TCGPCard card in FilteredTCGPAllCards)
                     {
                         int cardQuantityInDeck = GetCardQuantityInDeck(card);
-                        
+                            
                         <button id="@GetCardElementId(card)"
                                 class="deck-details-cards-edit-card-button" 
                                 @onclick:preventDefault="true"
@@ -272,11 +313,11 @@
                                             @onclick="() => RemoveFromDeck(card)">
                                         <img class="deck-details-cards-edit-card-button-overlay-remove-button__icon" src="img/suggestion-minus-icon.svg" alt="minus icon"/>
                                     </button>
-                                    
+                                        
                                     <div class="deck-details-cards-edit-card-button-overlay-count">
                                         @(cardQuantityInDeck)/2
                                     </div>
-                                    
+                                        
                                     <div class="deck-details-cards-edit-card-button-overlay-controls">
                                         <button class="deck-details-cards-edit-card-button-overlay-controls-btn" 
                                                 @onclick:preventDefault="true"
@@ -297,10 +338,121 @@
                     }
                 }
             </div>
-            
+                
+            <button class="order-fab" @onclick="OpenOrder">
+                <img src="img/order-icon.svg" alt="order"/>
+            </button>
+            <button class="filter-fab" @onclick="OpenFilter">
+                <img src="img/filter-icon.svg" alt="filter"/>
+            </button>
+                
             <button class="deck-details-cards-edit-cards-ok-button" @onclick="ExitEditMode">
                 OK
             </button>
+            
+            @if (IsOrderOpen)
+            {
+                <div class="filter-modal__overlay" @onclick="CloseOrder">
+                    <div class="filter-modal" @onclick:stopPropagation>
+                        <div class="filter-modal__header">
+                            <h3>@Localizer.Localize("component.cardOrder.header.title", "Order decks")</h3>
+                            <button class="filter-modal__close" @onclick="CloseOrder">
+                                <img src="img/close-icon.svg" alt="close"/>
+                            </button>
+                        </div>
+                        <div class="filter-modal__section">
+                            <div class="filter-order-list">
+                                @foreach (OrderOption order in OrderOptions)
+                                {
+                                    bool selected = IsOrderSelected(order.Key);
+                                    <div class="filter-order-item @(selected ? "filter-order-item--toggled" : null)">
+                                        <button class="filter-order-item__btn" @onclick="() => SelectOrder(order.Key)">
+                                            <span class="filter-order-item__label">@order.Label</span>
+                                        </button>
+                                        <button class="filter-order-item__dir @(!selected ? "filter-order-item__dir--hideed" : null)" title="Asc/Desc" @onclick="() => ToggleOrderDirection(order.Key)" @onclick:stopPropagation="true">
+                                            <img class="filter-order-item__dir-icon @(AscInput ? "filter-order-item__dir-icon--asc" : null)" src="img/order-downArrow-icon.svg" alt="asc/desc"/>
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="filter-modal-footer">
+                            <button class="filter-modal-footer__close" @onclick="ApplyOrder">
+                                <img src="img/close-icon.svg" alt="close"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (IsFilterOpen)
+            {
+                <div class="filter-modal__overlay" @onclick="CloseFilter">
+                    <div class="filter-modal" @onclick:stopPropagation>
+                        <div class="filter-modal__header">
+                            <h3>@Localizer.Localize("component.cardFilter.header.title", "Filter decks")</h3>
+                            <button class="filter-modal__close" @onclick="CloseFilter">
+                                <img src="img/close-icon.svg" alt="close"/>
+                            </button>
+                        </div>
+
+                        <div class="filter-modal__section" style="position: relative">
+                            <input class="filter-input" placeholder="@Localizer.Localize("component.cardFilter.search.placeholder", "Search by name, code, or author")" @bind="SearchInput" />
+                            <div class="filter-input__icon">
+                                <img src="img/search-icon.svg" alt="search"/>
+                            </div>
+                        </div>
+
+                        <div class="filter-modal__section">
+                            <label class="filter-modal__section__title">Types</label>
+                            <div class="filter-tags">
+                                @foreach (string name in AllTypeNames)
+                                {
+                                    bool checkedVal = SelectedTypeNames.Contains(name);
+                                    <label class="filter-tag">
+                                        <input type="checkbox" checked="@checkedVal" @onclick="@(() => ToggleTypeName(name))" />
+                                        <span class="filter-tag__name">@name</span>
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="filter-modal__section">
+                            <label class="filter-modal__section__title">Types Pokémon</label>
+                            <div class="filter-tags">
+                                @foreach (string name in AllPokemonTypeNames)
+                                {
+                                    bool checkedVal = SelectedPokemonTypeNames.Contains(name);
+                                    <label class="filter-tag">
+                                        <input type="checkbox" checked="@checkedVal" @onclick="@(() => TogglePokemonTypeName(name))" />
+                                        <span class="filter-tag__name">@name</span>
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="filter-modal__section">
+                            <label class="filter-modal__section__title">Collections</label>
+                            <div class="filter-tags">
+                                @foreach (string collectionCode in AllCollectionCodes)
+                                {
+                                    bool checkedVal = SelectedCollectionCodes.Contains(collectionCode);
+                                    <label class="filter-tag">
+                                        <input type="checkbox" checked="@checkedVal" @onclick="@(() => ToggleCollectionCode(collectionCode))" />
+                                        <span class="filter-tag__name">@collectionCode</span>
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="filter-modal-footer">
+                            <button class="filter-modal-footer__close" @onclick="ApplyFilter">
+                                <img src="img/close-icon.svg" alt="close"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     }
     

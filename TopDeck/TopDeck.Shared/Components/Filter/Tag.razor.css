@@ -1,0 +1,39 @@
+﻿.tag {
+    background: var(--color-text-very-light);
+    box-shadow: var(--drop-shadow-s);
+    
+    border: none;
+    border-radius: var(--radius-s);
+    
+    padding: 4px 12px;
+    box-sizing: border-box;
+
+    font-size: 0.5em;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    cursor: var(--cursor-default);
+    user-select: none;
+}
+
+    .tag__text {
+        font-family: var(--font-bold), sans-serif;
+    
+        flex-grow: 1;
+        text-align: center;
+    
+        white-space: nowrap;
+    
+        color: var(--color-text);
+    }
+
+
+
+@media (min-width: 1366px) {
+    .tag {
+        font-size: 0.7em;
+    }
+}
