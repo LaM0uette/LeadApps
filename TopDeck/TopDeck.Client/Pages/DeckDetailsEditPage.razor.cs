@@ -31,6 +31,17 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     private const int MAX_CARDS_DURING_BUILD_DECK = 30;
     private const int MAX_HIGHLIGHT_CARDS = 3;
     
+    protected sealed class OrderOption
+    {
+        public string Key { get; }
+        public string Label { get; }
+        public OrderOption(string key, string label)
+        {
+            Key = key;
+            Label = label;
+        }
+    }
+    
     protected readonly Dictionary<int, string> EnergyTypes = new()
     {
         { 1, "Grass" },
@@ -64,6 +75,14 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     protected string? SearchInput { get; set; }
     protected string? OrderByInput { get; set; } = "collectionCode"; // name | collectionCode | typeName
     protected bool AscInput { get; set; } = true; // default A-Z
+
+    // Order options (single-select)
+    protected readonly List<OrderOption> OrderOptions =
+    [
+        new("name", "Nom"),
+        new("collectionCode", "Code collection"),
+        new("typeName", "Type")
+    ];
     protected List<string> AllTypeNames { get; private set; } = [];
     protected List<string> AllCollectionCodes { get; private set; } = [];
     protected List<string> AllPokemonTypeNames { get; private set; } = [];
@@ -285,6 +304,31 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     {
         OrderByInput = "collectionCode";
         AscInput = true; // A-Z by default
+        ApplyTCGPCardsFilter();
+    }
+
+    protected bool IsOrderSelected(string key) => string.Equals(OrderByInput, key, StringComparison.OrdinalIgnoreCase);
+
+    protected void SelectOrder(string key)
+    {
+        // Selecting the same order keeps AscInput as is; selecting a new order resets to ascending by default
+        if (!IsOrderSelected(key))
+        {
+            OrderByInput = key;
+            AscInput = true;
+            ApplyTCGPCardsFilter();
+        }
+    }
+
+    protected void ToggleOrderDirection(string key)
+    {
+        // If toggling direction on a non-selected order, select it first and default to ascending, then flip
+        if (!IsOrderSelected(key))
+        {
+            OrderByInput = key;
+            AscInput = true;
+        }
+        AscInput = !AscInput;
         ApplyTCGPCardsFilter();
     }
 

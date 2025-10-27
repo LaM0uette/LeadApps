@@ -425,15 +425,19 @@
                         </div>
                         <div class="filter-modal__section">
                             <label>Tri</label>
-                            <div class="filter-order">
-                                <select class="filter-select" @bind="OrderByInput">
-                                    <option value="name">Nom</option>
-                                    <option value="collectionCode">Code collection</option>
-                                    <option value="typeName">Type</option>
-                                </select>
-                                <label class="filter-order__asc">
-                                    <input type="checkbox" @bind="AscInput" /> Ascendant (décocher pour Z–A)
-                                </label>
+                            <div class="filter-order-list">
+                                @foreach (var order in OrderOptions)
+                                {
+                                    var selected = IsOrderSelected(order.Key);
+                                    <div class="filter-order-item @(selected ? "filter-order-item--toggled" : null)">
+                                        <button class="filter-order-item__btn" @onclick="() => SelectOrder(order.Key)">
+                                            <span class="filter-order-item__label">@order.Label</span>
+                                        </button>
+                                        <button class="filter-order-item__dir" title="Asc/Desc" @onclick="() => ToggleOrderDirection(order.Key)" @onclick:stopPropagation="true">
+                                            <img class="filter-order-item__dir-icon @(selected && AscInput ? "filter-order-item__dir-icon--asc" : null)" src="img/order-downArrow-icon.svg" alt="asc/desc"/>
+                                        </button>
+                                    </div>
+                                }
                             </div>
                         </div>
                         <div class="filter-modal__footer">
