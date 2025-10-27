@@ -294,6 +294,10 @@
         padding: 20px 20% 80px 20%;
         gap: 40px;
     }
+
+    .filter-modal {
+        width: 25%;
+    }
 }
 
 @media (min-width: 2048px) {

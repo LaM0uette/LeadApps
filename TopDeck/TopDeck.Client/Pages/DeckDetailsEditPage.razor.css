@@ -1135,6 +1135,10 @@
         margin-top: 10px;
         max-height: calc(2 * 1.3em + 5px);
     }
+
+    .filter-modal {
+        width: 25%;
+    }
 }
 
 @media (min-width: 2048px) {

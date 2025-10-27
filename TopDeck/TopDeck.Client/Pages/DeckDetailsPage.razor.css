@@ -1210,6 +1210,10 @@
         
         max-height: calc(2 * 1.3em + 29px);
     }
+
+    .filter-modal {
+        width: 25%;
+    }
 }
 
 @media (min-width: 2048px) {
