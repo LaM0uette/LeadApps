@@ -4,6 +4,7 @@ using TCGPCardRequester;
 using TopDeck.Contracts.DTO;
 using TopDeck.Domain.Models;
 using TopDeck.Shared.Components;
+using TopDeck.Shared.Models;
 using TopDeck.Shared.Models.TCGP;
 using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore.States.AuthenticatedUser;
@@ -37,16 +38,6 @@ public class DeckDetailsPagePresenter : PresenterBase
     private const int MAX_CARDS_DURING_BUILD_DECK = 30;
     private const int MAX_HIGHLIGHT_CARDS = 3;
 
-    protected sealed class OrderOption
-    {
-        public string Key { get; }
-        public string Label { get; }
-        public OrderOption(string key, string label)
-        {
-            Key = key;
-            Label = label;
-        }
-    }
 
     [Parameter, EditorRequired] public required string DeckCode { get; set; }
 
@@ -483,22 +474,22 @@ public class DeckDetailsPagePresenter : PresenterBase
 
     protected void SelectOrder(string key)
     {
-        // Selecting the same order keeps AscInput as is; selecting a new order resets to ascending by default
         if (!IsOrderSelected(key))
         {
             OrderByInput = key;
-            AscInput = true;
+            var option = OrderOptions.FirstOrDefault(o => string.Equals(o.Key, key, StringComparison.OrdinalIgnoreCase));
+            AscInput = option?.DefaultAsc ?? true;
             ApplyTCGPCardsFilter();
         }
     }
 
     protected void ToggleOrderDirection(string key)
     {
-        // If toggling direction on a non-selected order, select it first and default to ascending, then flip
         if (!IsOrderSelected(key))
         {
             OrderByInput = key;
-            AscInput = true;
+            var option = OrderOptions.FirstOrDefault(o => string.Equals(o.Key, key, StringComparison.OrdinalIgnoreCase));
+            AscInput = option?.DefaultAsc ?? true;
         }
         AscInput = !AscInput;
         ApplyTCGPCardsFilter();

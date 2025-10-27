@@ -1,4 +1,5 @@
 ﻿@page "/decks"
+@using Tag = TopDeck.Domain.Models.Tag
 @inherits DeckItemsPagePresenter
 @attribute [AllowAnonymous]
 
@@ -68,17 +69,16 @@
                     </button>
                 </div>
                 <div class="filter-modal__section">
-                    <label>Tri</label>
                     <div class="filter-order-list">
-                        @foreach (var order in OrderOptions)
+                        @foreach (OrderOption order in OrderOptions)
                         {
-                            var selected = IsOrderSelected(order.Key);
+                            bool selected = IsOrderSelected(order.Key);
                             <div class="filter-order-item @(selected ? "filter-order-item--toggled" : null)">
                                 <button class="filter-order-item__btn" @onclick="() => SelectOrder(order.Key)">
                                     <span class="filter-order-item__label">@order.Label</span>
                                 </button>
-                                <button class="filter-order-item__dir" title="Asc/Desc" @onclick="() => ToggleOrderDirection(order.Key)" @onclick:stopPropagation="true">
-                                    <img class="filter-order-item__dir-icon @(selected && AscInput ? "filter-order-item__dir-icon--asc" : null)" src="img/order-downArrow-icon.svg" alt="asc/desc"/>
+                                <button class="filter-order-item__dir @(!selected ? "filter-order-item__dir--hideed" : null)" title="Asc/Desc" @onclick="() => ToggleOrderDirection(order.Key)" @onclick:stopPropagation="true">
+                                    <img class="filter-order-item__dir-icon @(AscInput ? "filter-order-item__dir-icon--asc" : null)" src="img/order-downArrow-icon.svg" alt="asc/desc"/>
                                 </button>
                             </div>
                         }
@@ -111,9 +111,9 @@
                 <div class="filter-modal__section">
                     <label>Tags (OR)</label>
                     <div class="filter-tags">
-                        @foreach (var tag in AllTags)
+                        @foreach (Tag tag in AllTags)
                         {
-                            var checkedVal = SelectedTagIds.Contains(tag.Id);
+                            bool checkedVal = SelectedTagIds.Contains(tag.Id);
                             <label class="filter-tag">
                                 <input type="checkbox" checked="@checkedVal" @onchange="(_)=>ToggleTag(tag.Id)" />
                                 <span class="filter-tag__name" style="--tag-color:@tag.ColorHex">@tag.Name</span>

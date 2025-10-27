@@ -12,16 +12,6 @@ public class DeckItemsPagePresenter : PresenterBase
 {
     #region Statements
 
-    protected sealed class OrderOption
-    {
-        public string Key { get; }
-        public string Label { get; }
-        public OrderOption(string key, string label)
-        {
-            Key = key;
-            Label = label;
-        }
-    }
     
     private const int MAX_PAGE_SIZE = 100;
     private const int DEFAULT_PAGE_SIZE = 40;
@@ -62,10 +52,10 @@ public class DeckItemsPagePresenter : PresenterBase
     // Order options (single-select)
     protected readonly List<OrderOption> OrderOptions =
     [
-        new("updatedAt", "Mis à jour"),
-        new("name", "Nom"),
-        new("createdAt", "Créé le"),
-        new("likes", "Likes")
+        new("updatedAt", "Mis à jour", defaultAsc: false),
+        new("name", "Nom", defaultAsc: true),
+        new("createdAt", "Créé le", defaultAsc: false),
+        new("likes", "Likes", defaultAsc: true)
     ];
     
     protected override async Task OnParametersSetAsync()
@@ -298,30 +288,31 @@ public class DeckItemsPagePresenter : PresenterBase
 
     protected void ResetOrder()
     {
-        // Reset to default sorting: updatedAt desc
-        OrderByInput = "updatedAt";
-        AscInput = false;
+        // Reset to default sorting based on option defaults
+        var option = OrderOptions.FirstOrDefault(o => string.Equals(o.Key, "updatedAt", StringComparison.OrdinalIgnoreCase));
+        OrderByInput = option?.Key ?? "updatedAt";
+        AscInput = option?.DefaultAsc ?? false; // updatedAt defaults to desc
     }
 
     protected bool IsOrderSelected(string key) => string.Equals(OrderByInput, key, StringComparison.OrdinalIgnoreCase);
 
     protected void SelectOrder(string key)
     {
-        // Selecting the same order keeps AscInput as is; selecting a new order resets to descending by default
         if (!IsOrderSelected(key))
         {
             OrderByInput = key;
-            AscInput = false;
+            var option = OrderOptions.FirstOrDefault(o => string.Equals(o.Key, key, StringComparison.OrdinalIgnoreCase));
+            AscInput = option?.DefaultAsc ?? true;
         }
     }
 
     protected void ToggleOrderDirection(string key)
     {
-        // If toggling direction on a non-selected order, select it first and default to descending, then flip
         if (!IsOrderSelected(key))
         {
             OrderByInput = key;
-            AscInput = false;
+            var option = OrderOptions.FirstOrDefault(o => string.Equals(o.Key, key, StringComparison.OrdinalIgnoreCase));
+            AscInput = option?.DefaultAsc ?? true;
         }
         AscInput = !AscInput;
     }

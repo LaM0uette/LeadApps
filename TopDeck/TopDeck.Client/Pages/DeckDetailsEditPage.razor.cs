@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using TCGPCardRequester;
 using TopDeck.Contracts.DTO;
 using TopDeck.Shared.Components;
+using TopDeck.Shared.Models;
 using TopDeck.Shared.Models.TCGP;
 using TopDeck.Shared.Services;
 using TopDeck.Shared.UIStore.States.AuthenticatedUser;
@@ -31,16 +32,6 @@ public class DeckDetailsEditPagePresenter : PresenterBase
     private const int MAX_CARDS_DURING_BUILD_DECK = 30;
     private const int MAX_HIGHLIGHT_CARDS = 3;
     
-    protected sealed class OrderOption
-    {
-        public string Key { get; }
-        public string Label { get; }
-        public OrderOption(string key, string label)
-        {
-            Key = key;
-            Label = label;
-        }
-    }
     
     protected readonly Dictionary<int, string> EnergyTypes = new()
     {

@@ -347,6 +347,41 @@ else
                         @Localizer.Localize("page.deckDetailEdit.saveButton.text", "Save")
                     </button>
                 </div>
+                
+                @if (IsOrderOpen)
+                {
+                    <div class="filter-modal__overlay" @onclick="CloseOrder">
+                        <div class="filter-modal" @onclick:stopPropagation>
+                            <div class="filter-modal__header">
+                                <h3>@Localizer.Localize("component.deckOrder.header.title", "Order decks")</h3>
+                                <button class="filter-modal__close" @onclick="CloseOrder">
+                                    <img src="img/close-icon.svg" alt="close"/>
+                                </button>
+                            </div>
+                            <div class="filter-modal__section">
+                                <div class="filter-order-list">
+                                    @foreach (OrderOption order in OrderOptions)
+                                    {
+                                        bool selected = IsOrderSelected(order.Key);
+                                        <div class="filter-order-item @(selected ? "filter-order-item--toggled" : null)">
+                                            <button class="filter-order-item__btn" @onclick="() => SelectOrder(order.Key)">
+                                                <span class="filter-order-item__label">@order.Label</span>
+                                            </button>
+                                            <button class="filter-order-item__dir @(!selected ? "filter-order-item__dir--hideed" : null)" title="Asc/Desc" @onclick="() => ToggleOrderDirection(order.Key)" @onclick:stopPropagation="true">
+                                                <img class="filter-order-item__dir-icon @(AscInput ? "filter-order-item__dir-icon--asc" : null)" src="img/order-downArrow-icon.svg" alt="asc/desc"/>
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="filter-modal-footer">
+                                <button class="filter-modal-footer__close" @onclick="ApplyOrder">
+                                    <img src="img/close-icon.svg" alt="close"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
 
                 @if (IsFilterOpen)
                 {
@@ -408,40 +443,6 @@ else
                                 <button class="btn btn--ghost" @onclick="ResetFilter">Réinitialiser</button>
                                 <span class="spacer"></span>
                                 <button class="btn btn--primary" @onclick="ApplyFilter">Appliquer</button>
-                            </div>
-                        </div>
-                    </div>
-                }
-                
-                @if (IsOrderOpen)
-                {
-                    <div class="filter-modal__overlay" @onclick="CloseOrder">
-                        <div class="filter-modal" @onclick:stopPropagation>
-                            <div class="filter-modal__header">
-                                <h3>Trier les cartes</h3>
-                                <button class="filter-modal__close" @onclick="CloseOrder">✕</button>
-                            </div>
-                            <div class="filter-modal__section">
-                                <label>Tri</label>
-                                <div class="filter-order-list">
-                                    @foreach (var order in OrderOptions)
-                                    {
-                                        var selected = IsOrderSelected(order.Key);
-                                        <div class="filter-order-item @(selected ? "filter-order-item--toggled" : null)">
-                                            <button class="filter-order-item__btn" @onclick="() => SelectOrder(order.Key)">
-                                                <span class="filter-order-item__label">@order.Label</span>
-                                            </button>
-                                            <button class="filter-order-item__dir" title="Asc/Desc" @onclick="() => ToggleOrderDirection(order.Key)" @onclick:stopPropagation="true">
-                                                <img class="filter-order-item__dir-icon @(selected && AscInput ? "filter-order-item__dir-icon--asc" : null)" src="img/order-downArrow-icon.svg" alt="asc/desc"/>
-                                            </button>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                            <div class="filter-modal__footer">
-                                <button class="btn btn--ghost" @onclick="ResetOrder">Réinitialiser</button>
-                                <span class="spacer"></span>
-                                <button class="btn btn--primary" @onclick="ApplyOrder">Appliquer</button>
                             </div>
                         </div>
                     </div>
