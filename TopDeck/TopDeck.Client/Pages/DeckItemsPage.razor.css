@@ -83,46 +83,40 @@
 }
     
     
-@media (min-width: 1366px) {
-    .deck-items {
-        padding: 20px 20% 80px 20%;
-        gap: 40px;
-    }
-}
 
-@media (min-width: 2048px) {
-    .deck-items {
-        padding: 20px 28% 80px 28%;
-    }
-}
 
-/* Floating action buttons (Order above Filter) */
-.order-fab, .filter-fab {
+.order-fab, 
+.filter-fab {
     position: fixed;
     right: 20px;
     width: 56px;
     height: 56px;
     border-radius: 50%;
     border: none;
-    background: var(--color-primary, #1e88e5);
-    color: #fff;
-    font-size: 22px;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+    background: var(--color-bg);
+    box-shadow: var(--shadow-m);
+
+    outline: 1px solid var(--color-outline);
+    
     cursor: var(--cursor-pointer);
     z-index: 5;
 }
+    .order-fab { bottom: 86px; }
+    .order-fab:hover { opacity: 0.9; }
+    .order-fab:active { opacity: 0.8; }
 
-/* Filter button at the very bottom-right */
-.filter-fab { bottom: 20px; }
-.filter-fab:hover { opacity: 0.9; }
-.filter-fab:active { opacity: 0.8; }
+    .filter-fab { bottom: 20px; }
+    .filter-fab:hover { opacity: 0.9; }
+    .filter-fab:active { opacity: 0.8; }
 
-/* Order button stacked above the filter button */
-.order-fab { bottom: 86px; }
-.order-fab:hover { opacity: 0.9; }
-.order-fab:active { opacity: 0.8; }
+.order-fab img,
+.filter-fab img{
+    width: 75%;
+    height: 75%;
+}
 
-/* Filter modal */
+
+
 .filter-modal__overlay {
     position: fixed;
     inset: 0;
@@ -216,3 +210,20 @@
 }
 .btn--primary { background: var(--color-primary, #1e88e5); color: #fff; }
 .btn--ghost { background: transparent; border-color: #ddd; }
+
+
+
+
+
+@media (min-width: 1366px) {
+    .deck-items {
+        padding: 20px 20% 80px 20%;
+        gap: 40px;
+    }
+}
+
+@media (min-width: 2048px) {
+    .deck-items {
+        padding: 20px 28% 80px 28%;
+    }
+}

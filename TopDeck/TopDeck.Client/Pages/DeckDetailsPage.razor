@@ -331,8 +331,12 @@ else
                     }
                 </div>
                 
-                <button class="order-fab" @onclick="OpenOrder" title="Trier">⇅</button>
-                <button class="filter-fab" @onclick="OpenFilter" title="Filtrer">🔎</button>
+                <button class="order-fab" @onclick="OpenOrder">
+                    <img src="img/order-icon.svg" alt="order"/>
+                </button>
+                <button class="filter-fab" @onclick="OpenFilter">
+                    <img src="img/filter-icon.svg" alt="filter"/>
+                </button>
                 
                 <div class="deck-details-cards-edit-cards-buttons-container">
                     <button class="deck-details-cards-edit-cards-cancel-button" @onclick="Cancel">
@@ -408,6 +412,7 @@ else
                         </div>
                     </div>
                 }
+                
                 @if (IsOrderOpen)
                 {
                     <div class="filter-modal__overlay" @onclick="CloseOrder">
