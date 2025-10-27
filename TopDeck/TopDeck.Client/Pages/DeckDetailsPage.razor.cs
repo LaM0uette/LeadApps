@@ -368,6 +368,25 @@ public class DeckDetailsPagePresenter : PresenterBase
         return _collectionOrder.TryGetValue(code, out int idx) ? idx : int.MaxValue;
     }
 
+    private static readonly Dictionary<string, int> _pokemonTypeOrder = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Grass"] = 1,
+        ["Fire"] = 2,
+        ["Water"] = 3,
+        ["Lightning"] = 4,
+        ["Psychic"] = 5,
+        ["Fighting"] = 6,
+        ["Darkness"] = 7,
+        ["Metal"] = 8,
+        ["Dragon"] = 9,
+        ["Colorless"] = 10
+    };
+
+    private static int GetPokemonTypeIndex(string typeName)
+    {
+        return _pokemonTypeOrder.TryGetValue(typeName, out int idx) ? idx : int.MaxValue;
+    }
+
     private void ApplyTCGPCardsFilter()
     {
         IEnumerable<TCGPCard> query = TCGPAllCards;
@@ -400,9 +419,26 @@ public class DeckDetailsPagePresenter : PresenterBase
                     : query.OrderByDescending(c => GetCollectionIndex(c.Collection.Code)).ThenByDescending(c => c.CollectionNumber).ThenByDescending(c => c.Name);
                 break;
             case "typename":
-                query = asc
-                    ? query.OrderBy(c => c.Type.Name).ThenBy(c => c.Name)
-                    : query.OrderByDescending(c => c.Type.Name).ThenByDescending(c => c.Name);
+                if (asc)
+                {
+                    // Ascending: Pokémon first, then by Pokémon type index (custom order),
+                    // non‑Pokémon ordered by their card type name; tie‑breaker by card name
+                    query = query
+                        .OrderBy(c => c is not TCGPPokemonCard ? 1 : 0)
+                        .ThenBy(c => c is TCGPPokemonCard p ? GetPokemonTypeIndex(p.PokemonType.Name) : int.MaxValue)
+                        .ThenBy(c => c is TCGPPokemonCard ? string.Empty : c.Type.Name)
+                        .ThenBy(c => c.Name);
+                }
+                else
+                {
+                    // Descending: non‑Pokémon first; Pokémon ordered by descending type index,
+                    // non‑Pokémon by type name descending; tie‑breaker by name desc
+                    query = query
+                        .OrderBy(c => c is not TCGPPokemonCard ? 0 : 1)
+                        .ThenByDescending(c => c is TCGPPokemonCard p ? GetPokemonTypeIndex(p.PokemonType.Name) : int.MinValue)
+                        .ThenByDescending(c => c is TCGPPokemonCard ? string.Empty : c.Type.Name)
+                        .ThenByDescending(c => c.Name);
+                }
                 break;
             case "name":
             default:
