@@ -116,7 +116,6 @@
 }
 
 
-
 .filter-modal__overlay {
     position: fixed;
     inset: 0;
@@ -128,32 +127,39 @@
 }
 
 .filter-modal {
-    width: min(700px, 92%);
+    width: min(80%, 92%);
     max-height: 80vh;
     overflow: auto;
-    background: #fff;
-    border-radius: 12px;
+    background: var(--color-bg);
+    border-radius: var(--radius-l);
     padding: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    box-shadow: var(--shadow-l);
 }
+    .filter-modal__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 40px;
+        
+        font-family: var(--font-bold), sans-serif;
+        font-size: 1.2rem;
+    }
+    
+    .filter-modal__close {
+        border: none;
+        background: transparent;
+        
+        cursor: var(--cursor-pointer);
+    }
+        .filter-modal__close img {
+            width: 20px;
+            height: 20px;
+        }
+    
+    .filter-modal__section {
+        margin: 14px 0;
+    }
 
-.filter-modal__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.filter-modal__close {
-    border: none;
-    background: transparent;
-    font-size: 20px;
-    cursor: var(--cursor-pointer);
-}
-
-.filter-modal__section { 
-    margin: 14px 0; 
-}
 
 .filter-input, .filter-select {
     width: 100%;
@@ -193,23 +199,37 @@
 
 .filter-order__asc { display: inline-flex; align-items: center; gap: 6px; }
 
-.filter-modal__footer {
+
+.filter-modal-footer {
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
-    margin-top: 10px;
+    
+    margin-top: 30px;
 }
 
-.filter-modal__footer .spacer { flex: 1 1 auto; }
+    .filter-modal-footer__close {
+        width: 42px;
+        height: 42px;
 
-.btn { 
-    padding: 8px 14px; 
-    border-radius: 8px; 
-    border: 1px solid transparent; 
-    cursor: var(--cursor-pointer); 
-}
-.btn--primary { background: var(--color-primary, #1e88e5); color: #fff; }
-.btn--ghost { background: transparent; border-color: #ddd; }
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        border-radius: 50%; 
+        border: none; 
+        outline: 1px solid var(--color-outline); 
+        background: var(--color-bg);
+        
+        box-shadow: var(--shadow-m);
+        
+        cursor: var(--cursor-pointer); 
+    }
+
+        .filter-modal-footer__close img {
+            width: 20px;
+            height: 20px;
+        }
 
 
 

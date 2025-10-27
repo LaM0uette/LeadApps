@@ -12,6 +12,8 @@
   "component.pageButton.next.text": "Suivant",
   "component.loadingWheel.text": "Chargement…",
   "component.titlePanel.placeholder": "Nom du deck",
+  "component.deckOrder.header.title": "Trier les decks",
+  "component.deckFilter.header.title": "Filtrer les decks",
   "feedback.text.copied": "Copié",
   "feedback.text.notFound": "Introuvable",
   "page.deckDetail.noSuggestions.text": "Aucune suggestion disponible pour ce deck.",

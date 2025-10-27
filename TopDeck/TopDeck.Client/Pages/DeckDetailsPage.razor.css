@@ -1069,33 +1069,33 @@
 }
 
 .filter-modal {
-    width: min(700px, 92%);
+    width: min(80%, 92%);
     max-height: 80vh;
     overflow: auto;
-    background: #fff;
-    border-radius: 12px;
+    background: var(--color-bg);
+    border-radius: var(--radius-l);
     padding: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    box-shadow: var(--shadow-l);
 }
+    .filter-modal__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    
+    .filter-modal__close {
+        border: none;
+        background: transparent;
+        font-size: 20px;
+        cursor: var(--cursor-pointer);
+    }
+    
+    .filter-modal__section { 
+        margin: 14px 0; 
+    }
 
-.filter-modal__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.filter-modal__close {
-    border: none;
-    background: transparent;
-    font-size: 20px;
-    cursor: var(--cursor-pointer);
-}
-
-.filter-modal__section { 
-    margin: 14px 0; 
-}
-
+    
 .filter-input, .filter-select {
     width: 100%;
     padding: 8px 10px;
