@@ -10,7 +10,7 @@ public static class UsersEndpoints
 
     public static IEndpointRouteBuilder MapUserEndpoints(this IEndpointRouteBuilder app)
     {
-        RouteGroupBuilder group = app.MapGroup("/api/users");
+        RouteGroupBuilder group = app.MapGroup("/users");
 
         group.MapPost("oauth", GetByOAuthAsync);
         group.MapPost("uuid/{uuid:guid}", GetByUuidAsync);
@@ -40,7 +40,7 @@ public static class UsersEndpoints
     private static async Task<IResult> CreateAsync([FromServices] IUserService service, [FromBody] UserInputDTO dto, CancellationToken ct)
     {
         UserOutputDTO created = await service.CreateAsync(dto, ct);
-        return Results.Created($"/api/users/{created.Id}", created);
+        return Results.Created($"/users/{created.Id}", created);
     }
 
     private static async Task<IResult> UpdateAsync([FromServices] IUserService service, int id, [FromBody] UserInputDTO dto, CancellationToken ct)

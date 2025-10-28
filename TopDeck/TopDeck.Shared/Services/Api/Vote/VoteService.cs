@@ -6,7 +6,7 @@ public class VoteService : ApiService, IVoteService
 {
     #region Statements
 
-    private const string _route = "api/vote";
+    private const string _route = "vote";
 
     #endregion
 

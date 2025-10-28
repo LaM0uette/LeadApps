@@ -8,7 +8,7 @@ public class UserService : ApiService, IUserService
 {
     #region Statements
 
-    private const string _route = "/api/users";
+    private const string _route = "/users";
 
     #endregion
 

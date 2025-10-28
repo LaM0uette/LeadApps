@@ -11,7 +11,7 @@ public static class DeckItemEndpoints
 
     public static IEndpointRouteBuilder MapDeckItemEndpoints(this IEndpointRouteBuilder app)
     {
-        RouteGroupBuilder group = app.MapGroup("/api/deckItems");
+        RouteGroupBuilder group = app.MapGroup("/deckItems");
 
         group.MapPost("page", GetPageAsync);
         group.MapGet("count", GetCountAsync);
@@ -56,7 +56,7 @@ public static class DeckItemEndpoints
         try
         {
             DeckItemOutputDTO created = await service.CreateAsync(dto, ct);
-            return Results.Created($"/api/decks/{created.Id}", created);
+            return Results.Created($"/decks/{created.Id}", created);
         }
         catch (InvalidOperationException ex)
         {

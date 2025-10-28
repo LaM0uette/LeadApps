@@ -11,7 +11,7 @@ public static class TagsEndpoints
 {
     public static IEndpointRouteBuilder MapTagsEndpoints(this IEndpointRouteBuilder app)
     {
-        RouteGroupBuilder group = app.MapGroup("/api/tags");
+        RouteGroupBuilder group = app.MapGroup("/tags");
 
         group.MapGet(string.Empty, GetAllAsync);
 

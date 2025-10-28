@@ -6,7 +6,7 @@ namespace TopDeck.Shared.Services;
 
 public class TagService : ApiService, ITagService
 {
-    private const string _route = "/api/tags";
+    private const string _route = "/tags";
 
     public async Task<IReadOnlyList<Tag>> GetAllAsync(CancellationToken ct = default)
     {

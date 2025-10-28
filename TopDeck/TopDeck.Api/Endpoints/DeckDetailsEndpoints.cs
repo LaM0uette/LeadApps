@@ -10,7 +10,7 @@ public static class DeckDetailsEndpoints
 
     public static IEndpointRouteBuilder MapDeckDetailsEndpoints(this IEndpointRouteBuilder app)
     {
-        RouteGroupBuilder group = app.MapGroup("/api/deckDetails");
+        RouteGroupBuilder group = app.MapGroup("/deckDetails");
 
         group.MapGet("{code}", GetByCodeAsync);
         
@@ -36,7 +36,7 @@ public static class DeckDetailsEndpoints
         try
         {
             DeckDetailsSuggestionOutputDTO created = await service.CreateSuggestionAsync(dto, ct);
-            return Results.Created($"/api/deckDetails/suggestions/{created.Id}", created);
+            return Results.Created($"/deckDetails/suggestions/{created.Id}", created);
         }
         catch (InvalidOperationException ex)
         {

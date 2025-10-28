@@ -60,7 +60,7 @@ builder.Services
                 HttpClient http = factory.CreateClient("Api");
 
                 UserInputDTO dto = new(provider, authId, userName);
-                await http.PostAsJsonAsync("api/users", dto, context.HttpContext.RequestAborted);
+                await http.PostAsJsonAsync("users", dto, context.HttpContext.RequestAborted);
             }
         };
     });

@@ -8,7 +8,7 @@ public class DeckItemService : ApiService, IDeckItemService
 {
     #region Statements
 
-    private const string _route = "/api/deckItems";
+    private const string _route = "/deckItems";
 
     #endregion
 

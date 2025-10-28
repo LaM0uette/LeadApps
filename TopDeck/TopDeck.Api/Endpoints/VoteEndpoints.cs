@@ -10,7 +10,7 @@ public static class VoteEndpoints
 
     public static IEndpointRouteBuilder MapVoteEndpoints(this IEndpointRouteBuilder app)
     {
-        RouteGroupBuilder group = app.MapGroup("/api/vote");
+        RouteGroupBuilder group = app.MapGroup("/vote");
 
         group.MapPost("deck", VoteDeckAsync);
         group.MapPost("deckSuggestion", VoteDeckSuggestionAsync);
