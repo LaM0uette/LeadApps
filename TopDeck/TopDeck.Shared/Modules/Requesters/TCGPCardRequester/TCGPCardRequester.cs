@@ -10,16 +10,16 @@ namespace TCGPCardRequester;
 public class TCGPCardRequester : ITCGPCardRequester
 {
     #region Statements
-
-    private readonly HttpClient _http = new()
-    {
-        BaseAddress = new Uri("https://localhost:7057/"),
-        Timeout = TimeSpan.FromSeconds(30)
-    };
     
+    private readonly HttpClient _http;
     private readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
-    
     private readonly Dictionary<int, TCGPCard> _cache = new();
+    
+    public TCGPCardRequester(HttpClient http)
+    {
+        _http = http;
+        _http.Timeout = TimeSpan.FromSeconds(30);
+    }
 
     #endregion
 

@@ -7,6 +7,8 @@ public class VoteService : ApiService, IVoteService
     #region Statements
 
     private const string _route = "vote";
+    
+    public VoteService(HttpClient http) : base(http) { }
 
     #endregion
 

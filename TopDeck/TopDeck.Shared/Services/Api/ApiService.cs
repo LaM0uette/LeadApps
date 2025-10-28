@@ -10,13 +10,10 @@ public abstract class ApiService
     private readonly HttpClient _http;
     private readonly JsonSerializerOptions _jsonOptions;
 
-    protected ApiService(string? baseUrl = null)
+    protected ApiService(HttpClient http)
     {
-        _http = new HttpClient
-        {
-            BaseAddress = new Uri(baseUrl ?? "https://localhost:7095/"),
-            Timeout = TimeSpan.FromSeconds(30)
-        };
+        _http = http;
+        _http.Timeout = TimeSpan.FromSeconds(30);
 
         _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }

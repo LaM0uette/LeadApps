@@ -10,6 +10,8 @@ public class UserService : ApiService, IUserService
 
     private const string _route = "/users";
 
+    public UserService(HttpClient http) : base(http) { }
+
     #endregion
 
     #region ApiService

@@ -9,6 +9,8 @@ public class DeckDetailsService : ApiService, IDeckDetailsService
     #region Statements
 
     private const string _route = "/deckDetails";
+    
+    public DeckDetailsService(HttpClient http) : base(http) { }
 
     #endregion
 
