@@ -101,7 +101,7 @@ else
                     }
                     else
                     {
-                        foreach (TCGPCard card in TCGPCards)
+                        foreach (TCGPCard card in SortCards(TCGPCards))
                         {
                             <img class="deck-details-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
                         }
@@ -117,7 +117,7 @@ else
                     }
                     else
                     {
-                        foreach (TCGPCard card in TCGPCards)
+                        foreach (TCGPCard card in SortCards(TCGPCards))
                         {
                             <img class="deck-details-overview__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
                         }

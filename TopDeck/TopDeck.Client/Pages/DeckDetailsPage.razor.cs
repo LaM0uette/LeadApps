@@ -54,6 +54,104 @@ public class DeckDetailsPagePresenter : PresenterBase
     private TCGPCard? _selectedCard { get; set; }
     protected int TotalCardsInSuggestion => TCGPSuggestionsCards.Count;
 
+    // Deltas of suggestion by card key ("Code:Number") => net delta in [−2..+2]
+    private readonly Dictionary<string, int> _suggestionDeltas = new();
+
+    private static string KeyOf(TCGPCard c) => $"{c.Collection.Code}:{c.CollectionNumber}";
+    private static (string code, int num) ParseKey(string k)
+    {
+        var parts = k.Split(':');
+        return (parts[0], int.Parse(parts[1]));
+    }
+
+    private int GetCountInCurrentDeckForKey(string key)
+    {
+        var (code, num) = ParseKey(key);
+        return TCGPCards.Count(c => c.Collection.Code == code && c.CollectionNumber == num);
+    }
+
+    private int ClampDeltaForFeasibility(string key, int delta)
+    {
+        int inDeck = GetCountInCurrentDeckForKey(key);      // 0..2
+        int maxAddFeasible = Math.Max(0, MAX_IDENTICAL_CARDS_IN_DECK - inDeck);
+        int maxRemFeasible = Math.Min(MAX_IDENTICAL_CARDS_IN_DECK, inDeck);
+
+        if (delta > 0) return Math.Min(delta, maxAddFeasible);
+        if (delta < 0) return -Math.Min(-delta, maxRemFeasible);
+        return 0;
+    }
+
+    private void BumpAdd(TCGPCard card)
+    {
+        string k = KeyOf(card);
+        int cur = _suggestionDeltas.TryGetValue(k, out int v) ? v : 0;
+        int next = Math.Min(cur + 1, MAX_IDENTICAL_CARDS_IN_DECK);
+        next = ClampDeltaForFeasibility(k, next);
+        if (next == 0) _suggestionDeltas.Remove(k); else _suggestionDeltas[k] = next;
+        RebuildSuggestionStateFromDeltas();
+    }
+
+    private void BumpRemove(TCGPCard card)
+    {
+        string k = KeyOf(card);
+        int cur = _suggestionDeltas.TryGetValue(k, out int v) ? v : 0;
+        int next = Math.Max(cur - 1, -MAX_IDENTICAL_CARDS_IN_DECK);
+        next = ClampDeltaForFeasibility(k, next);
+        if (next == 0) _suggestionDeltas.Remove(k); else _suggestionDeltas[k] = next;
+        RebuildSuggestionStateFromDeltas();
+    }
+
+    private void SetRemoveAll(TCGPCard card)
+    {
+        string k = KeyOf(card);
+        int inDeck = GetCountInCurrentDeckForKey(k);
+        int next = -Math.Min(inDeck, MAX_IDENTICAL_CARDS_IN_DECK);
+        next = ClampDeltaForFeasibility(k, next);
+        if (next == 0) _suggestionDeltas.Remove(k); else _suggestionDeltas[k] = next;
+        RebuildSuggestionStateFromDeltas();
+    }
+
+    private void RebuildSuggestionStateFromDeltas()
+    {
+        // Start from current deck grouped counts capped at 2
+        var grouped = TCGPCards
+            .GroupBy(c => new { c.Collection.Code, c.CollectionNumber })
+            .ToDictionary(g => $"{g.Key.Code}:{g.Key.CollectionNumber}", g => Math.Min(g.Count(), MAX_IDENTICAL_CARDS_IN_DECK));
+
+        foreach (var kv in _suggestionDeltas)
+        {
+            string k = kv.Key;
+            int d = kv.Value;
+            int cur = grouped.TryGetValue(k, out int v) ? v : 0;
+            int next = cur + d;
+            next = Math.Clamp(next, 0, MAX_IDENTICAL_CARDS_IN_DECK);
+            if (next == 0) grouped.Remove(k); else grouped[k] = next;
+        }
+
+        // Recompose suggestion result list
+        var result = new List<TCGPCard>();
+        foreach (var (k, qty) in grouped.OrderBy(x => x.Key))
+        {
+            var (code, num) = ParseKey(k);
+            var card = TCGPAllCards.FirstOrDefault(x => x.Collection.Code == code && x.CollectionNumber == num);
+            if (card is null) continue;
+            result.AddRange(Enumerable.Repeat(card, qty));
+        }
+        TCGPSuggestionsCards = SortCards(result).ToList();
+
+        // Rebuild Added/Removed display lists from deltas
+        TCGPSuggestionsAddedCards = [];
+        TCGPSuggestionsRemovedCards = [];
+        foreach (var kv in _suggestionDeltas.OrderBy(x => x.Key))
+        {
+            var (code, num) = ParseKey(kv.Key);
+            var card = TCGPAllCards.FirstOrDefault(x => x.Collection.Code == code && x.CollectionNumber == num);
+            if (card is null) continue;
+            if (kv.Value > 0) TCGPSuggestionsAddedCards.AddRange(Enumerable.Repeat(card, kv.Value));
+            if (kv.Value < 0) TCGPSuggestionsRemovedCards.AddRange(Enumerable.Repeat(card, -kv.Value));
+        }
+    }
+
     // Filter popup state for TCGPAllCards (suggestion mode & edit deck if applicable)
     protected bool IsFilterOpen { get; private set; }
     protected bool IsOrderOpen { get; private set; }
@@ -202,6 +300,7 @@ public class DeckDetailsPagePresenter : PresenterBase
         TCGPSuggestionsCards = new List<TCGPCard>(TCGPCards);
         TCGPSuggestionsAddedCards = [];
         TCGPSuggestionsRemovedCards = [];
+        _suggestionDeltas.Clear();
         
         CurrentMode = Mode.AddSuggestion;
     }
@@ -220,45 +319,21 @@ public class DeckDetailsPagePresenter : PresenterBase
     {
         SelectedCardId = null;
         _selectedCard = null;
-        
-        if (TotalCardsInSuggestion >= MAX_CARDS_DURING_BUILD_DECK)
-            return;
-        
-        int existingCountForName = TCGPSuggestionsCards.Count(c => c.Name.Equals(card.Name, StringComparison.OrdinalIgnoreCase));
-        if (existingCountForName >= MAX_IDENTICAL_CARDS_IN_DECK)
-            return;
-
-        TCGPSuggestionsCards.Add(card);
-        TCGPSuggestionsAddedCards.Add(card);
-        TCGPSuggestionsCards = SortCards(TCGPSuggestionsCards).ToList();
-        TCGPSuggestionsAddedCards = SortCards(TCGPSuggestionsAddedCards).ToList();
+        BumpAdd(card);
     }
     
     protected void RemoveOneFromDeck(TCGPCard card)
     {
         SelectedCardId = null;
         _selectedCard = null;
-        
-        int index = TCGPSuggestionsCards.FindIndex(c => c.Collection.Code == card.Collection.Code && c.CollectionNumber == card.CollectionNumber);
-        if (index >= 0)
-        {
-            TCGPSuggestionsCards.RemoveAt(index);
-            TCGPSuggestionsRemovedCards.Add(card);
-        }
+        BumpRemove(card);
     }
     
     protected void RemoveFromDeck(TCGPCard card)
     {
         SelectedCardId = null;
         _selectedCard = null;
-        
-        int existingCount = TCGPSuggestionsCards.Count(c => c.Collection.Code == card.Collection.Code && c.CollectionNumber == card.CollectionNumber);
-        for (int i = 0; i < existingCount; i++)
-        {
-            TCGPSuggestionsRemovedCards.Add(card);
-        }
-        
-        TCGPSuggestionsCards.RemoveAll(c => c.Collection.Code == card.Collection.Code && c.CollectionNumber == card.CollectionNumber);
+        SetRemoveAll(card);
     }
     
     protected void RemoveFromDeckAt(int index)
@@ -266,11 +341,11 @@ public class DeckDetailsPagePresenter : PresenterBase
         if (index < 0 || index >= TCGPSuggestionsCards.Count)
             return;
         
-        TCGPSuggestionsCards.RemoveAt(index);
+        var removed = TCGPSuggestionsCards[index];
+        BumpRemove(removed);
         
         if (SelectedCardId is not null && _selectedCard is not null)
         {
-            TCGPSuggestionsRemovedCards.Add(_selectedCard);
             // clear selection if it no longer matches
             SelectedCardId = null;
             _selectedCard = null;
@@ -292,6 +367,7 @@ public class DeckDetailsPagePresenter : PresenterBase
         TCGPSuggestionsCards = new List<TCGPCard>(TCGPCards);
         TCGPSuggestionsAddedCards = [];
         TCGPSuggestionsRemovedCards = [];
+        _suggestionDeltas.Clear();
         
         CurrentMode = Mode.View;
         await InvokeAsync(StateHasChanged);
@@ -305,11 +381,25 @@ public class DeckDetailsPagePresenter : PresenterBase
         if (DeckDetails is null)
             return;
         
+        // Build DTO from normalized deltas
+        var added = _suggestionDeltas.Where(kv => kv.Value > 0)
+            .SelectMany(kv =>
+            {
+                var (code, num) = ParseKey(kv.Key);
+                return Enumerable.Repeat(new DeckDetailsCardInputDTO(code, num), kv.Value);
+            }).ToList();
+        var removed = _suggestionDeltas.Where(kv => kv.Value < 0)
+            .SelectMany(kv =>
+            {
+                var (code, num) = ParseKey(kv.Key);
+                return Enumerable.Repeat(new DeckDetailsCardInputDTO(code, num), -kv.Value);
+            }).ToList();
+        
         DeckSuggestionInputDTO dto = new(
             UIStore.GetState<AuthenticatedUserState>().Id,
             DeckDetails.Id,
-            TCGPSuggestionsAddedCards.Select(c => new DeckDetailsCardInputDTO(c.Collection.Code, c.CollectionNumber)).ToList(),
-            TCGPSuggestionsRemovedCards.Select(c => new DeckDetailsCardInputDTO(c.Collection.Code, c.CollectionNumber)).ToList(),
+            added,
+            removed,
             new List<int>(),
             new List<int>()
         );
@@ -321,6 +411,7 @@ public class DeckDetailsPagePresenter : PresenterBase
             TCGPSuggestionsCards = new List<TCGPCard>(TCGPCards);
             TCGPSuggestionsAddedCards = [];
             TCGPSuggestionsRemovedCards = [];
+            _suggestionDeltas.Clear();
             
             DeckDetails.Suggestions.Add(createdSuggestion);
             await InvokeAsync(StateHasChanged);
@@ -342,7 +433,7 @@ public class DeckDetailsPagePresenter : PresenterBase
     }
     
     
-    private static IEnumerable<TCGPCard> SortCards(IEnumerable<TCGPCard> cards)
+    protected static IEnumerable<TCGPCard> SortCards(IEnumerable<TCGPCard> cards)
     {
         return cards.OrderBy(c => c.Collection.Code).ThenBy(c => c.CollectionNumber).ThenBy(c => c.Name);
     }
