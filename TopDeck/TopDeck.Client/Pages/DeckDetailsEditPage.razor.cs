@@ -554,6 +554,8 @@ public class DeckDetailsEditPagePresenter : PresenterBase
                 TCGPHighlightedCards.RemoveAll(c => GetCardKey(c) == key);
                 _tcgpHighlightedCardsMapping[key] = false;
             }
+            // keep internal state sorted after removal
+            TCGPCards = SortCards(TCGPCards).ToList();
         }
     }
     
@@ -572,6 +574,8 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             TCGPHighlightedCards.RemoveAll(c => GetCardKey(c) == key);
             _tcgpHighlightedCardsMapping[key] = false;
         }
+        // keep internal state sorted after removal
+        TCGPCards = SortCards(TCGPCards).ToList();
     }
     
     protected void RemoveFromDeckAt(int index)
@@ -599,6 +603,9 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             SelectedCardId = null;
             _selectedCard = null;
         }
+        
+        // keep internal state sorted after removal
+        TCGPCards = SortCards(TCGPCards).ToList();
     }
     
     protected int GetCardQuantityInDeck(TCGPCard card)
