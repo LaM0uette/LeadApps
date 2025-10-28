@@ -147,11 +147,13 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             TagIds = existing.TagIds.ToList();
             TagIdsCache = existing.TagIds.ToList();
 
-            // Map highlighted cards
+            // Map highlighted cards (ensure unique by card key, max 3)
             TCGPHighlightedCards = existing.Cards
-                .Select(hc => TCGPAllCards.FirstOrDefault(c => c.Collection.Code == hc.CollectionCode && c.CollectionNumber == hc.CollectionNumber && hc.IsHighlighted))
+                .Where(hc => hc.IsHighlighted)
+                .Select(hc => TCGPAllCards.FirstOrDefault(c => c.Collection.Code == hc.CollectionCode && c.CollectionNumber == hc.CollectionNumber))
                 .Where(c => c is not null)
                 .Cast<TCGPCard>()
+                .DistinctBy(GetCardKey)
                 .Take(3)
                 .ToList();
             
@@ -159,13 +161,20 @@ public class DeckDetailsEditPagePresenter : PresenterBase
             
             _tcgpHighlightedCardsMapping = TCGPHighlightedCards.ToDictionary<TCGPCard, string, bool>(c => GetCardKey(c), c => true);
 
-            // Build deck cards list with duplicates
-            TCGPCards = existing.Cards
-                .Select(dc => TCGPAllCards.FirstOrDefault(c => c.Collection.Code == dc.CollectionCode && c.CollectionNumber == dc.CollectionNumber))
-                .Where(c => c is not null)
-                .Cast<TCGPCard>()
+            // Build deck cards list with duplicates, but cap identical copies to the allowed maximum
+            var groupedByCard = existing.Cards
+                .GroupBy(dc => new { dc.CollectionCode, dc.CollectionNumber })
+                .Select(g => new { g.Key.CollectionCode, g.Key.CollectionNumber, Count = Math.Min(g.Count(), MAX_IDENTICAL_CARDS_IN_DECK) })
                 .ToList();
-            TCGPCards = SortCards(TCGPCards).ToList();
+
+            List<TCGPCard> loaded = new();
+            foreach (var g in groupedByCard)
+            {
+                TCGPCard? match = TCGPAllCards.FirstOrDefault(c => c.Collection.Code == g.CollectionCode && c.CollectionNumber == g.CollectionNumber);
+                if (match is null) continue;
+                for (int i = 0; i < g.Count; i++) loaded.Add(match);
+            }
+            TCGPCards = SortCards(loaded).ToList();
 
             TCGPCardsCache = new List<TCGPCard>(TCGPCards);
         }

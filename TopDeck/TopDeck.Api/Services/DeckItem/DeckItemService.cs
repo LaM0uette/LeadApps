@@ -124,32 +124,25 @@ public class DeckItemService : IDeckItemService
         existing.EnergyIds = dto.EnergyIds.ToList();
         existing.UpdatedAt = DateTime.UtcNow;
 
-        // Replace Cards: clear then add fresh items to avoid duplicates
-        existing.Cards.Clear();
-        foreach (DeckItemCardInputDTO c in dto.Cards)
+        // Replace Cards and Tags in DB by hard delete + re-insert to avoid any duplication issues
+        var newCards = dto.Cards.Select(c => new DeckCard
         {
-            existing.Cards.Add(new DeckCard
-            {
-                DeckId = existing.Id,
-                Deck = existing,
-                CollectionCode = c.CollectionCode,
-                CollectionNumber = c.CollectionNumber,
-                IsHighlighted = c.IsHighlighted
-            });
-        }
+            DeckId = existing.Id,
+            Deck = null!,
+            CollectionCode = c.CollectionCode,
+            CollectionNumber = c.CollectionNumber,
+            IsHighlighted = c.IsHighlighted
+        });
+        await _repo.ReplaceDeckCardsAsync(existing.Id, newCards, ct);
 
-        // Replace Tags ensuring uniqueness
-        existing.DeckTags.Clear();
-        foreach (int tagId in dto.TagIds.Distinct())
+        var newTags = dto.TagIds.Distinct().Select(tagId => new DeckTag
         {
-            existing.DeckTags.Add(new DeckTag
-            {
-                DeckId = existing.Id,
-                Deck = existing,
-                TagId = tagId,
-                Tag = null!
-            });
-        }
+            DeckId = existing.Id,
+            Deck = null!,
+            TagId = tagId,
+            Tag = null!
+        });
+        await _repo.ReplaceDeckTagsAsync(existing.Id, newTags, ct);
 
         // If cards changed, clear all suggestions for this deck as they may be invalid now
         if (cardsChanged)
@@ -217,13 +210,42 @@ public class DeckItemService : IDeckItemService
 
     private static void ValidateDeckLimits(DeckItemInputDTO dto)
     {
-        int cardCount = dto.Cards.Count;
-        int highlightedCount = dto.Cards.Count(c => c.IsHighlighted);
+        if (dto is null) throw new ArgumentNullException(nameof(dto));
 
-        if (cardCount > 20)
-            throw new InvalidOperationException("A deck cannot contain more than 20 cards.");
-        if (highlightedCount > 3)
+        // 1) Exactly 20 cards required
+        int cardCount = dto.Cards.Count;
+        if (cardCount != 20)
+            throw new InvalidOperationException("A deck must contain exactly 20 cards.");
+
+        // 2) Max 2 copies per unique card (by CollectionCode + CollectionNumber)
+        var duplicates = dto.Cards
+            .GroupBy(c => new { c.CollectionCode, c.CollectionNumber })
+            .Select(g => new { g.Key.CollectionCode, g.Key.CollectionNumber, Count = g.Count() })
+            .Where(x => x.Count > 2)
+            .ToList();
+        if (duplicates.Count > 0)
+        {
+            string details = string.Join(", ", duplicates.Select(d => $"{d.CollectionCode}:{d.CollectionNumber} x{d.Count}"));
+            throw new InvalidOperationException($"A deck cannot contain more than 2 copies of the same card. Offenders: {details}");
+        }
+
+        // 3) Highlighted cards constraints: max 3, unique, and must exist among deck cards
+        var highlighted = dto.Cards.Where(c => c.IsHighlighted).ToList();
+        if (highlighted.Count > 3)
             throw new InvalidOperationException("The cards highlighted are limited to 3.");
+
+        var highlightedGroups = highlighted
+            .GroupBy(c => new { c.CollectionCode, c.CollectionNumber })
+            .Select(g => new { g.Key.CollectionCode, g.Key.CollectionNumber, Count = g.Count() })
+            .ToList();
+        if (highlightedGroups.Any(g => g.Count > 1))
+            throw new InvalidOperationException("Highlighted cards must be unique (at most one highlight per card).");
+
+        // Ensure each highlighted card exists in deck (it does by construction as it's part of dto.Cards),
+        // but keep check in case model changes
+        var deckKeys = dto.Cards.Select(c => new { c.CollectionCode, c.CollectionNumber }).ToHashSet();
+        if (highlightedGroups.Any(h => !deckKeys.Contains(new { h.CollectionCode, h.CollectionNumber })))
+            throw new InvalidOperationException("Highlighted cards must be part of the deck cards.");
     }
 
     #endregion

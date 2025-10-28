@@ -15,4 +15,10 @@ public interface IDeckItemRepository
     
     Task<bool> ExistsByCodeAsync(string code, CancellationToken ct = default);
     Task<int> CountAsync(CancellationToken ct = default);
+    
+    // Replace all DeckCards for a given deck by deleting existing and inserting the provided set
+    Task ReplaceDeckCardsAsync(int deckId, IEnumerable<DeckCard> newCards, CancellationToken ct = default);
+    
+    // Replace all DeckTags for a given deck by deleting existing and inserting the provided set
+    Task ReplaceDeckTagsAsync(int deckId, IEnumerable<DeckTag> newTags, CancellationToken ct = default);
 }

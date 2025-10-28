@@ -41,10 +41,54 @@ public class DeckItemRepository : IDeckItemRepository
 
     public async Task<Deck> UpdateAsync(Deck deck, CancellationToken ct = default)
     {
-        _db.Decks.Update(deck);
+        // The entity is already tracked by the current DbContext in our service layer.
         await _db.SaveChangesAsync(ct);
-        
         return deck;
+    }
+
+    public async Task ReplaceDeckCardsAsync(int deckId, IEnumerable<DeckCard> newCards, CancellationToken ct = default)
+    {
+        // Hard replace: delete all existing DeckCards then insert provided ones
+        await _db.DeckCards.Where(c => c.DeckId == deckId).ExecuteDeleteAsync(ct);
+        if (newCards is not null)
+        {
+            // Ensure DeckId is set and navigation is null to avoid unexpected tracking
+            var toAdd = newCards.Select(c => new DeckCard
+            {
+                DeckId = deckId,
+                Deck = null!,
+                CollectionCode = c.CollectionCode,
+                CollectionNumber = c.CollectionNumber,
+                IsHighlighted = c.IsHighlighted
+            }).ToList();
+            if (toAdd.Count > 0)
+            {
+                await _db.DeckCards.AddRangeAsync(toAdd, ct);
+            }
+        }
+        await _db.SaveChangesAsync(ct);
+    }
+
+    public async Task ReplaceDeckTagsAsync(int deckId, IEnumerable<DeckTag> newTags, CancellationToken ct = default)
+    {
+        await _db.DeckTags.Where(t => t.DeckId == deckId).ExecuteDeleteAsync(ct);
+        if (newTags is not null)
+        {
+            var toAdd = newTags
+                .GroupBy(t => t.TagId) // ensure uniqueness
+                .Select(g => new DeckTag
+                {
+                    DeckId = deckId,
+                    Deck = null!,
+                    TagId = g.Key,
+                    Tag = null!
+                }).ToList();
+            if (toAdd.Count > 0)
+            {
+                await _db.DeckTags.AddRangeAsync(toAdd, ct);
+            }
+        }
+        await _db.SaveChangesAsync(ct);
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
