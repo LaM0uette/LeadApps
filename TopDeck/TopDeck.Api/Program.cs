@@ -16,6 +16,17 @@ string[] allowedOrigins =
     "https://0.0.0.1"
 ];
 
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
+}
+
+builder.Configuration.AddEnvironmentVariables();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AppPolicy", policy =>
@@ -56,10 +67,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
 
-string connectionString = builder.Configuration.GetConnectionString("Default") ?? throw new InvalidOperationException("ConnectionStrings: Default is not configured in appsettings.json or environment.");
+string? connectionString = builder.Configuration.GetConnectionString("Default");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("❌ ConnectionStrings:Default must be set via environment variable in Prod/Preprod, or via appsettings.Development.json in local dev.");
+}
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(connectionString);
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
 // DI registrations
@@ -76,6 +93,12 @@ builder.Services.AddScoped<IVoteService, VoteService>();
 
 WebApplication app = builder.Build();
 
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    ApplicationDbContext db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -86,8 +109,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AppPolicy");
 
-// Redirect root to Swagger UI so it's opened by default
-app.MapGet("/", () => Results.Redirect("/swagger"));
+if (app.Environment.IsDevelopment())
+{
+    // Redirect root to Swagger UI so it's opened by default
+    app.MapGet("/", () => Results.Redirect("/swagger"));
+}
 
 app.UseHttpsRedirection();
 app.UseResponseCompression();
