@@ -16,14 +16,27 @@ using TopDeck.Shared.UIStore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// HttpClient vers API (selon env)
+// Détermination des URLs selon l'environnement
+string topdeckApiUrl = builder.Environment.EnvironmentName switch
+{
+    "Development"   => "https://localhost:7057",
+    "Preproduction" => "https://api.preprod.proflam0uette.fr",
+    "Production"    => "https://api.proflam0uette.fr",
+    _ => throw new Exception($"Environnement inconnu : {builder.Environment.EnvironmentName}")
+};
+
+string leadersheepApiUrl = builder.Environment.EnvironmentName switch
+{
+    "Development"   => "https://localhost:7095",
+    "Preproduction" => "https://api.preprod.tehleadersheep.com",
+    "Production"    => "https://api.tehleadersheep.com",
+    _ => throw new Exception($"Environnement inconnu : {builder.Environment.EnvironmentName}")
+};
+
+// HttpClient générique
 builder.Services.AddHttpClient("Api", client =>
 {
-    string env = builder.Environment.EnvironmentName;
-    string apiUrl = env == "Production"
-        ? "https://api.tehleadersheep.com/"
-        : "https://api.preprod.tehleadersheep.com/";
-    client.BaseAddress = new Uri(apiUrl);
+    client.BaseAddress = new Uri(leadersheepApiUrl);
 });
 
 
@@ -79,13 +92,48 @@ builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 
 
 builder.Services.AddScoped<IAuthUserRequester, FakeAuthUserRequester>();
-builder.Services.AddScoped<IUserService, FakeUserService>();
 
-// Use real API-backed services for prerendering/SSR
-builder.Services.AddSingleton<IDeckItemService, FakeDeckItemService>();
-builder.Services.AddSingleton<IDeckDetailsService, FakeDeckDetailsService>();
 
-builder.Services.AddScoped<ITCGPCardRequester, TCGPCardRequester.TCGPCardRequester>();
+
+// TCGPCardRequester (TopDeck API)
+builder.Services.AddHttpClient<ITCGPCardRequester, TCGPCardRequester.TCGPCardRequester>(client =>
+{
+    client.BaseAddress = new Uri(topdeckApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+// LeaderSheep API services
+builder.Services.AddHttpClient<IUserService, UserService>(client =>
+{
+    client.BaseAddress = new Uri(leadersheepApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+builder.Services.AddHttpClient<IDeckDetailsService, DeckDetailsService>(client =>
+{
+    client.BaseAddress = new Uri(leadersheepApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+builder.Services.AddHttpClient<IDeckItemService, DeckItemService>(client =>
+{
+    client.BaseAddress = new Uri(leadersheepApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+builder.Services.AddHttpClient<IVoteService, VoteService>(client =>
+{
+    client.BaseAddress = new Uri(leadersheepApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+builder.Services.AddHttpClient<ITagService, TagService>(client =>
+{
+    client.BaseAddress = new Uri(leadersheepApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+
 
 
 string[] supportedCultures = ["en", "fr"];
