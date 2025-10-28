@@ -435,7 +435,21 @@ public class DeckDetailsPagePresenter : PresenterBase
     
     protected static IEnumerable<TCGPCard> SortCards(IEnumerable<TCGPCard> cards)
     {
-        return cards.OrderBy(c => c.Collection.Code).ThenBy(c => c.CollectionNumber).ThenBy(c => c.Name);
+        return cards
+            .OrderBy(GetCardPrimaryTypeIndex)
+            .ThenBy(c => c.Collection.Code)
+            .ThenBy(c => c.CollectionNumber);
+    }
+
+    private static int GetCardPrimaryTypeIndex(TCGPCard c)
+    {
+        string name = c.Type?.Name?.Trim() ?? string.Empty;
+        return name.Equals("Pokemon", StringComparison.OrdinalIgnoreCase) ? 1
+            : name.Equals("Fossil", StringComparison.OrdinalIgnoreCase) ? 2
+            : name.Equals("Item", StringComparison.OrdinalIgnoreCase) ? 3
+            : name.Equals("Tool", StringComparison.OrdinalIgnoreCase) ? 4
+            : name.Equals("Supporter", StringComparison.OrdinalIgnoreCase) ? 5
+            : 6;
     }
 
     private static readonly Dictionary<string, int> _collectionOrder = new(StringComparer.OrdinalIgnoreCase)
@@ -506,8 +520,8 @@ public class DeckDetailsPagePresenter : PresenterBase
         {
             case "collectioncode":
                 query = asc
-                    ? query.OrderBy(c => GetCollectionIndex(c.Collection.Code)).ThenBy(c => c.CollectionNumber).ThenBy(c => c.Name)
-                    : query.OrderByDescending(c => GetCollectionIndex(c.Collection.Code)).ThenByDescending(c => c.CollectionNumber).ThenByDescending(c => c.Name);
+                    ? query.OrderBy(GetCardPrimaryTypeIndex).ThenBy(c => GetCollectionIndex(c.Collection.Code)).ThenBy(c => c.CollectionNumber)
+                    : query.OrderByDescending(GetCardPrimaryTypeIndex).ThenByDescending(c => GetCollectionIndex(c.Collection.Code)).ThenByDescending(c => c.CollectionNumber);
                 break;
             case "typename":
                 if (asc)
