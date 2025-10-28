@@ -8,7 +8,7 @@ using TopDeck.Shared.UIStore;
 
 WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-// HttpClient par défaut (pour les assets Blazor)
+// HttpClient par défaut (assets Blazor)
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 // Détermination des URLs selon l'environnement
@@ -33,77 +33,50 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddAuthenticationStateDeserialization();
 builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 
-// Services
+// Stores et localizer
 builder.Services.AddSingleton<UIStore>();
 builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 
+// AuthUserRequester (si besoin d’un HttpClient dédié, tu peux aussi le mettre en AddHttpClient)
 builder.Services.AddScoped<IAuthUserRequester, AuthUserRequester>();
 
-
-
 // TCGPCardRequester (TopDeck API)
-builder.Services.AddScoped<ITCGPCardRequester>(_ =>
+builder.Services.AddHttpClient<ITCGPCardRequester, TCGPCardRequester.TCGPCardRequester>(client =>
 {
-    HttpClient http = new HttpClient
-    {
-        BaseAddress = new Uri(topdeckApiUrl),
-        Timeout = TimeSpan.FromSeconds(30)
-    };
-    return new TCGPCardRequester.TCGPCardRequester(http);
+    client.BaseAddress = new Uri(topdeckApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
 });
 
-// Services qui héritent d’ApiService (LeaderSheep API)
-builder.Services.AddScoped<IUserService>(_ =>
+// Services LeaderSheep API
+builder.Services.AddHttpClient<IUserService, UserService>(client =>
 {
-    HttpClient http = new HttpClient
-    {
-        BaseAddress = new Uri(leadersheepApiUrl),
-        Timeout = TimeSpan.FromSeconds(30)
-    };
-    return new UserService(http);
+    client.BaseAddress = new Uri(leadersheepApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
 });
 
-builder.Services.AddScoped<IDeckDetailsService>(_ =>
+builder.Services.AddHttpClient<IDeckDetailsService, DeckDetailsService>(client =>
 {
-    HttpClient http = new HttpClient
-    {
-        BaseAddress = new Uri(leadersheepApiUrl),
-        Timeout = TimeSpan.FromSeconds(30)
-    };
-    return new DeckDetailsService(http);
+    client.BaseAddress = new Uri(leadersheepApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
 });
 
-builder.Services.AddScoped<IDeckItemService>(_ =>
+builder.Services.AddHttpClient<IDeckItemService, DeckItemService>(client =>
 {
-    HttpClient http = new HttpClient
-    {
-        BaseAddress = new Uri(leadersheepApiUrl),
-        Timeout = TimeSpan.FromSeconds(30)
-    };
-    return new DeckItemService(http);
+    client.BaseAddress = new Uri(leadersheepApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
 });
 
-builder.Services.AddScoped<IVoteService>(_ =>
+builder.Services.AddHttpClient<IVoteService, VoteService>(client =>
 {
-    HttpClient http = new HttpClient
-    {
-        BaseAddress = new Uri(leadersheepApiUrl),
-        Timeout = TimeSpan.FromSeconds(30)
-    };
-    return new VoteService(http);
+    client.BaseAddress = new Uri(leadersheepApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
 });
 
-builder.Services.AddScoped<ITagService>(_ =>
+builder.Services.AddHttpClient<ITagService, TagService>(client =>
 {
-    HttpClient http = new HttpClient
-    {
-        BaseAddress = new Uri(leadersheepApiUrl),
-        Timeout = TimeSpan.FromSeconds(30)
-    };
-    return new TagService(http);
+    client.BaseAddress = new Uri(leadersheepApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
 });
-
-
 
 WebAssemblyHost host = builder.Build();
 
