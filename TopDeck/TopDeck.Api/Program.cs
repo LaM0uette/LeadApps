@@ -14,10 +14,10 @@ string[] allowedOrigins =
     "https://localhost:7164",
     "https://localhost:7184",
     "https://0.0.0.1",
-    "https://api.preprod.tehleadersheep.com",
-    "https://api.tehleadersheep.com",
-    "https://app.preprod.tehleadersheep.com",
-    "https://app.tehleadersheep.com",
+    "https://api.topdeck.preprod.tehleadersheep.com",
+    "https://api.topdeck.tehleadersheep.com",
+    "https://app.topdeck.preprod.tehleadersheep.com",
+    "https://app.topdeck.tehleadersheep.com",
 ];
 
 builder.Configuration
