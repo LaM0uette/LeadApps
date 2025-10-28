@@ -39,11 +39,6 @@ builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
 
 builder.Services.AddScoped<IAuthUserRequester, AuthUserRequester>();
 
-builder.Services.AddScoped<IDeckItemService, DeckItemService>();
-builder.Services.AddScoped<IDeckDetailsService, DeckDetailsService>();
-builder.Services.AddScoped<IVoteService, VoteService>();
-builder.Services.AddScoped<ITagService, TagService>();
-
 
 
 // TCGPCardRequester (TopDeck API)
