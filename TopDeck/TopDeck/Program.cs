@@ -47,12 +47,6 @@ builder.Services
         options.ClientId = builder.Configuration["Auth0:ClientId"] ?? throw new InvalidOperationException("❌ Auth0:ClientId missing");
         options.OpenIdConnectEvents = new OpenIdConnectEvents
         {
-            OnRedirectToIdentityProvider = context =>
-            {
-                // Forcer la redirect_uri
-                context.ProtocolMessage.RedirectUri = "https://app.preprod.tehleadersheep.com/callback";
-                return Task.CompletedTask;
-            },
             OnTokenValidated = async context =>
             {
                 ClaimsPrincipal? user = context.Principal;
@@ -154,16 +148,12 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 WebApplication app = builder.Build();
 
-// Dites à l'app de respecter les headers envoyés par le proxy
-ForwardedHeadersOptions forwardedHeaderOptions = new ForwardedHeadersOptions
+app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-};
-// important si ton proxy et ton app sont dans le même réseau docker
-forwardedHeaderOptions.KnownNetworks.Clear();
-forwardedHeaderOptions.KnownProxies.Clear();
-
-app.UseForwardedHeaders();
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    KnownNetworks = { }, // vider
+    KnownProxies = { }   // vider
+});
 
 if (app.Environment.IsDevelopment())
 {
