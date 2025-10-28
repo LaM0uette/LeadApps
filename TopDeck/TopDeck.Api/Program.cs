@@ -8,12 +8,16 @@ using TopDeck.Api.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+string env = builder.Environment.EnvironmentName;
+
 string[] allowedOrigins =
 [
     "http://localhost:5277",
     "https://localhost:7164",
     "https://localhost:7184",
-    "https://0.0.0.1"
+    "https://0.0.0.1",
+    env == "Production" ? "https://api.tehleadersheep.com" : "https://api.preprod.tehleadersheep.com",
+    env == "Production" ? "https://app.tehleadersheep.com" : "https://app.preprod.tehleadersheep.com"
 ];
 
 builder.Configuration

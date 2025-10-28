@@ -16,15 +16,21 @@ using TopDeck.Shared.UIStore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+// HttpClient vers API (selon env)
 builder.Services.AddHttpClient("Api", client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]);
+    string env = builder.Environment.EnvironmentName;
+    string apiUrl = env == "Production"
+        ? "https://api.tehleadersheep.com/"
+        : "https://api.preprod.tehleadersheep.com/";
+    client.BaseAddress = new Uri(apiUrl);
 });
+
 
 builder.Services
     .AddAuth0WebAppAuthentication(options => {
-        options.Domain = builder.Configuration["Auth0:Domain"];
-        options.ClientId = builder.Configuration["Auth0:ClientId"];
+        options.Domain = builder.Configuration["Auth0:Domain"] ?? throw new InvalidOperationException("❌ Auth0:Domain missing");
+        options.ClientId = builder.Configuration["Auth0:ClientId"] ?? throw new InvalidOperationException("❌ Auth0:ClientId missing");
         options.OpenIdConnectEvents = new OpenIdConnectEvents
         {
             OnTokenValidated = async context =>
