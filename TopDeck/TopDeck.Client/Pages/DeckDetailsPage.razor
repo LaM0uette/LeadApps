@@ -251,7 +251,7 @@ else
             <div class="deck-details-cards-edit">
                 <div class="deck-details-cards-edit-header">
                     <div class="deck-details-cards-edit-cards-preview">
-                        @for (int i = 0; i < TCGPSuggestionsCards.Count; i++)
+                        @for (int i = 0; i < SortCards(TCGPSuggestionsCards).ToList().Count; i++)
                         {
                             int index = i; // capture stable copy to avoid modified-closure issues
                             TCGPCard card = TCGPSuggestionsCards[index];

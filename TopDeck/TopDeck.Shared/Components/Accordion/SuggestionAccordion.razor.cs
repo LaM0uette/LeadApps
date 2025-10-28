@@ -47,6 +47,12 @@ public class SuggestionAccordionBase : PresenterBase
     {
         IsOpen = !IsOpen;
     }
+    
+    
+    protected static IEnumerable<TCGPCard> SortCards(IEnumerable<TCGPCard> cards)
+    {
+        return cards.OrderBy(c => c.Collection.Code).ThenBy(c => c.CollectionNumber).ThenBy(c => c.Name);
+    }
 
     #endregion
 }

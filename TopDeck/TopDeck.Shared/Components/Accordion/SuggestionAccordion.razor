@@ -21,7 +21,7 @@
     @if (IsOpen)
     {
         <div class="suggestion-cards">
-            @foreach (TCGPCard card in RemovedCards)
+            @foreach (TCGPCard card in SortCards(RemovedCards))
             {
                 <div class="suggestion-card">
                     <img class="suggestion-card__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
@@ -30,7 +30,7 @@
                     </div>
                 </div>
             }
-            @foreach (TCGPCard card in AddedCards)
+            @foreach (TCGPCard card in SortCards(AddedCards))
             {
                 <div class="suggestion-card">
                     <img class="suggestion-card__img" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>

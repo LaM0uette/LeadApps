@@ -708,7 +708,7 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         await JS.InvokeVoidAsync("historyBack", NavigationManager.BaseUri + "decks");
     }
     
-    private static IEnumerable<TCGPCard> SortCards(IEnumerable<TCGPCard> cards)
+    protected static IEnumerable<TCGPCard> SortCards(IEnumerable<TCGPCard> cards)
     {
         return cards.OrderBy(c => c.Collection.Code).ThenBy(c => c.CollectionNumber).ThenBy(c => c.Name);
     }

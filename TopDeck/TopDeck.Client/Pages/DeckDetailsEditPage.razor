@@ -113,7 +113,7 @@
             <div class="deck-details-edit-cards">
                 @if (TotalCardsInDeck > 0)
                 {
-                    foreach (TCGPCard card in TCGPCards)
+                    foreach (TCGPCard card in SortCards(TCGPCards))
                     {
                         <img class="deck-details-edit-cards__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"
                              @onclick="SetEditMode"/>
@@ -143,7 +143,7 @@
                 }
                 else
                 {
-                    foreach (TCGPCard card in TCGPCards)
+                    foreach (TCGPCard card in SortCards(TCGPCards))
                     {
                         <img class="deck-details-edit-overview__card" src="@card.ImageUrl" alt="@card.Name" loading="lazy" decoding="async" fetchpriority="low"/>
                     }
@@ -185,7 +185,7 @@
             else
             {
                 <div class="deck-details-cards-picking-highlight-cards-cards">
-                    @foreach (TCGPCard card in TCGPCards.DistinctBy(c => new { c.Collection.Code, c.CollectionNumber }))
+                    @foreach (TCGPCard card in SortCards(TCGPCards).DistinctBy(c => new { c.Collection.Code, c.CollectionNumber }))
                     {
                         <button class="deck-details-cards-edit-card-button" 
                                 @onclick:preventDefault="true"
@@ -259,7 +259,7 @@
         <div class="deck-details-cards-edit">
             <div class="deck-details-cards-edit-header">
                 <div class="deck-details-cards-edit-cards-preview">
-                    @for (int i = 0; i < TCGPCards.Count; i++)
+                    @for (int i = 0; i < SortCards(TCGPCards).ToList().Count; i++)
                     {
                         int index = i; // capture stable copy to avoid modified-closure issues
                         TCGPCard card = TCGPCards[index];
