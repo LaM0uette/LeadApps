@@ -47,6 +47,12 @@ builder.Services
         options.ClientId = builder.Configuration["Auth0:ClientId"] ?? throw new InvalidOperationException("❌ Auth0:ClientId missing");
         options.OpenIdConnectEvents = new OpenIdConnectEvents
         {
+            OnRedirectToIdentityProvider = context =>
+            {
+                // Forcer la redirect_uri
+                context.ProtocolMessage.RedirectUri = "https://app.preprod.tehleadersheep.com/callback";
+                return Task.CompletedTask;
+            },
             OnTokenValidated = async context =>
             {
                 ClaimsPrincipal? user = context.Principal;
