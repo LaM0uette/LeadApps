@@ -12,6 +12,14 @@
         @if (DeckItems.Count <= 0 && !IsLoading)
         {
             <p class="deck-items__no-cards-text">@Localizer.Localize("page.decksView.noCards.text", "No cards found.")</p>
+            
+            <AuthorizeView>
+                <Authorized>   
+                    <DeckItemAddButton/>
+                </Authorized>
+                <NotAuthorized>
+                </NotAuthorized>
+            </AuthorizeView>
         }
         else
         {
