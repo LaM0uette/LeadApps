@@ -5,6 +5,7 @@ using Helpers.Auth0;
 using Localizer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.HttpOverrides;
 using Requesters.AuthUser;
 using TCGPCardRequester;
 using TopDeck.Components;
@@ -156,6 +157,17 @@ else
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
 }
+
+// Dites à l'app de respecter les headers envoyés par le proxy
+ForwardedHeadersOptions forwardedHeaderOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+};
+// important si ton proxy et ton app sont dans le même réseau docker
+forwardedHeaderOptions.KnownNetworks.Clear();
+forwardedHeaderOptions.KnownProxies.Clear();
+
+app.UseForwardedHeaders();
 
 app.UseHttpsRedirection();
 
