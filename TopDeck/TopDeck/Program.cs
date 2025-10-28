@@ -148,16 +148,6 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 WebApplication app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseWebAssemblyDebugging();
-}
-else
-{
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    app.UseHsts();
-}
-
 // Dites à l'app de respecter les headers envoyés par le proxy
 ForwardedHeadersOptions forwardedHeaderOptions = new ForwardedHeadersOptions
 {
@@ -168,6 +158,16 @@ forwardedHeaderOptions.KnownNetworks.Clear();
 forwardedHeaderOptions.KnownProxies.Clear();
 
 app.UseForwardedHeaders();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseWebAssemblyDebugging();
+}
+else
+{
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
 
