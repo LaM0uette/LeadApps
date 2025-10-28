@@ -41,6 +41,14 @@ builder.Services.AddHttpClient("Api", client =>
 });
 
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
+
 builder.Services
     .AddAuth0WebAppAuthentication(options => {
         options.Domain = builder.Configuration["Auth0:Domain"] ?? throw new InvalidOperationException("❌ Auth0:Domain missing");
@@ -147,13 +155,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 });
 
 WebApplication app = builder.Build();
-
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-    KnownNetworks = { }, // vider
-    KnownProxies = { }   // vider
-});
+app.UseForwardedHeaders();
 
 if (app.Environment.IsDevelopment())
 {
