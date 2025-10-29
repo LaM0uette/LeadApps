@@ -444,10 +444,10 @@ public class DeckDetailsPagePresenter : PresenterBase
     private static int GetCardPrimaryTypeIndex(TCGPCard c)
     {
         string name = c.Type?.Name?.Trim() ?? string.Empty;
-        return name.Equals("Pokemon", StringComparison.OrdinalIgnoreCase) ? 1
-            : name.Equals("Fossil", StringComparison.OrdinalIgnoreCase) ? 2
-            : name.Equals("Item", StringComparison.OrdinalIgnoreCase) ? 3
-            : name.Equals("Tool", StringComparison.OrdinalIgnoreCase) ? 4
+        return name.Equals("Pokemon", StringComparison.OrdinalIgnoreCase) || name.Equals("Pokémon", StringComparison.OrdinalIgnoreCase) ? 1
+            : name.Equals("Fossil", StringComparison.OrdinalIgnoreCase) || name.Equals("Fossile", StringComparison.OrdinalIgnoreCase) ? 2
+            : name.Equals("Item", StringComparison.OrdinalIgnoreCase) || name.Equals("Objet", StringComparison.OrdinalIgnoreCase) ? 3
+            : name.Equals("Tool", StringComparison.OrdinalIgnoreCase) || name.Equals("Outil", StringComparison.OrdinalIgnoreCase) ? 4
             : name.Equals("Supporter", StringComparison.OrdinalIgnoreCase) ? 5
             : 6;
     }
