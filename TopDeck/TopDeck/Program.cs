@@ -21,8 +21,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 string topdeckApiUrl = builder.Environment.EnvironmentName switch
 {
     "Development"   => "https://localhost:7057",
-    "Preproduction" => "https://api.topdeck.preprod.proflam0uette.fr",
-    "Production"    => "https://api.topdeck.proflam0uette.fr",
+    "Preproduction" => "https://api.preprod.proflam0uette.fr",
+    "Production"    => "https://api.proflam0uette.fr",
     _ => throw new Exception($"Environnement inconnu : {builder.Environment.EnvironmentName}")
 };
 
