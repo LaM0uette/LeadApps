@@ -27,6 +27,12 @@ public class UserService : ApiService, IUserService
         UserOutputDTO? response = await GetJsonAsync<UserOutputDTO>($"{_route}/uuid/{uuid}", ct);
         return response?.ToDomain();
     }
+
+    public async Task<string?> GetNameByUuidAsync(Guid uuid, CancellationToken ct = default)
+    {
+        string? name = await GetJsonAsync<string>($"{_route}/uuid/{uuid}/name", ct);
+        return name;
+    }
     
     public async Task<User> CreateAsync(UserInputDTO dto, CancellationToken ct = default)
     {

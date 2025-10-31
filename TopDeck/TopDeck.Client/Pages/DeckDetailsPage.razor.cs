@@ -53,6 +53,9 @@ public class DeckDetailsPagePresenter : PresenterBase
     protected string? SelectedCardId { get; private set; }
     private TCGPCard? _selectedCard { get; set; }
     protected int TotalCardsInSuggestion => TCGPSuggestionsCards.Count;
+    
+    protected string? CreatorName { get; private set; }
+    private string? _creatorUuidLoaded;
 
     // Deltas of suggestion by card key ("Code:Number") => net delta in [−2..+2]
     private readonly Dictionary<string, int> _suggestionDeltas = new();
@@ -196,6 +199,7 @@ public class DeckDetailsPagePresenter : PresenterBase
     [Inject] private NavigationManager _navigationManager { get; set; } = null!;
     [Inject] private IDeckDetailsService _deckDetailsService { get; set; } = null!;
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
+    [Inject] private IUserService _userService { get; set; } = null!;
     
     protected readonly List<OrderOption> OrderOptions = [];
 
@@ -226,6 +230,32 @@ public class DeckDetailsPagePresenter : PresenterBase
         }
         
         DeckDetails = deckDetails;
+        
+        // Load creator name (once per UUID)
+        if (!string.IsNullOrWhiteSpace(DeckDetails.CreatorUuid))
+        {
+            if (_creatorUuidLoaded != DeckDetails.CreatorUuid)
+            {
+                CreatorName = null;
+                if (Guid.TryParse(DeckDetails.CreatorUuid, out Guid creatorGuid))
+                {
+                    try
+                    {
+                        CreatorName = await _userService.GetNameByUuidAsync(creatorGuid);
+                    }
+                    catch
+                    {
+                        // ignore errors, leave name null
+                    }
+                }
+                _creatorUuidLoaded = DeckDetails.CreatorUuid;
+            }
+        }
+        else
+        {
+            CreatorName = null;
+            _creatorUuidLoaded = null;
+        }
 
         AuthenticatedUserState authenticatedUser = UIStore.GetState<AuthenticatedUserState>();
         if (authenticatedUser.Id > 0)

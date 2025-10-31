@@ -16,6 +16,11 @@ public class FakeUserService : IUserService
         return Task.FromResult<User?>(null);
     }
 
+    public Task<string?> GetNameByUuidAsync(Guid uuid, CancellationToken ct = default)
+    {
+        return Task.FromResult<string?>(null);
+    }
+
     public Task<User> CreateAsync(UserInputDTO dto, CancellationToken ct = default)
     {
         throw new NotImplementedException();

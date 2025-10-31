@@ -125,6 +125,27 @@
 
     z-index: 1;
 }
+
+
+.deck-item-header__creator-name {
+    position: absolute;
+    top: 50px;
+    left: 8px;
+    width: 40%;
+    
+    font-family: var(--font-bold), sans-serif;
+    font-size: 0.8em;
+    color: var(--color-text-very-light);
+    text-shadow: var(--shadow-m)
+    0 1px 1px rgba(30, 25, 25, 0.06), 0 2px 4px rgba(30, 25, 25, 0.04);
+    
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    z-index: 4;
+}
     
     
 .deck-details-header-top {
@@ -1291,6 +1312,11 @@
         justify-content: center;
         
         max-height: calc(2 * 1.3em + 29px);
+    }
+
+    .deck-item-header__creator-name {
+        top: 66px;
+        font-size: 1.1em;
     }
 
     .filter-modal {

@@ -2,7 +2,7 @@
 
 public record DeckDetails(
     int Id,
-    string CreatorUui,
+    string CreatorUuid,
     string Name,
     string Code,
     ICollection<DeckDetailsCard> Cards,

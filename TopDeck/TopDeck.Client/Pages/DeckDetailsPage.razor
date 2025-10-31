@@ -20,7 +20,7 @@ else
                 <div class="deck-details-header-top">
                     <div class="deck-details-title-panel-container">
                         <TitlePanel Name="@DeckDetails.Name" Width="200px" Height="35px" FontSize="1.1em"/>
-                        @if (!IsMobile && AuthenticatedUserUuid == DeckDetails.CreatorUui)
+                        @if (!IsMobile && AuthenticatedUserUuid == DeckDetails.CreatorUuid)
                         {
                             <button class="deck-details-title-panel-edit-deck-button-desktop" @onclick="EditDeck">
                                 <img class="deck-details-title-panel-edit-deck-button-desktop__icon" src="img/edit-icon.svg" alt="edit deck"/>
@@ -90,6 +90,8 @@ else
                         <Tag Name="@tagName"/>
                     }
                 </div>
+                
+                <p class="deck-item-header__creator-name">@CreatorName</p>
             </div>
             
             @if (CurrentTab is Tab.Cards)
@@ -174,7 +176,7 @@ else
                     <img class="deck-details-back-button__icon" src="img/arrow-back-icon.svg" alt="back button"/>
                 </button>
                 
-                if (AuthenticatedUserUuid == DeckDetails.CreatorUui)
+                if (AuthenticatedUserUuid == DeckDetails.CreatorUuid)
                 {
                     <button class="deck-details-title-panel-edit-deck-button" @onclick="EditDeck">
                         <img class="deck-details-title-panel-edit-deck-button__icon" src="img/edit-icon.svg" alt="edit deck"/>

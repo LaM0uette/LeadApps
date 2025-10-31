@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using TCGPCardRequester;
 using TopDeck.Domain.Models;
 using TopDeck.Shared.Models.TCGP;
+using TopDeck.Shared.Services;
 
 namespace TopDeck.Shared.Components;
 
@@ -14,6 +15,7 @@ public class DeckItemPresenter : PresenterBase
     
     protected string CodeText = string.Empty;
     protected IReadOnlyList<TCGPCard> HighlightedTCGPCards { get; private set; } = [];
+    protected string? CreatorName { get; private set; }
     
     protected readonly Dictionary<int, string> EnergyTypes = new()
     {
@@ -38,6 +40,7 @@ public class DeckItemPresenter : PresenterBase
     
     [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
+    [Inject] private IUserService _userService { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
@@ -45,9 +48,37 @@ public class DeckItemPresenter : PresenterBase
     }
     
     private string? _cardsLoadedForCode;
+    private string? _creatorUuidLoaded;
     
     protected override async Task OnParametersSetAsync()
     {
+        // Load creator name (once per UUID)
+        if (!string.IsNullOrWhiteSpace(DeckItem.CreatorUui))
+        {
+            if (_creatorUuidLoaded != DeckItem.CreatorUui)
+            {
+                CreatorName = null;
+                if (Guid.TryParse(DeckItem.CreatorUui, out Guid creatorGuid))
+                {
+                    try
+                    {
+                        CreatorName = await _userService.GetNameByUuidAsync(creatorGuid);
+                    }
+                    catch
+                    {
+                        // ignore errors, leave name null
+                    }
+                }
+                _creatorUuidLoaded = DeckItem.CreatorUui;
+            }
+        }
+        else
+        {
+            CreatorName = null;
+            _creatorUuidLoaded = null;
+        }
+        
+        // Load highlighted cards
         if (string.IsNullOrWhiteSpace(DeckItem.Code) || DeckItem.HighlightedCards.Count == 0)
         {
             HighlightedTCGPCards = [];
