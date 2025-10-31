@@ -8,18 +8,6 @@ using TopDeck.Api.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-string[] allowedOrigins =
-[
-    "http://localhost:5277",
-    "https://localhost:7164",
-    "https://localhost:7184",
-    "https://0.0.0.1",
-    "https://api.topdeck.preprod.tehleadersheep.com",
-    "https://api.topdeck.tehleadersheep.com",
-    "https://app.topdeck.preprod.tehleadersheep.com",
-    "https://app.topdeck.tehleadersheep.com",
-];
-
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
@@ -30,36 +18,6 @@ if (builder.Environment.IsDevelopment())
 }
 
 builder.Configuration.AddEnvironmentVariables();
-
-/*builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AppPolicy", policy =>
-    {
-        policy
-            .WithOrigins(
-                "https://app.topdeck.tehleadersheep.com",
-                "https://app.topdeck.preprod.tehleadersheep.com",
-                "http://localhost:5277",
-                "https://localhost:7164",
-                "https://localhost:7184",
-                "https://0.0.0.1",
-                "https://api.topdeck.preprod.tehleadersheep.com",
-                "https://api.topdeck.tehleadersheep.com"
-            )
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-    });
-});*/
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
 
 // Brotli and Gzip compression
 builder.Services.AddResponseCompression(options =>
@@ -139,9 +97,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseResponseCompression();
-
-//app.UseCors("AppPolicy");
-app.UseCors();
+app.UseRouting();
 
 // map endpoints
 app.MapUserEndpoints();
