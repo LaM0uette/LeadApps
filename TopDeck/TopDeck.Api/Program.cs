@@ -17,6 +17,20 @@ if (builder.Environment.IsDevelopment())
     builder.Configuration.AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
 }
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost", policy =>
+    {
+        policy
+            .WithOrigins(
+                "https://localhost:7184"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 builder.Configuration.AddEnvironmentVariables();
 
 // Brotli and Gzip compression
@@ -98,6 +112,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseResponseCompression();
 app.UseRouting();
+
+app.UseCors("AllowLocalhost");
 
 // map endpoints
 app.MapUserEndpoints();
