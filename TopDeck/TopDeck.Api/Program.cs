@@ -35,8 +35,17 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AppPolicy", policy =>
     {
-        policy.WithOrigins(allowedOrigins)
-            .AllowAnyOrigin()
+        policy
+            .WithOrigins(
+                "https://app.topdeck.tehleadersheep.com",
+                "https://app.topdeck.preprod.tehleadersheep.com",
+                "http://localhost:5277",
+                "https://localhost:7164",
+                "https://localhost:7184",
+                "https://0.0.0.1",
+                "https://api.topdeck.preprod.tehleadersheep.com",
+                "https://api.topdeck.tehleadersheep.com"
+            )
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -113,8 +122,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AppPolicy");
-
 if (app.Environment.IsDevelopment())
 {
     // Redirect root to Swagger UI so it's opened by default
@@ -123,6 +130,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseResponseCompression();
+app.UseRouting();
+
+app.UseCors("AppPolicy");
 
 // map endpoints
 app.MapUserEndpoints();
