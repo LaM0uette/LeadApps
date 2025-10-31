@@ -8,6 +8,8 @@ using TopDeck.Shared.UIStore;
 
 WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 
+builder.Logging.SetMinimumLevel(LogLevel.Warning);
+
 // HttpClient par défaut (assets Blazor)
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
