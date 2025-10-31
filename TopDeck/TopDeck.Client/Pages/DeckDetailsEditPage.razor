@@ -84,6 +84,7 @@
                 </button>
             </div>
             
+            <p class="deck-item-tags__label">Tags: </p>
             <div class="deck-item-tags">
                 @if (TagIds.Count <= 0)
                 {
@@ -92,7 +93,7 @@
                 else
                 {
                     <RoundPlusButton Size="20px" Clicked="SetPickingTagsMode"/>
-                    
+
                     foreach (int tagId in TagIds)
                     {
                         Tag? tag = AvailableTags.FirstOrDefault(t => t.Id == tagId);
