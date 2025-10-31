@@ -202,9 +202,7 @@ __pycache__/
 # Windows thumbnail cache files
 Thumbs.db
 
-appsettings.json
-appsettings.Preproduction.json
-appsettings.Production.json
+
 
 secrets.json
 
