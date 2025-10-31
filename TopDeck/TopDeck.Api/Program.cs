@@ -97,7 +97,7 @@ if (string.IsNullOrWhiteSpace(connectionString))
     throw new InvalidOperationException("❌ ConnectionStrings:Default must be set via environment variable in Prod/Preprod, or via appsettings.Development.json in local dev.");
 }
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(connectionString);
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
