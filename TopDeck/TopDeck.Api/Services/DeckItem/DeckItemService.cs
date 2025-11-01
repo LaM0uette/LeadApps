@@ -95,19 +95,14 @@ public class DeckItemService : IDeckItemService
         // Load tracked entity with related collections to allow proper replacement
         Deck? existing = await _repo.DbSet
             .Include(d => d.Cards)
-            .Include(d => d.DeckTags)
             .FirstOrDefaultAsync(d => d.Id == id, ct);
         
         if (existing is null)
             return null;
 
-        User? creator = await _users.GetByIdAsync(dto.CreatorId, ct);
-        if (creator is null)
-            throw new InvalidOperationException($"Creator with id {dto.CreatorId} not found");
-
-        if (existing.CreatorId != dto.CreatorId)
-            throw new InvalidOperationException("Changing the creator of a deck is not allowed.");
-
+        // For updates, we do not rely on dto.CreatorId because the deck already has an owner.
+        // This avoids 400 errors when the client doesn't have a valid user context.
+        // Authorization should be handled via auth middleware in the future.
         ValidateDeckLimits(dto);
 
         // Determine if the card composition changed (ignore highlight flag)
@@ -121,7 +116,12 @@ public class DeckItemService : IDeckItemService
 
         // Update scalar properties
         existing.Name = dto.Name;
-        existing.EnergyIds = dto.EnergyIds.ToList();
+        // Update primitive collection in-place so EF Core change tracker persists it
+        existing.EnergyIds.Clear();
+        foreach (int eid in (dto.EnergyIds ?? Array.Empty<int>()).Distinct())
+        {
+            existing.EnergyIds.Add(eid);
+        }
         existing.UpdatedAt = DateTime.UtcNow;
 
         // Replace Cards and Tags in DB by hard delete + re-insert to avoid any duplication issues

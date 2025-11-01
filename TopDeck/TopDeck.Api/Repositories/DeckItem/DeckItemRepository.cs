@@ -41,8 +41,22 @@ public class DeckItemRepository : IDeckItemRepository
 
     public async Task<Deck> UpdateAsync(Deck deck, CancellationToken ct = default)
     {
-        // The entity is already tracked by the current DbContext in our service layer.
-        await _db.SaveChangesAsync(ct);
+        // Update only the scalar properties in the database using ExecuteUpdateAsync to avoid
+        // tracker-related concurrency issues after bulk operations (ExecuteDelete/AddRange).
+        int affected = await _db.Decks
+            .Where(d => d.Id == deck.Id)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(d => d.Name, deck.Name)
+                .SetProperty(d => d.EnergyIds, deck.EnergyIds.ToList())
+                .SetProperty(d => d.UpdatedAt, deck.UpdatedAt)
+            , ct);
+
+        if (affected == 0)
+        {
+            // If no row was affected, the deck may have been deleted concurrently or the key is invalid
+            throw new DbUpdateConcurrencyException($"Deck with id {deck.Id} was not updated because it no longer exists or was modified concurrently.");
+        }
+
         return deck;
     }
 

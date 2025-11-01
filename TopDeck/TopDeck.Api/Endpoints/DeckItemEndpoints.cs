@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using TopDeck.Api.Services;
 using TopDeck.Contracts.DTO;
 
@@ -70,6 +71,11 @@ public static class DeckItemEndpoints
         {
             DeckItemOutputDTO? updated = await service.UpdateAsync(id, dto, ct);
             return updated is null ? Results.NotFound() : Results.Ok(updated);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // If nothing was updated, the deck likely does not exist anymore or was updated concurrently
+            return Results.Problem(statusCode: StatusCodes.Status409Conflict, title: "Concurrency error", detail: "The deck was modified or deleted by another operation. Please reload and try again.");
         }
         catch (InvalidOperationException ex)
         {
