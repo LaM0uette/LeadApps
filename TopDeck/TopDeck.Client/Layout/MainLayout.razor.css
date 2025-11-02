@@ -48,7 +48,101 @@
         margin: 0;
         box-shadow: var(--shadow-s);
     }
+    
+    
+.main-layout-user-menu {
+    position: relative;
+    
+    margin-left: auto;
+    
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
+
+.main-layout-user-menu-button {
+    background: none;
+    border: none;
+
+    padding:4px;
+    margin-right: 5px;
+    
+    cursor: pointer;
+}
+    .main-layout-user-menu-button__icon {
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        
+        border-radius: 50%;
+        background: var(--color-text);
+        color: var(--color-bg);
+        
+        font-family: var(--font-bold), sans-serif;
+        font-size: 1.2em;
+        text-align: center;
+        line-height: 28px;
+    }
+    
+    
+.main-layout-user-menu-popup {
+    position:absolute;
+    top: 48px;
+    right: 8px;
+    
+    border: none;
+    outline: 1px solid var(--color-outline);
+    background: var(--color-bg);
+    
+    border-radius: var(--radius-s);
+    min-width: 240px;
+    
+    box-shadow: var(--shadow-l);
+    
+    z-index: 10;
+}
+    .main-layout-user-menu-popup__username {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--color-text-light);
+
+        font-family: var(--font-bold), sans-serif;
+        font-size: 0.9em;
+        color: var(--color-text-light);
+    }
+    
+    .main-layout-user-menu-popup__edit-username {
+        display: block;
+        padding: 12px 16px;
+
+        font-family: var(--font-bold), sans-serif;
+        font-size: 1.1em;
+        color: var(--color-text);
+        text-decoration: none;
+    }
+    
+    .main-layout-user-menu-popup__logout {
+        display: block;
+        padding: 12px 16px;
+
+        border-top: 1px solid var(--color-text-light);
+
+        font-family: var(--font-bold), sans-serif;
+        font-size: 1.1em;
+        color: var(--color-cancel);
+        text-decoration: none;
+    }
+
+    
+.main-layout-user-menu-popup-overlay {
+    position: fixed;
+    inset: 0;
+    
+    background: transparent;
+    
+    z-index: 9;
+}
+    
 
 .topdeck-logo {
     width: 50px;

@@ -74,14 +74,13 @@ builder.Services
 
                 string? nickname = user?.Claims.FirstOrDefault(c => c.Type == "nickname")?.Value;
 
-                string userName = !string.IsNullOrWhiteSpace(nickname)
-                    ? nickname
-                    : !string.IsNullOrWhiteSpace(fullName) ? fullName : email ?? "unknown";
+                // Always use a placeholder username on first creation; API won't overwrite existing users.
+                const string placeholderUserName = "__unknown__";
 
                 IHttpClientFactory factory = context.HttpContext.RequestServices.GetRequiredService<IHttpClientFactory>();
                 HttpClient http = factory.CreateClient("Api");
 
-                UserInputDTO dto = new(provider, authId, userName);
+                UserInputDTO dto = new(provider, authId, placeholderUserName);
                 await http.PostAsJsonAsync("users", dto, context.HttpContext.RequestAborted);
             }
         };

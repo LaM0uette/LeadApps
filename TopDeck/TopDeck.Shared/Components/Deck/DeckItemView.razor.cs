@@ -94,7 +94,26 @@ public class DeckItemPresenter : PresenterBase
             .ToList();
 
         TCGPCardsRequest tcgpCardsRequest = new(tcgpCardRequests);
-        List<TCGPCard> cards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(tcgpCardsRequest, loadThumbnail:true);
+        List<TCGPCard> cards;
+        try
+        {
+            cards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(tcgpCardsRequest, loadThumbnail:true);
+        }
+        catch (OperationCanceledException)
+        {
+            // Request was cancelled (navigation/logout). Safely ignore and show no highlighted cards.
+            cards = [];
+        }
+        catch (System.Net.Http.HttpRequestException)
+        {
+            // Network/API error (e.g., 5xx). Do not crash the UI on logout or transient failures.
+            cards = [];
+        }
+        catch
+        {
+            // Any other unexpected error — fail soft.
+            cards = [];
+        }
         
         HighlightedTCGPCards = cards;
         _cardsLoadedForCode = DeckItem.Code;

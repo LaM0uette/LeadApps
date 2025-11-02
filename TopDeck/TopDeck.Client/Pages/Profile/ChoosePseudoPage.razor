@@ -1,0 +1,38 @@
+@page "/profile/pseudo"
+@inherits ChoosePseudoPagePresenter
+
+<div class="edit-username-container">
+    <h2>@Localizer.Localize("component.choosePseudoPage.header.title", "Choose your pseudo:")</h2>
+
+    @if (IsLoading)
+    {
+        @Localizer.Localize("component.loadingWheel.text", "Loading…")
+    }
+    else if (!IsAuthenticated)
+    {
+        @Localizer.Localize("component.choosePseudoPage.notAuthenticated.text", "You must be logged in to choose a pseudo.")
+    }
+    else
+    {
+        <EditForm Model="this" OnValidSubmit="UpdatePseudoAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="edit-username-form">
+                <label for="pseudo">@Localizer.Localize("component.choosePseudoPage.username.label", "Username")</label>
+                
+                <input id="pseudo" class="edit-username-form__input" maxlength="18" placeholder="@Localizer.Localize("component.choosePseudoPage.username.placeholder", "Enter your username")" @bind="NewUserName" />
+                
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <div style="color:#ff6b6b;margin-top:6px;">@ErrorMessage</div>
+                }
+            </div>
+
+            <div class="edit-username-form-buttons">
+                <button class="edit-username-form-buttons__button" disabled="@IsSaving" type="submit">@Localizer.Localize("component.choosePseudoPage.saveButton.text", "Save")</button>
+                <button class="edit-username-form-buttons__button" disabled="@IsSaving" type="button" @onclick="Cancel">@Localizer.Localize("component.choosePseudoPage.cancelButton.text", "Cancel")</button>
+            </div>
+        </EditForm>
+    }
+</div>

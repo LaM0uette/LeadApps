@@ -10,10 +10,25 @@
         <h1 class="main-layout-header__title">TOPDECK</h1>
         
         <AuthorizeView>
-            <Authorized>    
-                <RedirectButton Height="30px" FontSize="0.9rem" style="margin-left: auto;margin-right: 10px;" Href="/Account/Logout">
-                    @Localizer.Localize("component.button.logout.text", "Log out")
-                </RedirectButton>
+            <Authorized>
+                <div class="main-layout-user-menu">
+                    <button class="main-layout-user-menu-button" @onclick="ToggleUserMenu">
+                        <span class="main-layout-user-menu-button__icon">@UserInitial</span>
+                    </button>
+                    
+                    @if (IsUserMenuOpen)
+                    {
+                        <div class="main-layout-user-menu-popup">
+                            <div class="main-layout-user-menu-popup__username">@CurrentUserName</div>
+                            <a class="main-layout-user-menu-popup__edit-username" href="/profile/pseudo" @onclick="CloseUserMenu">Modifier mon pseudo</a>
+                            <a class="main-layout-user-menu-popup__logout" href="/Account/Logout" @onclick="CloseUserMenu">Se déconnecter</a>
+                        </div>
+                    }
+                </div>
+                @if (IsUserMenuOpen)
+                {
+                    <div class="main-layout-user-menu-popup-overlay" @onclick="CloseUserMenu"></div>
+                }
             </Authorized>
             <NotAuthorized>
                 <RedirectButton Height="30px" FontSize="0.9rem" style="margin-left: auto;margin-right: 10px;" Href="/Login">
