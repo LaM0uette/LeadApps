@@ -11,7 +11,7 @@ RUN dotnet restore TopDeck/TopDeck.Api/TopDeck.Api.csproj
 COPY . .
 RUN dotnet publish TopDeck/TopDeck.Api/TopDeck.Api.csproj -c Release -o /app/api --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-slim AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime
 WORKDIR /app
 COPY --from=build /app/api .
 ENV ASPNETCORE_URLS=http://+:5000

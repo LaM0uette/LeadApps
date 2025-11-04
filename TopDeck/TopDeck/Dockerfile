@@ -12,7 +12,7 @@ RUN dotnet restore TopDeck/TopDeck/TopDeck.csproj
 COPY . .
 RUN dotnet publish TopDeck/TopDeck/TopDeck.csproj -c Release -o /app/web --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-slim AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime
 WORKDIR /app
 COPY --from=build /app/web .
 ENV ASPNETCORE_URLS=http://+:8080
