@@ -9,12 +9,11 @@ COPY TopDeck/TopDeck.Shared/TopDeck.Shared.csproj TopDeck/TopDeck.Shared/
 RUN dotnet restore TopDeck/TopDeck.Api/TopDeck.Api.csproj
 
 COPY . .
-WORKDIR /src/TopDeck/TopDeck.Api
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish TopDeck/TopDeck.Api/TopDeck.Api.csproj -c Release -o /app/api --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-slim AS runtime
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY --from=build /app/api .
 ENV ASPNETCORE_URLS=http://+:5000
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENTRYPOINT ["dotnet", "TopDeck.Api.dll"]
