@@ -446,14 +446,17 @@ else
 
                             <div class="filter-modal__section">
                                 <label class="filter-modal__section__title">Types Pokémon</label>
-                                <div class="filter-tags">
+                                <div class="filter-tags filter-tags--energies">
                                     @foreach (string name in AllPokemonTypeNames)
                                     {
-                                        bool checkedVal = SelectedPokemonTypeNames.Contains(name);
-                                        <label class="filter-tag">
-                                            <input type="checkbox" checked="@checkedVal" @onclick="@(() => TogglePokemonTypeName(name))" />
-                                            <span class="filter-tag__name">@name</span>
-                                        </label>
+                                        bool toggled = SelectedPokemonTypeNames.Contains(name);
+                                        <button class="deck-details-cards-edit-energy @(toggled ? "deck-details-cards-edit-energy--toggled" : null)"
+                                                @onclick:preventDefault="true"
+                                                @onclick:stopPropagation="true"
+                                                @onclick="@(() => TogglePokemonTypeName(name))">
+                                            <img class="deck-details-cards-edit-energy__img" src="https://tcgp-dex.com/energyTypes/@(name.ToLower()).webp" alt="@name" loading="lazy" decoding="async" fetchpriority="low" />
+                                            <p class="deck-details-cards-edit-energy__name">@Localizer.Localize($"pokemonType.{name}", name)</p>
+                                        </button>
                                     }
                                 </div>
                             </div>

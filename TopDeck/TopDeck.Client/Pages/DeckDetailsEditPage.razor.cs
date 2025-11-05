@@ -120,7 +120,13 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         // Build distinct filters lists from all cards
         AllTypeNames = TCGPAllCards.Select(c => c.Type.Name).Where(n => !string.IsNullOrWhiteSpace(n)).Distinct().OrderBy(n => n).ToList();
         AllCollectionCodes = TCGPAllCards.Select(c => c.Collection.Code).Where(c => !string.IsNullOrWhiteSpace(c)).Distinct().OrderBy(c => c).ToList();
-        AllPokemonTypeNames = TCGPAllCards.OfType<TCGPPokemonCard>().Select(c => c.PokemonType.Name).Where(n => !string.IsNullOrWhiteSpace(n)).Distinct().OrderBy(n => n).ToList();
+        AllPokemonTypeNames = TCGPAllCards
+                    .OfType<TCGPPokemonCard>()
+                    .Select(c => c.PokemonType.Name)
+                    .Where(n => !string.IsNullOrWhiteSpace(n))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(GetPokemonTypeIndex)
+                    .ToList();
         ApplyTCGPCardsFilter();
 
         // Load Tags into UIStore if empty

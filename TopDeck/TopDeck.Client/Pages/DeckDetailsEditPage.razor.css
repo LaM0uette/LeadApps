@@ -246,7 +246,7 @@
     height: 100%;
 
     display: grid;
-    grid-template-columns: repeat(auto-fill, 115px);
+    grid-template-columns: repeat(auto-fill, 105px);
     justify-content: center;
     align-content: start;
     gap: 5px;
@@ -258,7 +258,7 @@
 }
 
     .deck-details-edit-cards__card {
-        width: 115px;
+        width: 105px;
         height: auto;
         justify-self: center;
 
@@ -471,13 +471,14 @@
 .deck-details-cards-edit-energy {
     position: relative;
 
-    width: 190px;
-    height: 42px;
+    width: 115px;
+    height: 28px;
 
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    gap: 0.6em;
 
     border: none;
     border-radius: 21px;
@@ -485,20 +486,15 @@
 
     outline: 1px solid var(--color-outline);
 
-    padding: 0;
+    padding: 0.3em;
 
     user-select: none;
     cursor: var(--cursor-pointer);
 }
 
     .deck-details-cards-edit-energy__img {
-        position: absolute;
-        left: 5px;
-        top: 50%;
-        transform: translateY(-50%);
-        
-        width: 28px;
-        height: 28px;
+        width: 21px;
+        height: 21px;
 
         background: transparent;
         border-radius: 14px;
@@ -507,8 +503,11 @@
     }
     
     .deck-details-cards-edit-energy__name {
+        width: 100%;
+        text-align: left;
+        
         font-family: var(--font-bold), sans-serif;
-        font-size: 1.2em;
+        font-size: 0.84em;
         color: var(--color-text);
     }
     
@@ -597,11 +596,11 @@
 
 .deck-details-cards-edit-cards-preview {
     width: 100%;
-    height: 275px;
+    height: 240px;
     
     display: grid;
     grid-auto-flow: row;
-    grid-template-columns: repeat(15, 85px);
+    grid-template-columns: repeat(15, 75px);
     grid-template-rows: repeat(2, 1fr);
     gap: 3px;
     
@@ -620,7 +619,7 @@
 }
 
     .deck-details-cards-edit-cards-preview__card {
-        width: 85px;
+        width: 75px;
         height: auto;
         box-shadow: var(--shadow-l);
 
@@ -673,7 +672,7 @@
     height: 100%;
 
     display: grid;
-    grid-template-columns: repeat(auto-fill, 115px);
+    grid-template-columns: repeat(auto-fill, 105px);
     justify-content: center;
     align-content: start;
     gap: 5px;
@@ -688,7 +687,7 @@
 .deck-details-cards-edit-card-button {
     position: relative;
     
-    width: 115px;
+    width: 105px;
     height: 165px;
     
     display: flex;
@@ -893,7 +892,7 @@
     cursor: var(--cursor-pointer);
     z-index: 5;
 }
-    .order-fab { bottom: 1066px; }
+    .order-fab { bottom: 106px; }
     .order-fab:hover { opacity: 0.9; }
     .order-fab:active { opacity: 0.8; }
     
@@ -914,7 +913,7 @@
 
 .filter-modal {
     width: min(80%, 92%);
-    max-height: 80vh;
+    max-height: 92vh;
     overflow: auto;
     background: var(--color-bg);
     border-radius: var(--radius-l);
@@ -925,7 +924,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 40px;
+        margin-bottom: 15px;
     
         font-family: var(--font-bold), sans-serif;
         font-size: 1.2rem;
@@ -939,7 +938,7 @@
 }
 
 .filter-modal__section {
-    margin: 32px 0;
+    margin-bottom: 18px
 }
 
 
@@ -1051,17 +1050,20 @@
 
 .filter-tags {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
-    gap: 8px 12px;
-    margin-top: 12px;
+    gap: 8px 6px;
+    margin-top: 6px;
 }
 
 .filter-tag {
+    height: 28px;
+
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: var(--font), sans-serif;
-    font-size: 0.9rem;
+    font-family: var(--font-bold), sans-serif;
+    font-size: 0.8rem;
     cursor: var(--cursor-pointer);
 }
     .filter-tag input {
@@ -1071,7 +1073,7 @@
     .filter-tag__name {
         display: inline-flex;
         align-items: center;
-        padding: 8px 16px;
+        padding: 0.4em 0.8em;
         border-radius: 80px;
         background: var(--color-bg-2);
         outline: 1px solid var(--color-outline);

@@ -39,5 +39,15 @@
   "page.deckDetailEdit.cancelButton.text": "Cancel",
   "page.deckDetailEdit.saveButton.text": "Save",
   "page.deckDetailEdit.noCardsInDeck.text": "No cards in this deck.",
-  "page.decksView.noCards.text": "No cards found."
+  "page.decksView.noCards.text": "No cards found.",
+  "pokemonType.Grass": "Grass",
+  "pokemonType.Fire": "Fire",
+  "pokemonType.Water": "Water",
+  "pokemonType.Lightning": "Lightning",
+  "pokemonType.Psychic": "Psychic",
+  "pokemonType.Fighting": "Fighting",
+  "pokemonType.Darkness": "Darkness",
+  "pokemonType.Metal": "Metal",
+  "pokemonType.Dragon": "Dragon",
+  "pokemonType.Colorless": "Colorless"
 }
