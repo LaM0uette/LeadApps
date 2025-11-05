@@ -1,5 +1,5 @@
 ﻿.title-panel {
-    background: var(--color-bg);
+    background: var(--color-bg-3);
     box-shadow: var(--drop-shadow-m);
     
     border: none;
@@ -28,5 +28,5 @@
         text-overflow: ellipsis;
         overflow: hidden;
     
-        color: var(--color-secondary);
+        color: var(--color-text);
     }

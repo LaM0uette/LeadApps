@@ -1,6 +1,6 @@
 ﻿.provider-button {
-    background: transparent;
-    color: var(--color-secondary);
+    background-color: var(--color-bg-3);
+    color: var(--color-text);
 
     border: 1px solid var(--color-border);
     border-radius: var(--radius-s);

@@ -1,7 +1,7 @@
 ﻿.auth-panel {
     position: relative;
     
-    background: var(--color-bg);
+    background: var(--color-bg-2);
     color: var(--color-text);
     
     border: 1px solid var(--color-border);

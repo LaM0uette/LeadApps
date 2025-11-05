@@ -1,5 +1,5 @@
 ﻿.vote-panel {
-    background: var(--color-bg);
+    background: var(--color-bg-3);
     
     border: none;
     outline: 1px solid var(--color-outline);
@@ -55,11 +55,6 @@
 
     .vote-button:active {
         opacity: 0.6;
-    }
-    
-    .vote-like-button__icon {
-        width: 20px;
-        height: 20px;
     }
 
     

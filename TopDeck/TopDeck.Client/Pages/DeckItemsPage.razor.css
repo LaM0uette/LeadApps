@@ -8,7 +8,7 @@
     align-items: stretch;
     
     overflow: hidden;
-    background: #fff;
+    background: var(--color-bg);
 }
 
 .deck-items {
@@ -93,7 +93,7 @@
     height: 56px;
     border-radius: 50%;
     border: none;
-    background: var(--color-bg);
+    background: var(--color-bg-2);
     box-shadow: var(--shadow-m);
 
     outline: 1px solid var(--color-outline);
@@ -101,19 +101,13 @@
     cursor: var(--cursor-pointer);
     z-index: 5;
 }
-    .order-fab { bottom: 86px; }
+    .order-fab { bottom: 106px; }
     .order-fab:hover { opacity: 0.9; }
     .order-fab:active { opacity: 0.8; }
 
-    .filter-fab { bottom: 20px; }
+    .filter-fab { bottom: 40px; }
     .filter-fab:hover { opacity: 0.9; }
     .filter-fab:active { opacity: 0.8; }
-
-.order-fab img,
-.filter-fab img{
-    width: 75%;
-    height: 75%;
-}
 
 
 .filter-modal__overlay {
@@ -151,10 +145,6 @@
         
         cursor: var(--cursor-pointer);
     }
-        .filter-modal__close img {
-            width: 20px;
-            height: 20px;
-        }
     
     .filter-modal__section {
         margin: 32px 0;
@@ -187,14 +177,16 @@
     background: transparent;
     border: none;
     padding: 12px 20px;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    font-family: var(--font-bold), sans-serif;
+    color: var(--color-text);
     cursor: var(--cursor-pointer);
 }
 
 .filter-order-item--toggled .filter-order-item__btn {
     border-radius: 80px;
     background: var(--color-text);
-    color: var(--color-bg);
+    color: var(--color-bg-2);
 }
 
 
@@ -234,7 +226,7 @@
     border: none;
     outline: 1px solid var(--color-outline);
 
-    background: var(--color-bg);
+    background: var(--color-bg-2);
     color: var(--color-text);
 
     border-radius: var(--radius-m);
@@ -294,7 +286,7 @@
         align-items: center;
         padding: 8px 16px;
         border-radius: 80px;
-        background: transparent;
+        background: var(--color-bg-2);
         outline: 1px solid var(--color-outline);
         color: var(--color-text);
         user-select: none;
@@ -305,7 +297,7 @@
     
     .filter-tag input:checked + .filter-tag__name {
         background: var(--color-text);
-        color: var(--color-bg);
+        color: var(--color-bg-2);
         outline: none;
     }
     
@@ -329,16 +321,11 @@
         border-radius: 50%;
         border: none;
         outline: 1px solid var(--color-outline);
-        background: var(--color-bg);
+        background: var(--color-bg-2);
     
         box-shadow: var(--shadow-m);
     
         cursor: var(--cursor-pointer);
-    }
-    
-    .filter-modal-footer__close img {
-        width: 20px;
-        height: 20px;
     }
     
 

@@ -28,7 +28,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
     
-        color: var(--color-secondary);
+        color: var(--color-text);
         cursor: var(--cursor-text);
     }
 
@@ -36,7 +36,7 @@
 .title-panel__input {
     font-family: var(--font-extra-bold), sans-serif;
     font-size: inherit;
-    color: var(--color-secondary);
+    color: var(--color-text);
 
     width: 100%;
     text-align: center;

@@ -1,0 +1,40 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+@code {
+    [Parameter] public string FileName { get; set; } = "";
+    [Parameter] public int Size { get; set; } = 20;
+    [Parameter] public string Color { get; set; } = "var(--color-text)";
+
+    string? svgContent;
+    readonly List<string> paths = [];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        svgContent = await JS.InvokeAsync<string>("loadSvg", $"/img/{FileName}");
+
+        paths.Clear();
+        int index = 0;
+        while (true)
+        {
+            index = svgContent.IndexOf("<path", index, StringComparison.Ordinal);
+            if (index < 0) break;
+            int start = svgContent.IndexOf("d=\"", index, StringComparison.Ordinal) + 3;
+            int end = svgContent.IndexOf("\"", start, StringComparison.Ordinal);
+            paths.Add(svgContent.Substring(start, end - start));
+            index = end;
+        }
+
+        StateHasChanged();
+    }
+}
+<div style="width:@(Size)px;height:@(Size)px;">
+    <svg width="@Size" height="@Size" viewBox="0 0 512 512" style="fill:@Color">
+        @foreach (string p in paths)
+        {
+            <path d="@p" />
+        }
+    </svg>
+</div>

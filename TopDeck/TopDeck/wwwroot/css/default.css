@@ -22,12 +22,14 @@
     --color-primary: #9c3524;
     --color-on-primary: #ffffff;
 
-    --color-secondary: #1e2e36;
+    --color-secondary: #252829; /*#1e2e36;*/
     --color-on-secondary: #fdfdfd;
 
     --color-bg: #faf8f7;
-    --color-border: #d6d0cf;
-    --color-outline: #ebeced;
+    --color-bg-2: #f3f5f4;
+    --color-bg-3: #ebebeb;
+    --color-border: #cbcbcb;
+    --color-outline: #dfdfdf;
 
     --color-text: #252829;
     --color-text-strong: #141617;
@@ -88,12 +90,14 @@
     --color-primary: #9c3524;
     --color-on-primary: #ffffff;
 
-    --color-secondary: #1e2e36;
+    --color-secondary: #ebe8e5; /*#1e2e36;*/
     --color-on-secondary: #fdfdfd;
 
-    --color-bg: #1a1716;
-    --color-border: #423d3b;
-    --color-outline: #2c2a29;
+    --color-bg: #282a2d;
+    --color-bg-2: #3c4045;
+    --color-bg-3: #54575b;
+    --color-border: #505259;
+    --color-outline: #475053;
 
     --color-text: #ebe8e5;
     --color-text-strong: #ffffff;
@@ -126,7 +130,7 @@
 
 :root {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-secondary) transparent;
+    scrollbar-color: var(--color-text) transparent;
 }
 :root::-webkit-scrollbar {
     width: 6px;
@@ -135,7 +139,7 @@
     background: transparent;
 }
 :root::-webkit-scrollbar-thumb {
-    background-color: var(--color-secondary);
+    background-color: var(--color-text);
     border-radius: 4px;
 }
 

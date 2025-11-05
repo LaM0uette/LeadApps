@@ -23,7 +23,7 @@ else
                         @if (!IsMobile && AuthenticatedUserUuid == DeckDetails.CreatorUuid)
                         {
                             <button class="deck-details-title-panel-edit-deck-button-desktop" @onclick="EditDeck">
-                                <img class="deck-details-title-panel-edit-deck-button-desktop__icon" src="img/edit-icon.svg" alt="edit deck"/>
+                                <SvgIcon FileName="edit-icon.svg" Size="20" />
                             </button>
                         }
                     </div>
@@ -91,7 +91,10 @@ else
                     }
                 </div>
                 
-                <p class="deck-item-header__creator-name">@CreatorName</p>
+                @if (CurrentMode == Mode.View)
+                {
+                    <p class="deck-item-header__creator-name">@CreatorName</p>
+                }
             </div>
             
             @if (CurrentTab is Tab.Cards)
@@ -173,27 +176,48 @@ else
             @if (IsMobile)
             {
                 <button class="deck-details-back-button" @onclick="GoBackAsync">
-                    <img class="deck-details-back-button__icon" src="img/arrow-back-icon.svg" alt="back button"/>
+                    <SvgIcon FileName="arrow-back-icon.svg" Size="24" />
                 </button>
                 
                 if (AuthenticatedUserUuid == DeckDetails.CreatorUuid)
                 {
                     <button class="deck-details-title-panel-edit-deck-button" @onclick="EditDeck">
-                        <img class="deck-details-title-panel-edit-deck-button__icon" src="img/edit-icon.svg" alt="edit deck"/>
+                        <SvgIcon FileName="edit-icon.svg" Size="24" />
                     </button>
                 }
             
                 <div class="deck-details-tabs">
                     <button class="deck-details-tab-button @(CurrentTab is Tab.Cards ? "active" : "")" @onclick="() => SelectTab(Tab.Cards)">
-                        <img class="deck-details-tab-button__icon" src="img/card-tab-icon@(CurrentTab is Tab.Cards ? "-active" : "").svg" alt="card tab button"/>
+                        @if (CurrentTab is Tab.Cards)
+                        {
+                            <SvgIcon FileName="card-tab-icon-active.svg" Size="24" />
+                        }
+                        else
+                        {
+                            <SvgIcon FileName="card-tab-icon.svg" Size="24" />
+                        }
                     </button>
 
                     <button class="deck-details-tab-button @(CurrentTab is Tab.Overview ? "active" : "")" @onclick="() => SelectTab(Tab.Overview)">
-                        <img class="deck-details-tab-button__icon" src="img/overview-tab-icon@(CurrentTab is Tab.Overview ? "-active" : "").svg" alt="overview tab button"/>
+                        @if (CurrentTab is Tab.Overview)
+                        {
+                            <SvgIcon FileName="overview-tab-icon-active.svg" Size="24" />
+                        }
+                        else
+                        {
+                            <SvgIcon FileName="overview-tab-icon.svg" Size="24" />
+                        }
                     </button>
 
                     <button class="deck-details-tab-button @(CurrentTab is Tab.Suggestions ? "active" : "")" @onclick="() => SelectTab(Tab.Suggestions)">
-                        <img class="deck-details-tab-button__icon" src="img/suggestions-tab-icon@(CurrentTab is Tab.Suggestions ? "-active" : "").svg" alt="suggestion tab button"/>
+                        @if (CurrentTab is Tab.Suggestions)
+                        {
+                            <SvgIcon FileName="suggestions-tab-icon-active.svg" Size="24" />
+                        }
+                        else
+                        {
+                            <SvgIcon FileName="suggestions-tab-icon.svg" Size="24" />
+                        }
                     </button>
                 </div>
             }
@@ -335,10 +359,10 @@ else
                 </div>
                 
                 <button class="order-fab" @onclick="OpenOrder">
-                    <img src="img/order-icon.svg" alt="order"/>
+                    <SvgIcon FileName="order-icon.svg" Size="42" />
                 </button>
                 <button class="filter-fab" @onclick="OpenFilter">
-                    <img src="img/filter-icon.svg" alt="filter"/>
+                    <SvgIcon FileName="filter-icon.svg" Size="42" />
                 </button>
                 
                 <div class="deck-details-cards-edit-cards-buttons-container">
@@ -358,7 +382,7 @@ else
                             <div class="filter-modal__header">
                                 <h3>@Localizer.Localize("component.cardOrder.header.title", "Order decks")</h3>
                                 <button class="filter-modal__close" @onclick="CloseOrder">
-                                    <img src="img/close-icon.svg" alt="close"/>
+                                    <SvgIcon FileName="close-icon.svg" Size="20" />
                                 </button>
                             </div>
                             <div class="filter-modal__section">
@@ -371,7 +395,9 @@ else
                                                 <span class="filter-order-item__label">@order.Label</span>
                                             </button>
                                             <button class="filter-order-item__dir @(!selected ? "filter-order-item__dir--hideed" : null)" title="Asc/Desc" @onclick="() => ToggleOrderDirection(order.Key)" @onclick:stopPropagation="true">
-                                                <img class="filter-order-item__dir-icon @(AscInput ? "filter-order-item__dir-icon--asc" : null)" src="img/order-downArrow-icon.svg" alt="asc/desc"/>
+                                                <div class="filter-order-item__dir-icon @(AscInput ? "filter-order-item__dir-icon--asc" : null)">
+                                                    <SvgIcon FileName="down-arrow-icon.svg" Size="24" />
+                                                </div>
                                             </button>
                                         </div>
                                     }
@@ -379,7 +405,7 @@ else
                             </div>
                             <div class="filter-modal-footer">
                                 <button class="filter-modal-footer__close" @onclick="ApplyOrder">
-                                    <img src="img/close-icon.svg" alt="close"/>
+                                    <SvgIcon FileName="close-icon.svg" Size="20" />
                                 </button>
                             </div>
                         </div>
@@ -393,14 +419,14 @@ else
                             <div class="filter-modal__header">
                                 <h3>@Localizer.Localize("component.cardFilter.header.title", "Filter decks")</h3>
                                 <button class="filter-modal__close" @onclick="CloseFilter">
-                                    <img src="img/close-icon.svg" alt="close"/>
+                                    <SvgIcon FileName="close-icon.svg" Size="20" />
                                 </button>
                             </div>
 
                             <div class="filter-modal__section" style="position: relative">
                                 <input class="filter-input" placeholder="@Localizer.Localize("component.cardFilter.search.placeholder", "Search by name, code, or author")" @bind="SearchInput" />
                                 <div class="filter-input__icon">
-                                    <img src="img/search-icon.svg" alt="search"/>
+                                    <SvgIcon FileName="search-icon.svg" Size="20" />
                                 </div>
                             </div>
 
@@ -448,7 +474,7 @@ else
 
                             <div class="filter-modal-footer">
                                 <button class="filter-modal-footer__close" @onclick="ApplyFilter">
-                                    <img src="img/close-icon.svg" alt="close"/>
+                                    <SvgIcon FileName="close-icon.svg" Size="20" />
                                 </button>
                             </div>
                         </div>

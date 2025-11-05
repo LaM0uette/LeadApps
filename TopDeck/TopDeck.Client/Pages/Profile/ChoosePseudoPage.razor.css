@@ -27,7 +27,7 @@
     border: none;
     outline: 1px solid var(--color-outline);
 
-    background: var(--color-bg);
+    background: var(--color-bg-2);
     color: var(--color-text);
 
     border-radius: var(--radius-m);
@@ -60,8 +60,8 @@
         font-family: var(--font-bold), sans-serif;
         font-size: 1rem;
         
-        background-color: var(--color-secondary);
-        color: var(--color-bg);
+        background-color: var(--color-text);
+        color: var(--color-bg-2);
         
         cursor: pointer;
     }

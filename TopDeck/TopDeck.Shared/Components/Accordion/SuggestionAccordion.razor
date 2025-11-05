@@ -15,7 +15,9 @@
                        DislikeUserUuids="Suggestion.DislikeUserUuids.ToList()"/>
         </div>
         
-        <img class="suggestion-button__arrow @(IsOpen ? "suggestion-button__arrow--expanded" : "")" src="img/arrow-right.svg" alt="arrow"/>
+        <div class="suggestion-button__arrow @(IsOpen ? "suggestion-button__arrow--expanded" : "")">
+            <SvgIcon FileName="arrow-right.svg" Size="20" />
+        </div>
     </button>
 
     @if (IsOpen)

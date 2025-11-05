@@ -6,21 +6,37 @@
      style="width: @Width; height: @Height; font-size: @FontSize;"
      @onclick:preventDefault 
      @onclick:stopPropagation>
-    <button class="vote-button vote-like-button" 
-            @onclick:preventDefault 
+    <button class="vote-button vote-like-button"
+            @onclick:preventDefault
             @onclick:stopPropagation
             @onclick="OnLikeClicked">
-        <img class="vote-like-button__icon" src="img/@(IsLiked ? "like-icon.svg" : "like-empty-icon.svg")" alt="like"/>
+        
+        @if (IsLiked)
+        {
+            <SvgIcon FileName="like-icon.svg" Size="20" />
+        }
+        else
+        {
+            <SvgIcon FileName="like-empty-icon.svg" Size="20" />
+        }
     </button>
     
     <p class="vote-panel__like-count">@LikeCountFormatted</p>
     <div  class="vote-panel__separator"></div>
     
     <button class="vote-button vote-dislike-button"
-            @onclick:preventDefault 
+            @onclick:preventDefault
             @onclick:stopPropagation
             @onclick="OnDislikeClicked">
-        <img class="vote-like-button__icon" src="img/@(IsDisliked ? "like-icon.svg" : "like-empty-icon.svg")" alt="dislike"/>
+        
+        @if (IsDisliked)
+        {
+            <SvgIcon FileName="like-icon.svg" Size="20" />
+        }
+        else
+        {
+            <SvgIcon FileName="like-empty-icon.svg" Size="20" />
+        }
     </button>
     @if (ShowDislikeCount)
     {

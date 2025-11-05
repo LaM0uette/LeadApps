@@ -27,6 +27,7 @@
       <UpToDateCheckInput Remove="Modules\Components\Buttons\LmButton.razor" />
       <UpToDateCheckInput Remove="Modules\Components\Spacers\HorizontalSpacer.razor" />
       <UpToDateCheckInput Remove="Modules\Components\Spacers\VerticalSpacer.razor" />
+      <UpToDateCheckInput Remove="Components\Icons\SvgIcon.razor" />
     </ItemGroup>
 
     <ItemGroup>

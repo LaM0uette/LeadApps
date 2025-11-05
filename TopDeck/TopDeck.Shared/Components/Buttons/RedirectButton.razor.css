@@ -1,6 +1,6 @@
 ﻿.redirect-button {
-    background: var(--color-secondary);
-    color: var(--color-on-secondary);
+    background: var(--color-text);
+    color: var(--color-bg);
     
     border: none;
     border-radius: var(--radius-s);

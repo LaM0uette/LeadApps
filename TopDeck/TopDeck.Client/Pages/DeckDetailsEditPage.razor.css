@@ -33,7 +33,7 @@
     display: flex;
     flex-direction: column;
 
-    background: var(--color-bg);
+    background: var(--color-bg-2);
 
     overflow: hidden;
 }
@@ -47,7 +47,7 @@
     justify-content: center;
     align-items: flex-start;
 
-    background: var(--color-bg);
+    background: var(--color-bg-2);
 
     padding: 8px;
     box-sizing: border-box;
@@ -324,7 +324,7 @@
 
     font-family: var(--font-extra-bold), sans-serif;
     font-size: 1.5em;
-    color: var(--color-bg);
+    color: #faf8f7;
     text-align: center;
 
     cursor: var(--cursor-pointer);
@@ -481,7 +481,7 @@
 
     border: none;
     border-radius: 21px;
-    background: transparent;
+    background: var(--color-bg-2);
 
     outline: 1px solid var(--color-outline);
 
@@ -642,7 +642,7 @@
         height: 30px;
 
         border: 1px solid var(--color-outline);
-        background: var(--color-bg);
+        background: var(--color-bg-2);
         color: var(--color-cancel);
 
         font-family: var(--font), sans-serif;
@@ -743,7 +743,7 @@
     
     border: none;
 
-    background: var(--color-bg);
+    background: var(--color-bg-2);
     box-shadow: var(--shadow-l);
 
     border-radius: 50%;
@@ -771,7 +771,7 @@
     font-family: var(--font-bold), sans-serif;
     font-size: 2rem;
     
-    color: var(--color-text-very-light);
+    color: #faf8f7;
     
     pointer-events: none;
 }
@@ -785,7 +785,7 @@
 
     display: flex;
 
-    background: var(--color-bg);
+    background: var(--color-bg-2);
     border-radius: 20px;
     padding: 2px 8px;
     box-shadow: var(--shadow-s);
@@ -858,7 +858,7 @@
     
     font-family: var(--font-extra-bold), sans-serif;
     font-size: 1.5em;
-    color: var(--color-bg);
+    color: #faf8f7;
     text-align: center;
 
     cursor: var(--cursor-pointer);
@@ -885,7 +885,7 @@
     height: 56px;
     border-radius: 50%;
     border: none;
-    background: var(--color-bg);
+    background: var(--color-bg-2);
     box-shadow: var(--shadow-m);
 
     outline: 1px solid var(--color-outline);
@@ -893,19 +893,13 @@
     cursor: var(--cursor-pointer);
     z-index: 5;
 }
-    .order-fab { bottom: 86px; }
+    .order-fab { bottom: 1066px; }
     .order-fab:hover { opacity: 0.9; }
     .order-fab:active { opacity: 0.8; }
     
-    .filter-fab { bottom: 20px; }
+    .filter-fab { bottom: 40px; }
     .filter-fab:hover { opacity: 0.9; }
     .filter-fab:active { opacity: 0.8; }
-
-.order-fab img,
-    .filter-fab img{
-        width: 75%;
-        height: 75%;
-    }
 
 
 .filter-modal__overlay {
@@ -943,10 +937,6 @@
 
     cursor: var(--cursor-pointer);
 }
-    .filter-modal__close img {
-        width: 20px;
-        height: 20px;
-    }
 
 .filter-modal__section {
     margin: 32px 0;
@@ -975,6 +965,8 @@
         border: none;
         padding: 12px 20px;
         font-size: 1.2rem;
+        font-family: var(--font-bold), sans-serif;
+        color: var(--color-text);
         cursor: var(--cursor-pointer);
     }
     
@@ -1021,7 +1013,7 @@
     border: none;
     outline: 1px solid var(--color-outline);
 
-    background: var(--color-bg);
+    background: var(--color-bg-2);
     color: var(--color-text);
 
     border-radius: var(--radius-m);
@@ -1081,7 +1073,7 @@
         align-items: center;
         padding: 8px 16px;
         border-radius: 80px;
-        background: transparent;
+        background: var(--color-bg-2);
         outline: 1px solid var(--color-outline);
         color: var(--color-text);
         user-select: none;
@@ -1092,7 +1084,7 @@
     
     .filter-tag input:checked + .filter-tag__name {
         background: var(--color-text);
-        color: var(--color-bg);
+        color: var(--color-bg-2);
         outline: none;
     }
     
@@ -1116,7 +1108,7 @@
         border-radius: 50%;
         border: none;
         outline: 1px solid var(--color-outline);
-        background: var(--color-bg);
+        background: var(--color-bg-2);
     
         box-shadow: var(--shadow-m);
     
@@ -1148,7 +1140,7 @@
             border-radius: 50%;
             border: none;
             outline: 1px solid var(--color-outline);
-            background: var(--color-bg);
+            background: var(--color-bg-2);
         
             box-shadow: var(--shadow-m);
         

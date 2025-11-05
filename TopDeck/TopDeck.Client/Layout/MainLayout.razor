@@ -20,6 +20,13 @@
                     {
                         <div class="main-layout-user-menu-popup">
                             <div class="main-layout-user-menu-popup__username">@CurrentUserName</div>
+                            <div class="main-layout-user-menu-popup__row">
+                                <span class="main-layout-user-menu-popup__label">Mode sombre</span>
+                                <label class="td-switch" title="Basculer thème sombre">
+                                    <input type="checkbox" checked="@IsDarkTheme" @onchange="OnThemeSwitchChanged" />
+                                    <span class="td-switch__slider"></span>
+                                </label>
+                            </div>
                             <a class="main-layout-user-menu-popup__edit-username" href="/profile/pseudo" @onclick="CloseUserMenu">Modifier mon pseudo</a>
                             <a class="main-layout-user-menu-popup__logout" href="/Account/Logout" @onclick="CloseUserMenu">Se déconnecter</a>
                         </div>

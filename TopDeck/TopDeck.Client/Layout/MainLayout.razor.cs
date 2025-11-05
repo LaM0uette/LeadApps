@@ -18,6 +18,7 @@ public class MainLayoutBase : LayoutComponentBase
     protected bool IsUserMenuOpen { get; set; }
     protected string CurrentUserName { get; set; } = string.Empty;
     protected string UserInitial => string.IsNullOrWhiteSpace(CurrentUserName) ? "?" : CurrentUserName.Trim()[0].ToString().ToUpperInvariant();
+    protected bool IsDarkTheme { get; set; }
     
     [Inject] protected ILocalizer Localizer { get; set; } = null!;
     [Inject] private IAuthUserRequester _authUserRequester { get; set; } = null!;
@@ -66,9 +67,48 @@ public class MainLayoutBase : LayoutComponentBase
         }
     }
 
-    protected void ToggleUserMenu()
+    protected async Task ToggleUserMenu()
     {
         IsUserMenuOpen = !IsUserMenuOpen;
+        if (IsUserMenuOpen)
+        {
+            try
+            {
+                var current = await _js.InvokeAsync<string>("TopDeckTheme.current");
+                IsDarkTheme = string.Equals(current, "dark", StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                // ignore
+            }
+            StateHasChanged();
+        }
+    }
+
+    protected async Task ToggleTheme()
+    {
+        try
+        {
+            await _js.InvokeVoidAsync("TopDeckTheme.toggle");
+        }
+        catch
+        {
+            // ignore
+        }
+    }
+
+    protected async Task OnThemeSwitchChanged(ChangeEventArgs e)
+    {
+        try
+        {
+            bool isChecked = e.Value is bool b ? b : e.Value?.ToString()?.Equals("true", StringComparison.OrdinalIgnoreCase) == true;
+            IsDarkTheme = isChecked;
+            await _js.InvokeVoidAsync("TopDeckTheme.set", isChecked ? "dark" : "light");
+        }
+        catch
+        {
+            // ignore
+        }
     }
 
     protected void CloseUserMenu()
