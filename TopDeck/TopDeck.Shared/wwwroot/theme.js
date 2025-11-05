@@ -25,9 +25,8 @@
     if(saved === 'dark' || saved === 'light'){
       apply(saved);
     } else {
-      // Prefer system theme for first visit
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const initial = prefersDark ? 'dark' : 'light';
+      // Default to light theme on first visit (if no preference saved)
+      const initial = 'light';
       apply(initial);
       localStorage.setItem(STORAGE_KEY, initial);
     }
