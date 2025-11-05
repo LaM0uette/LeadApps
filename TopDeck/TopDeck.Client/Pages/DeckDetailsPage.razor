@@ -71,7 +71,14 @@ else
                         <div class="deck-details-pc-overview">
                             <button class="deck-details-pc-overview-button @(CurrentTab is Tab.Overview ? "active" : "")" @onclick="SwitchTab">
                                 <p class="deck-details-pc-overview-button__text">@Localizer.Localize("page.deckDetail.showAll.text", "View All")</p>
-                                <img class="deck-details-pc-overview-button__icon" src="img/overview-tab-icon@(CurrentTab is Tab.Overview ? "-active" : "").svg" alt="overview button"/>
+                                @if (CurrentTab is Tab.Overview)
+                                {
+                                    <SvgIcon FileName="overview-tab-icon-active.svg" Size="36" />
+                                }
+                                else
+                                {
+                                    <SvgIcon FileName="overview-tab-icon.svg" Size="36" />
+                                }
                             </button>
                         </div>
                     }
