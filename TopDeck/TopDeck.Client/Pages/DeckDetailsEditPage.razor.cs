@@ -204,8 +204,9 @@ public class DeckDetailsEditPagePresenter : PresenterBase
         ["A4a"] = 10,
         ["A4b"] = 11,
         ["B1"] = 12,
-        ["P-A"] = 13,
-        ["P-B"] = 14
+        ["B1a"] = 13,
+        ["P-A"] = 14,
+        ["P-B"] = 15
     };
 
     private static int GetCollectionIndex(string code)
