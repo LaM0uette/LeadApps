@@ -485,7 +485,8 @@ public class DeckDetailsPagePresenter : PresenterBase
             : name.Equals("Item", StringComparison.OrdinalIgnoreCase) || name.Equals("Objet", StringComparison.OrdinalIgnoreCase) ? 3
             : name.Equals("Tool", StringComparison.OrdinalIgnoreCase) || name.Equals("Outil", StringComparison.OrdinalIgnoreCase) ? 4
             : name.Equals("Supporter", StringComparison.OrdinalIgnoreCase) ? 5
-            : 6;
+            : name.Equals("Stadium", StringComparison.OrdinalIgnoreCase) || name.Equals("Stade", StringComparison.OrdinalIgnoreCase) ? 6
+            : 7;
     }
 
     private static readonly Dictionary<string, int> _collectionOrder = new(StringComparer.OrdinalIgnoreCase)
@@ -503,8 +504,9 @@ public class DeckDetailsPagePresenter : PresenterBase
         ["A4b"] = 11,
         ["B1"] = 12,
         ["B1a"] = 13,
-        ["P-A"] = 14,
-        ["P-B"] = 15
+        ["B2"] = 14,
+        ["P-A"] = 15,
+        ["P-B"] = 16
     };
 
     private static int GetCollectionIndex(string code)

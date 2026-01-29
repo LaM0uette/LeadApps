@@ -36,9 +36,10 @@ public class TCGPCardRequester : ITCGPCardRequester
         var itemsTask = GetJsonAsync<List<CardItemOutputDTO>>($"/cards/item{urlParams}{loadThumbnailParam}", ct);
         var toolsTask = GetJsonAsync<List<CardToolOutputDTO>>($"/cards/tool{urlParams}{loadThumbnailParam}", ct);
         var supportersTask = GetJsonAsync<List<CardSupporterOutputDTO>>($"/cards/supporter{urlParams}{loadThumbnailParam}", ct);
+        var stadiumsTask = GetJsonAsync<List<CardStadiumOutputDTO>>($"/cards/stadium{urlParams}{loadThumbnailParam}", ct);
         var fossilsTask = GetJsonAsync<List<CardFossilOutputDTO>>($"/cards/fossil{urlParams}{loadThumbnailParam}", ct);
 
-        await Task.WhenAll(pokemonsTask!, itemsTask!, toolsTask!, supportersTask!, fossilsTask!);
+        await Task.WhenAll(pokemonsTask!, itemsTask!, toolsTask!, supportersTask!, stadiumsTask!, fossilsTask!);
 
         List<TCGPCard> all = new();
 
@@ -50,6 +51,8 @@ public class TCGPCardRequester : ITCGPCardRequester
             all.AddRange(toolDtos.ToDomain());
         if (supportersTask.Result is { } supDtos)
             all.AddRange(supDtos.ToDomain());
+        if (stadiumsTask.Result is { } stdDtos)
+            all.AddRange(stdDtos.ToDomain());
         if (fossilsTask.Result is { } fosDtos)
             all.AddRange(fosDtos.ToDomain());
 

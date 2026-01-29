@@ -75,6 +75,7 @@ public static class DtoToDomainMappings
     public static TCGPCard ToDomain(this CardItemOutputDTO dto) => ((CardOutputDTO)dto).ToDomain();
     public static TCGPCard ToDomain(this CardToolOutputDTO dto) => ((CardOutputDTO)dto).ToDomain();
     public static TCGPCard ToDomain(this CardSupporterOutputDTO dto) => ((CardOutputDTO)dto).ToDomain();
+    public static TCGPCard ToDomain(this CardStadiumOutputDTO dto) => ((CardOutputDTO)dto).ToDomain();
     public static TCGPCard ToDomain(this CardFossilOutputDTO dto) => ((CardOutputDTO)dto).ToDomain();
 
     public static TCGPPokemonCard ToDomain(this CardPokemonOutputDTO dto)
@@ -94,6 +95,7 @@ public static class DtoToDomainMappings
     public static List<TCGPCard> ToDomain(this IEnumerable<CardItemOutputDTO> dtos) => dtos.Select(d => d.ToDomain()).ToList();
     public static List<TCGPCard> ToDomain(this IEnumerable<CardToolOutputDTO> dtos) => dtos.Select(d => d.ToDomain()).ToList();
     public static List<TCGPCard> ToDomain(this IEnumerable<CardSupporterOutputDTO> dtos) => dtos.Select(d => d.ToDomain()).ToList();
+    public static List<TCGPCard> ToDomain(this IEnumerable<CardStadiumOutputDTO> dtos) => dtos.Select(d => d.ToDomain()).ToList();
     public static List<TCGPCard> ToDomain(this IEnumerable<CardFossilOutputDTO> dtos) => dtos.Select(d => d.ToDomain()).ToList();
     public static List<TCGPPokemonCard> ToDomain(this IEnumerable<CardPokemonOutputDTO> dtos) => dtos.Select(d => d.ToDomain()).ToList();
 }

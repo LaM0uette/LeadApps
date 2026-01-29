@@ -65,7 +65,8 @@ public class SuggestionAccordionBase : PresenterBase
             : name.Equals("Item", StringComparison.OrdinalIgnoreCase) || name.Equals("Objet", StringComparison.OrdinalIgnoreCase) ? 3
             : name.Equals("Tool", StringComparison.OrdinalIgnoreCase) || name.Equals("Outil", StringComparison.OrdinalIgnoreCase) ? 4
             : name.Equals("Supporter", StringComparison.OrdinalIgnoreCase) ? 5
-            : 6;
+            : name.Equals("Stadium", StringComparison.OrdinalIgnoreCase) || name.Equals("Stade", StringComparison.OrdinalIgnoreCase) ? 6
+            : 7;
     }
 
     #endregion
