@@ -34,6 +34,10 @@
     .main-layout-header__title {
         font-family: var(--font-extra-bold), sans-serif;
         font-size: 1.5rem;
+        
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
     }
 
     .main-layout-header__separator {
