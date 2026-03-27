@@ -506,8 +506,9 @@ public class DeckDetailsPagePresenter : PresenterBase
         ["B1a"] = 13,
         ["B2"] = 14,
         ["B2a"] = 15,
-        ["P-A"] = 16,
-        ["P-B"] = 17
+        ["B2b"] = 16,
+        ["P-A"] = 17,
+        ["P-B"] = 18
     };
 
     private static int GetCollectionIndex(string code)
