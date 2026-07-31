@@ -4,8 +4,10 @@ using Auth0.AspNetCore.Authentication;
 using Cards;
 using Helpers.Auth0;
 using Localizer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Requesters.AuthUser;
 using TCGPCardRequester;
@@ -49,6 +51,18 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Clear();
 });
 
+
+// Keys must survive container recreation, otherwise every deploy invalidates all auth cookies.
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "keys")))
+    .SetApplicationName("TopDeck")
+    .SetDefaultKeyLifetime(TimeSpan.FromDays(3650));
+
+builder.Services.Configure<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromDays(30);
+    options.SlidingExpiration = true;
+});
 
 builder.Services
     .AddAuth0WebAppAuthentication(options => {

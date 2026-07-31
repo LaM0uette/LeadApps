@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Working style
+
+This project is **legacy**. Favour the quickest fix that works over the clean one: patch in place, don't refactor surrounding code, don't restructure to satisfy conventions. Ship it and move on. Only go further when explicitly asked.
+
 ## Commands
 
 All commands run from the repository root. There is **no test project** in this solution.

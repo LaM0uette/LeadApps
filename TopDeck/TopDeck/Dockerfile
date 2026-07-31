@@ -16,6 +16,8 @@ RUN dotnet publish -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
+# Fixed Data Protection key so auth cookies survive container recreation.
+COPY TopDeck/TopDeck/keys/ /app/keys/
 ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENTRYPOINT ["dotnet", "TopDeck.dll"]

@@ -26,6 +26,8 @@ public static class AuthEndpoints
         }
 
         AuthenticationProperties authenticationProperties = builder.Build();
+        authenticationProperties.IsPersistent = true;
+
         await httpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
     }
 
