@@ -10,6 +10,7 @@
   "component.button.back.text": "Retour",
   "component.pageButton.previous.text": "Précédent",
   "component.pageButton.next.text": "Suivant",
+  "component.deckQr.alt.text": "Code du deck à scanner",
   "component.loadingWheel.text": "Chargement…",
   "component.titlePanel.placeholder": "Nom du deck",
   "component.cardOrder.header.title": "Trier les cartes",

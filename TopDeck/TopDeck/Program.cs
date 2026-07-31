@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Security.Claims;
 using Auth0.AspNetCore.Authentication;
+using Cards;
 using Helpers.Auth0;
 using Localizer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -97,6 +98,7 @@ builder.Services.AddRazorComponents()
 // Services
 builder.Services.AddSingleton<UIStore>();
 builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
+builder.Services.AddSingleton<CardCatalog>();
 
 
 builder.Services.AddScoped<IAuthUserRequester, FakeAuthUserRequester>();

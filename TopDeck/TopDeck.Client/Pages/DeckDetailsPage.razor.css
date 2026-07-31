@@ -93,10 +93,10 @@
 
     .deck-details-header__separator {
         width: 100%;
-    
+
         border: none;
         border-top: 1px solid var(--color-border);
-    
+
         margin: 0;
         box-shadow: var(--shadow-s);
     }
@@ -172,9 +172,18 @@
     width: 100%;
 
     display: grid;
-    grid-template-columns: 5fr 2fr;
+    grid-template-columns: 5fr auto 2fr;
 
     z-index: 2;
+}
+
+
+.deck-details-qr {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1;
 }
 
 
@@ -1298,7 +1307,7 @@
     }
     
     .deck-details-highlight {
-        grid-template-columns: 3fr 2fr 3fr;
+        grid-template-columns: 3fr auto 2fr 3fr;
     }
 
     .deck-details-energies {

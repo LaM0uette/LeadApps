@@ -59,6 +59,13 @@ else
                         }
                     </div>
 
+                    <div class="deck-details-qr">
+                        @if (DeckQrCodes.Count > 0)
+                        {
+                            <DeckQrCode Cards="DeckQrCodes"/>
+                        }
+                    </div>
+
                     <div class="deck-details-energies">
                         @foreach (int energyId in DeckDetails.EnergyIds)
                         {

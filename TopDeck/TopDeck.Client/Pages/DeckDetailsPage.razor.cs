@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Cards;
+using DeckSharing;
 using TCGPCardRequester;
 using TopDeck.Contracts.DTO;
 using TopDeck.Domain.Models;
@@ -200,7 +202,12 @@ public class DeckDetailsPagePresenter : PresenterBase
     [Inject] private IDeckDetailsService _deckDetailsService { get; set; } = null!;
     [Inject] private ITCGPCardRequester _tcgpCardRequester { get; set; } = null!;
     [Inject] private IUserService _userService { get; set; } = null!;
-    
+    [Inject] private CardCatalog _cardCatalog { get; set; } = null!;
+    [Inject] private HttpClient _httpClient { get; set; } = null!;
+    [Inject] private ILogger<DeckDetailsPagePresenter> _logger { get; set; } = null!;
+
+    protected IReadOnlyList<DeckCardCode> DeckQrCodes { get; private set; } = [];
+
     protected readonly List<OrderOption> OrderOptions = [];
 
     protected override void OnInitialized()
@@ -282,6 +289,8 @@ public class DeckDetailsPagePresenter : PresenterBase
             .Cast<TCGPCard>()
             .Take(3)
             .ToList();
+
+        await BuildDeckQrCodesAsync();
     }
 
     #endregion
@@ -701,6 +710,47 @@ public class DeckDetailsPagePresenter : PresenterBase
         ApplyTCGPCardsFilter();
         IsOrderOpen = false;
         StateHasChanged();
+    }
+
+
+    private async Task BuildDeckQrCodesAsync()
+    {
+        DeckQrCodes = [];
+
+        if (DeckDetails is null)
+            return;
+
+        await _cardCatalog.EnsureLoadedAsync(_httpClient);
+
+        if (!_cardCatalog.IsLoaded)
+        {
+            _logger.LogWarning("Deck QR skipped for {DeckCode}: card catalog could not be loaded", DeckCode);
+            return;
+        }
+
+        List<DeckCardCode> codes = [];
+        List<string> missing = [];
+
+        foreach (DeckDetailsCard card in DeckDetails.Cards)
+        {
+            CardInfo? info = _cardCatalog.Find(card.CollectionCode, card.CollectionNumber);
+
+            if (info is null)
+            {
+                missing.Add($"{card.CollectionCode}/{card.CollectionNumber}");
+                continue;
+            }
+
+            codes.Add(new DeckCardCode(info.F3, _cardCatalog.IsTrainer(info)));
+        }
+
+        if (missing.Count > 0)
+        {
+            _logger.LogWarning("Deck QR skipped for {DeckCode}: {Count} card(s) absent from cards.csv: {Missing}", DeckCode, missing.Count, string.Join(", ", missing.Distinct()));
+            return;
+        }
+
+        DeckQrCodes = codes;
     }
 
     #endregion

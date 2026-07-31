@@ -10,6 +10,7 @@
   "component.button.back.text": "Back",
   "component.pageButton.previous.text": "Previous",
   "component.pageButton.next.text": "Next",
+  "component.deckQr.alt.text": "Deck code to scan",
   "component.loadingWheel.text": "Loading…",
   "component.titlePanel.placeholder": "Deck name",
   "component.cardOrder.header.title": "Order cards",

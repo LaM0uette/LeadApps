@@ -1,3 +1,4 @@
+using Cards;
 using Localizer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -38,6 +39,7 @@ builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticat
 // Stores et localizer
 builder.Services.AddSingleton<UIStore>();
 builder.Services.AddScoped<ILocalizer, JsonLocalizer>();
+builder.Services.AddSingleton<CardCatalog>();
 
 // AuthUserRequester (si besoin d’un HttpClient dédié, tu peux aussi le mettre en AddHttpClient)
 builder.Services.AddScoped<IAuthUserRequester, AuthUserRequester>();

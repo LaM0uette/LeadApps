@@ -1,0 +1,9 @@
+@namespace TopDeck.Shared.Components
+@inherits DeckQrCodeBase
+
+@if (!string.IsNullOrEmpty(DataUri))
+{
+    <div class="deck-qr">
+        <img class="deck-qr__img" src="@DataUri" alt="@AltText" decoding="async"/>
+    </div>
+}
