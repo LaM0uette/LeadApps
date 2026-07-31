@@ -207,6 +207,7 @@ public class DeckDetailsPagePresenter : PresenterBase
     [Inject] private ILogger<DeckDetailsPagePresenter> _logger { get; set; } = null!;
 
     protected IReadOnlyList<DeckCardCode> DeckQrCodes { get; private set; } = [];
+    protected IReadOnlyList<Energy> DeckQrEnergies { get; private set; } = [];
 
     protected readonly List<OrderOption> OrderOptions = [];
 
@@ -716,9 +717,21 @@ public class DeckDetailsPagePresenter : PresenterBase
     private async Task BuildDeckQrCodesAsync()
     {
         DeckQrCodes = [];
+        DeckQrEnergies = [];
 
         if (DeckDetails is null)
             return;
+
+        List<Energy> energies = DeckDetails.EnergyIds
+            .Where(id => Enum.IsDefined(typeof(Energy), id))
+            .Select(id => (Energy)id)
+            .ToList();
+
+        if (energies.Count <= 0)
+        {
+            _logger.LogWarning("Deck QR skipped for {DeckCode}: no encodable energy in [{EnergyIds}]", DeckCode, string.Join(", ", DeckDetails.EnergyIds));
+            return;
+        }
 
         await _cardCatalog.EnsureLoadedAsync(_httpClient);
 
@@ -751,6 +764,7 @@ public class DeckDetailsPagePresenter : PresenterBase
         }
 
         DeckQrCodes = codes;
+        DeckQrEnergies = energies;
     }
 
     #endregion

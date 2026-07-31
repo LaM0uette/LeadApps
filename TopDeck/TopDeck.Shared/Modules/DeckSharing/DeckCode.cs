@@ -6,19 +6,18 @@ public static class DeckCode
 
     private const int TRAINER_OFFSET = 10_000_000;
     private const int CARD_IDENTITY_MODULO = 1_000_000;
-    private const byte TRAILER_FIRST_BYTE = 0x01;
-    private const byte TRAILER_SECOND_BYTE = 0x07;
     private const int IMAGE_NAME_F3_INDEX = 2;
 
     #endregion
 
     #region Methods
 
-    public static string Encode(IEnumerable<DeckCardCode> cards)
+    public static string Encode(IEnumerable<DeckCardCode> cards, IEnumerable<Energy> energies)
     {
         List<DeckCardCode> all = cards.ToList();
         List<DeckCardCode> trainers = all.Where(c => c.IsTrainer).ToList();
         List<DeckCardCode> pokemon = all.Where(c => !c.IsTrainer).ToList();
+        List<Energy> deckEnergies = energies.ToList();
 
         List<byte> bytes = [(byte)trainers.Count];
 
@@ -30,21 +29,24 @@ public static class DeckCode
         foreach (DeckCardCode card in pokemon)
             Add24(bytes, card.F3);
 
-        bytes.Add(TRAILER_FIRST_BYTE);
-        bytes.Add(TRAILER_SECOND_BYTE);
+        bytes.Add((byte)deckEnergies.Count);
+
+        foreach (Energy energy in deckEnergies)
+            bytes.Add((byte)energy);
 
         return Convert.ToBase64String(bytes.ToArray());
     }
 
-    public static (List<int> Trainers, List<int> Pokemon) Decode(string base64)
+    public static (List<int> Trainers, List<int> Pokemon, List<Energy> Energies) Decode(string base64)
     {
         byte[] raw = Convert.FromBase64String(base64);
         int index = 0;
 
         List<int> trainers = ReadList(raw, ref index);
         List<int> pokemon = ReadList(raw, ref index);
+        List<Energy> energies = ReadEnergies(raw, ref index);
 
-        return (trainers, pokemon);
+        return (trainers, pokemon, energies);
     }
 
     public static int F3FromImage(string imageName)
@@ -67,6 +69,17 @@ public static class DeckCode
         }
 
         return values;
+    }
+
+    private static List<Energy> ReadEnergies(byte[] raw, ref int index)
+    {
+        int count = raw[index++];
+        List<Energy> energies = new(count);
+
+        for (int i = 0; i < count; i++)
+            energies.Add((Energy)raw[index++]);
+
+        return energies;
     }
 
     private static void Add24(List<byte> bytes, int value)

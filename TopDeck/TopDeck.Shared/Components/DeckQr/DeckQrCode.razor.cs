@@ -12,6 +12,7 @@ public class DeckQrCodeBase : ComponentBase
     private const int DEFAULT_PIXELS_PER_MODULE = 12;
 
     [Parameter, EditorRequired] public required IReadOnlyList<DeckCardCode> Cards { get; set; } = [];
+    [Parameter, EditorRequired] public required IReadOnlyList<Energy> Energies { get; set; } = [];
     [Parameter] public int PixelsPerModule { get; set; } = DEFAULT_PIXELS_PER_MODULE;
 
     [Inject] private ILocalizer _localizer { get; set; } = null!;
@@ -21,13 +22,13 @@ public class DeckQrCodeBase : ComponentBase
 
     protected override void OnParametersSet()
     {
-        if (Cards.Count <= 0)
+        if (Cards.Count <= 0 || Energies.Count <= 0)
         {
             DataUri = null;
             return;
         }
 
-        string payload = DeckCode.Encode(Cards);
+        string payload = DeckCode.Encode(Cards, Energies);
 
         using QRCodeGenerator generator = new();
         using QRCodeData data = generator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.H);
