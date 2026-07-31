@@ -22,21 +22,8 @@ public class SuggestionAccordionBase : PresenterBase
     
     protected override async Task OnParametersSetAsync()
     {
-        List<TCGPCardRequest> addedCardRequests = [];
-        addedCardRequests.AddRange(Suggestion.AddedCards
-            .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
-        );
-
-        List<TCGPCardRequest> removedCardRequests = [];
-        removedCardRequests.AddRange(Suggestion.RemovedCards
-            .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
-        );
-        
-        TCGPCardsRequest addedCardsRequests = new(addedCardRequests);
-        TCGPCardsRequest removedCardsRequests = new(removedCardRequests);
-        
-        AddedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(addedCardsRequests, loadThumbnail:true);
-        RemovedCards = await _tcgpCardRequester.GetTCGPCardsByRequestAsync(removedCardsRequests, loadThumbnail:true);
+        AddedCards = await LoadCardsAsync(Suggestion.AddedCards);
+        RemovedCards = await LoadCardsAsync(Suggestion.RemovedCards);
     }
 
     #endregion
@@ -55,6 +42,18 @@ public class SuggestionAccordionBase : PresenterBase
             .OrderBy(GetCardPrimaryTypeIndex)
             .ThenBy(c => c.Collection.Code)
             .ThenBy(c => c.CollectionNumber);
+    }
+
+    private async Task<IReadOnlyList<TCGPCard>> LoadCardsAsync(IEnumerable<DeckDetailsCard> cards)
+    {
+        List<TCGPCardRequest> requests = cards
+            .Select(cr => new TCGPCardRequest(cr.CollectionCode, cr.CollectionNumber))
+            .ToList();
+
+        if (requests.Count <= 0)
+            return [];
+
+        return await _tcgpCardRequester.GetTCGPCardsByRequestAsync(new TCGPCardsRequest(requests), loadThumbnail: true);
     }
 
     private static int GetCardPrimaryTypeIndex(TCGPCard c)
